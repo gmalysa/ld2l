@@ -1,0 +1,33 @@
+{
+  "name": "ld2l",
+  "description": "learndota2 league website",
+  "version": "0.1.0",
+  "author": {
+    "name": "Greg Malysa",
+    "email": "gmalysa@stanford.edu",
+    "url": "http://blog.thelonepole.com"
+  },
+  "main": "server.js",
+  "dependencies": {
+    "bignumber": "^1.1.0",
+    "bignumber.js": "^4.1.0",
+    "body-parser": "^1.18.2",
+    "colors": "*",
+    "db-filters": "github:gmalysa/db-filters",
+    "dustjs-helpers": "1.7.3",
+    "dustjs-linkedin": "2.7.2",
+    "express": "*",
+    "express-session": "^1.15.6",
+    "flux-link": "*",
+    "mysql": "2.15.0",
+    "passport": "^0.4.0",
+    "passport-steam": "^1.0.8",
+    "spyglass": "*",
+    "underscore": "*"
+  },
+  "devDependencies": {
+    "grunt": "*"
+  },
+  "license": "BSD-3-Clause",
+  "repository": "https://github.com/gmalysa/ld2l.git"
+}

@@ -15,42 +15,9 @@ var dust = require('dustjs-linkedin');
 require('dustjs-helpers');
 var fs = require('fs');
 var fl = require('flux-link');
-//var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require('express-session');
-var passport = require('passport');
-var steamStrategy = require('passport-steam');
 
 // Load other common modules that we will handle
 var logger = require('./logger');
-
-/**
- * Default options for express and other configuration, to reduce the need
- * to specify it all in the options array
- */
-var default_opts = {
-	set				: {'env' : 'development'},
-	enable			: ['trust proxy'],
-	static_mount	: '/static',
-	static_path		: 'static',
-	route_dir		: 'routes',
-	template_dir	: 'templates',
-	client_path		: '/ui.js',
-	client_prefix	: 'c-',
-	port			: 8124,
-	shutdown		: [],
-	base_url		: '/',
-	session_secret	: 'thisisasecret'
-};
-
-// Passport basic config
-passport.serializeUser(function(user, done) {
-	done(null, user);
-});
-
-passport.deserializeUser(function(obj, done) {
-	done(null, obj);
-});
 
 /**
  * Initialization routine takes an express server instance and a list of options
@@ -59,7 +26,7 @@ passport.deserializeUser(function(obj, done) {
 function init(server, options) {
 	var that = this;
 	options = options || {};
-	this.options = _.extend({}, default_opts, options);
+	this.options = options;
 	this.server = server;
 
 	// Initialize hook chains
@@ -71,59 +38,6 @@ function init(server, options) {
 	hook = new fl.Chain();
 	hook.name = 'default';
 	this.post_hooks.default = hook;
-
-	// Load settings into express
-	_.each(this.options.set, function(v, k) {
-		server.set(v, k);
-	});
-	_.each(this.options.enable, function(v, k) {
-		server.enable(v);
-	});
-
-	// Add current time as early as possible in requests
-	server.use(function(req, res, next) {
-		res.start = process.hrtime();
-		next();
-	});
-
-	// Configure middleware that runs before route handlers
-	server.use(bodyParser.urlencoded({extended: false}));
-	server.use(bodyParser.json());
-//	server.use(cookieParser());
-
-	server.use(session({
-		secret : this.options.session_secret,
-		resave : false,
-		saveUninitialized : false
-	}));
-
-	// Set up passport for login info
-	server.use(passport.initialize());
-	server.use(passport.session());
-	passport.use(new steamStrategy({
-		returnURL : this.options.base_url + '/auth/steam/return',
-		realm : this.options.base_url,
-		apiKey : this.options.steam_api_key
-	}, function(id, profile, done) {
-		logger.info('Steam ID: ' +id, 'Steam');
-		console.log(profile);
-		done(null, profile);
-	}));
-
-	server.get(
-		'/auth/steam',
-		passport.authenticate('steam', { failureRedirect : '/' }),
-		function (req, res) { res.redirect('/'); }
-	);
-	server.get(
-		'/auth/steam/return',
-		passport.authenticate('steam', { failureRedirect : '/' }),
-		function (req, res) { res.redirect('/'); }
-	);
-
-	// @todo need to add a session store system here, before launching in deployment
-
-	server.use(this.options.static_mount, express.static(this.options.static_path));
 
 	// dustjs-linkedin template and routing configuration
 	this.load_dust_templates(this.options.template_dir, this.options.client_prefix);

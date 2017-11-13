@@ -1,0 +1,10 @@
+{>header /}
+
+Logged in as {user.name}.
+
+<ul>
+  <li><a href="{dotabuff}">Dotabuff</a></li>
+  <li><a href="{opendota}">Opendota</a></li>
+</ul>
+
+{>footer /}
