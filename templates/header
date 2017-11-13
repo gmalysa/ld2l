@@ -6,7 +6,6 @@
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/dustjs-linkedin/2.7.2/dust-core.min.js">
   </script>
   <script type="text/javascript" src="{@url url="/ui.js" /}"></script>
-  <script type="text/javascript" src="{@url url="/static/javascript/webflow.js" /}"></script>
   <script type="text/javascript" src="//underscorejs.org/underscore-min.js"></script>
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js">
   </script>
