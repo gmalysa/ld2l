@@ -1,2 +1,6 @@
 *.swp
 node_modules/
+config.json
+static/css
+static/javascript
+default.log
