@@ -15,6 +15,7 @@ var _ = require('underscore');
 var db = require('db-filters');
 var fl = require('flux-link');
 var BigNumber = require('bignumber.js');
+var db_migrate = require('db-migrate');
 
 // Express middleware
 //var cookieParser = require('cookie-parser');
@@ -64,6 +65,25 @@ db.init(process.cwd() + '/filters', function(file) {
 
 db.set_log(function(msg) {
 	logger.info(msg, 'db-filters');
+});
+
+// Check for and run database migrations
+migrations = db_migrate.getInstance(true, {
+	config : {
+		dev : {
+			driver : 'mysql',
+			user : config.mysql_user,
+			password : config.mysql_password,
+			host : config.mysql_host,
+			database : config.mysql_database,
+			multipleStatements : true,
+		},
+		"sql-file" : true
+	}
+});
+
+migrations.up().then(function() {
+	logger.info('Finished running db migrations', 'db-migrate');
 });
 
 // Passport basic config
