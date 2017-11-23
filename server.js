@@ -14,20 +14,19 @@ var express = require('express');
 var _ = require('underscore');
 var db = require('db-filters');
 var fl = require('flux-link');
-var BigNumber = require('bignumber.js');
 var db_migrate = require('db-migrate');
 
 // Express middleware
 //var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var expressSession = require('express-session');
-var passport = require('passport');
-var steamStrategy = require('passport-steam');
 
 // local modules
 var logger = require('./logger');
 var mysql = require('./mysql');
 var common = require('./common');
+
+mysql.init();
 
 /**
  * Gets a connection from the mysql pool and clones instances
@@ -52,12 +51,6 @@ function cleanup_db(env, after) {
 	after();
 }
 
-var mysql = new mysql({
-	database : config.mysql_database,
-	user : config.mysql_user,
-	password : config.mysql_password
-});
-
 // Load databse filter definitions
 db.init(process.cwd() + '/filters', function(file) {
 	logger.info('Adding database definition ' + file.blue.bold + '...', 'db-filters');
@@ -72,10 +65,10 @@ migrations = db_migrate.getInstance(true, {
 	config : {
 		dev : {
 			driver : 'mysql',
-			user : config.mysql_user,
-			password : config.mysql_password,
-			host : config.mysql_host,
-			database : config.mysql_database,
+			user : config.mysql.user,
+			password : config.mysql.password,
+			host : config.mysql.host,
+			database : config.mysql.database,
 			multipleStatements : true,
 		},
 		"sql-file" : true
@@ -84,15 +77,6 @@ migrations = db_migrate.getInstance(true, {
 
 migrations.up().then(function() {
 	logger.info('Finished running db migrations', 'db-migrate');
-});
-
-// Passport basic config
-passport.serializeUser(function(user, done) {
-	done(null, user);
-});
-
-passport.deserializeUser(function(obj, done) {
-	done(null, obj);
 });
 
 // Initialize express
@@ -120,68 +104,6 @@ server.use(expressSession({
 	resave : false,
 	saveUninitialized : false
 }));
-
-// Set up passport for login info
-server.use(passport.initialize());
-server.use(passport.session());
-passport.use(new steamStrategy({
-	returnURL : config.base_url + '/auth/steam/return',
-	realm : config.base_url,
-	apiKey : config.steam_api_key
-}, function(id, profile, done) {
-	var env = new fl.Environment();
-	var chain = new fl.Chain(
-		init_db,
-		function(env, after) {
-			env.filters.users.select({steamid : profile.id})
-				.exec(after, env.$throw);
-		},
-		new fl.Branch(
-			function(env, after, rows) {
-				if (rows.length > 0)
-					after(true, rows);
-				else
-					after(false);
-			}, function(env, after, rows) {
-				env.user = rows[0];
-				after();
-			}, function(env, after) {
-				var user = {
-					steamid : profile.id,
-					admin : 0,
-					name : profile.displayName,
-					avatar : profile._json.avatar
-				};
-				env.user = user;
-				env.filters.users.insert(user).exec(after, env.$throw);
-			}
-		),
-		function(env, after) {
-			console.log(env.user);
-			console.log(env.user.steamid);
-			var steamoffset = new BigNumber('76561197960265728');
-			logger.debug('offset: '+steamoffset.toString());
-			var steam32 = new BigNumber(env.user.steamid+'').sub(steamoffset);
-			logger.debug('steam32: '+steam32.toString());
-			env.user.id32 = steam32.toString();
-			after();
-		});
-
-	logger.info('Received steam ID: ' +id, 'Steam');
-	chain.call(null, env, function() { done(null, env.user); });
-}));
-
-// Two special routes associated with passport rather than going through normal router rules
-server.get(
-	'/auth/steam',
-	passport.authenticate('steam', { failureRedirect : '/' }),
-	function (req, res) { res.redirect('/'); }
-);
-server.get(
-	'/auth/steam/return',
-	passport.authenticate('steam', { failureRedirect : '/' }),
-	function (req, res) { res.redirect('/'); }
-);
 
 // @todo need to add a session store system here, before launching in deployment
 

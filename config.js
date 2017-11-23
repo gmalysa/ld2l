@@ -24,14 +24,20 @@ var defaults = {
 	session_secret : 'thisisasecret',
 
 	// MySQL settings
-	mysql_host : 'localhost',
-	mysql_user : 'ld2l',
-	mysql_database : 'ld2l',
-	mysql_password : 'ld2l',
+	mysql : {
+		host : 'localhost',
+		user : 'ld2l',
+		database : 'ld2l',
+		password : 'ld2l',
+	},
 
 	// Steam and Dota settings
 	steam_api_key : '',
 	// @todo add dota options here, likely a steam name/pw
+
+	// Discord application settings
+	discord_client_id : '',
+	discord_client_secret : '',
 };
 
 module.exports = _.extend({}, defaults, local);
