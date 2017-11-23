@@ -15,29 +15,10 @@ var mysql = require('mysql');
 
 // Project modules
 var logger = require('./logger');
+var config = require('./config.js');
 
-// MySQL configuration
-var default_options = {
-	host		: 'localhost',
-	user		: 'root',
-	password	: '',
-	database	: 'database'
-};
-
-/**
- * Singleton initializer function for mysql glue code
- * @param opts Hash of options for the mysql connection
- */
-function init(opts) {
-	opts = opts || {};
-	this.opts = _.extend({}, default_options, opts);
-
-	this.pool = mysql.createPool(this.opts);
-	this.initialized = true;
-
-	logger.module_init(mod_name, mod_version, 'Connected to MySQL server');
-	logger.info('Using database '+this.opts.database.green.bold, mod_name);
-}
+var initialized = false;
+var pool = {};
 
 /**
  * Retrieves a connection and filters for errors to reduce the amount of repeated
@@ -45,7 +26,7 @@ function init(opts) {
  * consistency with the rest of the framework
  */
 function getValidConnection(env, after) {
-	this.pool.getConnection(function(err, conn) {
+	pool.getConnection(function(err, conn) {
 		if (err) {
 			err._msg = 'Error connecting to MySQL database.';
 			env.$throw(err);
@@ -59,17 +40,29 @@ function getValidConnection(env, after) {
 
 /**
  * Singleton cleanup function, called on process exit
- * @param cb The callback to chain to if necessary
+ * @param cb The callback to chain to
  */
 function deinit(cb) {
-	if (this.initialized) {
+	if (initialized) {
 		logger.info('Closing connection pool.', mod_name);
-		this.pool.end(cb);
-		this.initialized = false;
+		initialized = false;
+		pool.end(cb);
+	}
+}
+
+/**
+ * Singleton initialization function, called whereever
+ */
+function init() {
+	if (!initialized) {
+		pool = mysql.createPool(config.mysql);
+		initialized = true;
+		logger.module_init(mod_name, mod_version, 'Configured MySQL connection pool');
+		logger.info('Using database '+config.mysql.database.green.bold, mod_name);
 	}
 }
 
 // Public interface for the module and the class
-module.exports = init;
-init.prototype.deinit = deinit;
-init.prototype.getValidConnection = getValidConnection;
+module.exports.init = init;
+module.exports.cleanup = deinit;
+module.exports.getValidConnection = getValidConnection;
