@@ -6,7 +6,7 @@
 
 // Module information
 var mod_name = 'MySQL';
-var mod_version = '0.2.2';
+var mod_version = '0.3.0';
 
 // Node.js modules
 require('colors');
