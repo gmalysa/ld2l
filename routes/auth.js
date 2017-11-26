@@ -67,7 +67,7 @@ var steamChain = new fl.Chain(
 		after();
 	}
 );
- 
+
 // Set up passport for steam login info
 passport.use(new steamStrategy({
 	returnURL : config.base_url + '/auth/steam/return',

@@ -108,7 +108,7 @@ server.use(expressSession({
 // @todo need to add a session store system here, before launching in deployment
 
 var ci = new common.init(server, {
-	shutdown		: [{fn : mysql.deinit, ctx : null}],
+	shutdown		: [{fn : mysql.cleanup}],
 	base_url		: config.base_url,
 	template_dir	: config.template_dir,
 	client_prefix	: config.client_prefix,
