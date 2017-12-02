@@ -20,6 +20,7 @@ var db_migrate = require('db-migrate');
 //var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var expressSession = require('express-session');
+var passport = require('passport');
 
 // local modules
 var logger = require('./logger');
@@ -104,6 +105,8 @@ server.use(expressSession({
 	resave : false,
 	saveUninitialized : false
 }));
+server.use(passport.initialize());
+server.use(passport.session());
 
 // @todo need to add a session store system here, before launching in deployment
 

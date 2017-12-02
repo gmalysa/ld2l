@@ -60,7 +60,6 @@ var steamChain = new fl.Chain(
 		}
 	),
 	function(env, after) {
-		console.log(env.user);
 		var steamoffset = new BigNumber('76561197960265728');
 		var steam32 = new BigNumber(env.user.steamid+'').sub(steamoffset);
 		env.user.id32 = steam32.toString();
@@ -86,7 +85,6 @@ passport.use(new steamStrategy({
 var discordChain = new fl.Chain(
 	init_db,
 	function(env, after) {
-		console.log(env.user);
 		env.filters.users.update({
 			discord_id : env.user.discord_id,
 			discord_name : env.user.discord_name,
@@ -106,7 +104,6 @@ passport.use(new discordStrategy({
 	scope : 'identify',
 	passReqToCallback : true
 }, function(req, accessToken, refreshToken, profile, done) {
-	console.log(profile);
 	req.user.discord_id = profile.id;
 	req.user.discord_name = profile.username;
 	req.user.discord_discriminator = profile.discriminator;
@@ -120,9 +117,6 @@ passport.use(new discordStrategy({
 
 // Bind to provided express instance at init time
 module.exports.init_routes = function(common) {
-	common.server.use(passport.initialize());
-	common.server.use(passport.session());
-
 	common.server.get(
 		'/auth/steam',
 		passport.authenticate('steam', { failureRedirect : '/' }),

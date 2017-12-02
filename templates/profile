@@ -23,4 +23,20 @@
   </ul>
 </div>
 
+{?showPrivs}
+<div>
+  <h1>Privs</h1>
+  <ul>
+    <li>Modify accounts
+	  <input type="checkbox" {?privs.MODIFY_ACCOUNT}checked="checked"{/privs.MODIFY_ACCOUNT}
+	    name="modify_account" />
+    </li>
+	<li>Modify seasons
+	  <input type="checkbox" {?privs.MODIFY_SEASON}checked="checked"{/privs.MODIFY_SEASON}
+	    name="modify_season" />
+	</li>
+  </ul>
+</div>
+{/showPrivs}
+
 {>footer /}
