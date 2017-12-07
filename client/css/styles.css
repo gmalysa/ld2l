@@ -1,0 +1,213 @@
+/*
+ * -- BASE STYLES --
+ */
+body {
+    color: #ececec;
+    background: #0d1f27;
+}
+
+h2, h3 {
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+p {
+    line-height: 1.6em;
+}
+
+.pure-menu-link:hover {
+    background-color: #324860;
+}
+
+/*
+ * -- LAYOUT STYLES --
+ */
+.l-content {
+    margin: 0 auto;
+}
+
+.l-box {
+    padding: 0.5em 2em;
+}
+
+/*
+ * -- MENU STYLES --
+ */
+.pure-menu {
+    box-shadow: 0 1px 1px rgba(0,0,0, 0.10);
+}
+
+.selected-fix {
+    color: white !important;
+}
+
+.pure-menu-link {
+    padding: 13px 14px;
+    font-family: Oswald, sans-serif;
+    color: rgba(242, 246, 252, .63);
+    font-size: 16px;
+    font-weight: 100;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, .1);
+}
+
+.pure-menu-list {
+    float: right;
+    height: 50px;
+}
+
+.pure-menu-heading {
+    float: left;
+    padding: 10px 15px 6px;
+    font-family: Oswald, sans-serif;
+    color: rgba(242, 246, 252, .63);
+    font-size: 20px;
+    font-weight: 400;
+    text-shadow: 0 2px 0 rgba(0, 0, 0, .1);
+}
+
+.header-fix {
+    height: 50px;
+    margin-right: 20%;
+    margin-left: 20%;
+    width: 60%;
+}
+
+.inline-d2-red {
+    color: #fd4423;
+    display: inline;
+}
+
+/*
+ * -- BANNER --
+ */
+
+.banner {
+    /* background-image: -webkit-linear-gradient(135deg, rgba(116, 2, 2, .59), rgba(187, 110, 27, .51) 49%, rgba(139, 0, 0, .45)), url('http://www.apu.edu.my/sites/default/files/dota2.jpeg');
+    background-image: linear-gradient(315deg, rgba(116, 2, 2, .59), rgba(187, 110, 27, .51) 49%, rgba(139, 0, 0, .45)), url('http://www.apu.edu.my/sites/default/files/dota2.jpeg'); */
+    text-align: center;
+    background-size: cover;
+    height: 200px;
+    width: 100%;
+    margin-bottom: 0;
+    display: table;
+}
+
+    .banner-head {
+        display: block;
+        vertical-align: middle;
+        margin: auto;
+        padding: 330px 10%;
+        font-family: Oswald, sans-serif;
+        color: rgba(190, 190, 210, .8);
+        font-size: 36px;
+        font-weight: 400;
+        text-shadow: 0 2px 0 rgba(0, 0, 0, .4);
+        background: rgba(0,0,0,0);
+    }
+
+
+/* 
+* -- LOGO BANNER --
+* Banner section for sponsors, logos, etc (e.g. Skai High, whatnot) 
+*/
+
+.sp-banner {
+    height: 99px;
+    background: black;
+    margin: auto;
+    text-align: center;
+}
+
+.sp-banner-ld2l {
+    padding-top: 12px;
+    max-height: 70%;
+}
+
+/*
+*   -- SLIDE ANIMATIONS --
+*/
+
+.slider {
+  max-width: 100%;
+  height: 800px;
+  margin: 0;
+  position: relative;
+}
+.slide1,.slide2,.slide3,.slide4,.slide5 {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.slide1 {
+  background: url(/static/images/bg1.png)no-repeat top left;
+      background-size: cover;
+    animation:fade 30s infinite;
+-webkit-animation:fade 30s infinite;
+
+} 
+.slide2 {
+  background: url(/static/images/bg2.jpg)no-repeat top left;
+      background-size: cover;
+    animation:fade2 30s infinite;
+-webkit-animation:fade2 30s infinite;
+}
+.slide3 {
+    background: url(/static/images/bg3.jpeg)no-repeat top left;
+      background-size: cover;
+    animation:fade3 30s infinite;
+-webkit-animation:fade3 30s infinite;
+}
+@keyframes fade
+{
+  0%   {opacity:1}
+  33.333% { opacity: 0}
+  66.666% { opacity: 0}
+  100% { opacity: 1}
+}
+@keyframes fade2
+{
+  0%   {opacity:0}
+  33.333% { opacity: 1}
+  66.666% { opacity: 0 }
+  100% { opacity: 0}
+}
+@keyframes fade3
+{
+  0%   {opacity:0}
+  33.333% { opacity: 0}
+  66.666% { opacity: 1}
+  100% { opacity: 0}
+}
+
+
+
+
+/*
+ * -- TABLET MEDIA QUERIES --
+ */
+
+@media(min-width: 767px) {
+
+    .banner-head {
+        font-size: 4em;
+    }
+    .pricing-table {
+        margin-bottom: 0;
+    }
+
+}
+
+/*
+ * -- PHONE MEDIA QUERIES --
+ */
+
+@media(min-width: 480px) {
+    .banner {
+        height: 800px;
+    }
+    .banner-head {
+        font-size: 3em;
+    }
+}
+
