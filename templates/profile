@@ -11,6 +11,7 @@
 <div>
   <h1>User Info</h1>
   <ul>
+    {?privs.JOIN_SEASON}<li>Vouched</li>{/privs.JOIN_SEASON}
     <li><a href="http://steamcommunity.com/profiles/{user.steamid}">Steam Profile</a></li>
 	<li>
 {?user.discord_name}
@@ -35,6 +36,14 @@
 	  <input type="checkbox" {?privs.MODIFY_SEASON}checked="checked"{/privs.MODIFY_SEASON}
 	    name="modify_season" />
 	</li>
+	<li>Vouched
+	  <input type="checkbox" {?privs.JOIN_SEASON}checked="checked"{/privs.JOIN_SEASON}
+	    name="join_season" />
+    </li>
+	<li>View privs
+	  <input type="checkbox" {?privs.VIEW_PRIVS}checked="checked"{/privs.VIEW_PRIVS}
+	    name="view_privs" />
+    </li>
   </ul>
 </div>
 {/showPrivs}

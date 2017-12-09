@@ -11,16 +11,22 @@ var profile = new fl.Chain(
 			},
 			privs.getPrivs,
 			function(env, after, userPrivs) {
+				var showPrivs = false;
+				if (userPrivs.length > 0 && privs.hasPriv(userPrivs, privs.VIEW_PRIVS))
+					showPrivs = true;
+
 				env.$template('profile');
 				env.$output({
 					title : 'Learn Dota 2 League',
 					user : env.user,
 					dotabuff : 'https://www.dotabuff.com/players/'+env.user.id32,
 					opendota : 'https://www.opendota.com/players/'+env.user.id32,
-					showPrivs : userPrivs.length > 0 ? true : false,
+					showPrivs : showPrivs,
 					privs : {
 						MODIFY_ACCOUNT : privs.hasPriv(userPrivs, privs.MODIFY_ACCOUNT),
 						MODIFY_SEASON : privs.hasPriv(userPrivs, privs.MODIFY_SEASON),
+						JOIN_SEASON : privs.hasPriv(userPrivs, privs.JOIN_SEASON),
+						VIEW_PRIVS : privs.hasPriv(userPrivs, privs.VIEW_PRIVS),
 					}
 				});
 				after();

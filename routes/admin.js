@@ -16,6 +16,18 @@ var loadPrivs = new fl.Chain(
 			steamid : env.user.steamid,
 			priv : privs.MODIFY_SEASON
 		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.privs.insert({
+			steamid : env.user.steamid,
+			priv : privs.JOIN_SEASON
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.privs.insert({
+			steamid : env.user.steamid,
+			priv : privs.VIEW_PRIVS
+		}).exec(after, env.$throw);
 	}
 );
 
