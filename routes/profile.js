@@ -4,6 +4,16 @@ var privs = require('../lib/privs.js');
 var users = require('../lib/users.js');
 
 /**
+ * Test if the given set of viewer privs can vouch the given set of user/profile privs
+ * @param[in] viewPrivs The privs of the person viewing the profile
+ * @param[in] userPrivs The privs of the person being viewed
+ * @return 1 if they can, 0 otherwise
+ */
+function canVouch(viewPrivs, userPrivs) {
+	return privs.hasPriv(viewPrivs, privs.VOUCH) && !privs.hasPriv(userPrivs, privs.JOIN_SEASON);
+}
+
+/**
  * Populate the template arguments correctly based on other stuff we collected
  * Arguments come on the stack, to be pushed in order:
  * @param[in] displayUser The user object being displayed
@@ -14,11 +24,7 @@ function buildProfile(env, after) {
 	var viewPrivs = env.$pop();
 	var userPrivs = env.$pop();
 	var displayUser = env.$pop();
-	var showPrivs = false;
-
-	// Make sure privs exist and viewer has access to them
-	if (userPrivs.length > 0 && privs.hasPriv(viewPrivs, privs.VIEW_PRIVS))
-		showPrivs = true;
+	var showPrivs = privs.hasPriv(viewPrivs, privs.VIEW_PRIVS);
 
 	env.$template('profile');
 	env.$output({
@@ -29,6 +35,7 @@ function buildProfile(env, after) {
 		opendota : 'https://www.opendota.com/players/'+displayUser.id32,
 		showPrivs : showPrivs,
 		vouched : privs.hasPriv(userPrivs, privs.JOIN_SEASON),
+		canVouch : canVouch(viewPrivs, userPrivs),
 		privs : [
 			{
 				name : 'modify_account',
@@ -49,11 +56,17 @@ function buildProfile(env, after) {
 				name : 'view_privs',
 				has : privs.hasPriv(userPrivs, privs.VIEW_PRIVS),
 				label : 'View privs'
+			},
+			{
+				name : 'vouch',
+				has : privs.hasPriv(userPrivs, privs.VOUCH),
+				label : 'Vouch'
 			}
 		]
 	});
 	after();
 }
+
 var profile = new fl.Chain(
 	new fl.Branch(
 		privs.isLoggedIn,

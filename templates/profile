@@ -13,7 +13,15 @@
 <div>
   <h2>User Info</h2>
   <ul>
-    {?vouched}<li>Vouched</li>{/vouched}
+    {?vouched}
+	  <li>Vouched</li>
+	{:else}
+	  {?canVouch}
+	    <li><a href="/profile/{profileUser.steamid}/vouch">Vouch</a></li>
+	  {:else}
+	    <li><b>Not</b> vouched yet</li>
+	  {/canVouch}
+	{/vouched}
     <li><a href="http://steamcommunity.com/profiles/{profileUser.steamid}">Steam Profile</a></li>
 	<li>
 {?profileUser.discord_name}
