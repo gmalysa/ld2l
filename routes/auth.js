@@ -7,6 +7,8 @@ var logger = require('../logger');
 var config = require('../config');
 var mysql = require('../mysql');
 
+var users = require('../lib/users.js');
+
 var passport = require('passport');
 var steamStrategy = require('passport-steam');
 var discordStrategy = require('passport-discord');
@@ -37,33 +39,28 @@ function init_db(env, after) {
 var steamChain = new fl.Chain(
 	init_db,
 	function(env, after) {
-		env.filters.users.select({steamid : env.profile.id})
-			.exec(after, env.$throw);
+		after(env.profile.id);
 	},
-	new fl.Branch(
-		function(env, after, rows) {
-			if (rows.length > 0)
-				after(true, rows);
-			else
-				after(false);
-		}, function(env, after, rows) {
-			env.user = rows[0];
+	users.getUser,
+	function(env, after, user) {
+		if (user !== null) {
+			env.user = user;
 			after();
-		}, function(env, after) {
-			var user = {
+		}
+		else {
+			// @todo move this into lib/users.js as well
+			var steamoffset = new BigNumber('76561197960265728');
+			var steam32 = new BigNumber(env.profile.id+'').sub(steamoffset);
+			env.profile.id32 = steam32.toString();
+			user = {
 				steamid : env.profile.id,
 				name : env.profile.displayName,
-				avatar : env.profile._json.avatar
+				avatar : env.profile._json.avatar,
+				id32 : env.profile.id32
 			};
 			env.user = user;
 			env.filters.users.insert(user).exec(after, env.$throw);
 		}
-	),
-	function(env, after) {
-		var steamoffset = new BigNumber('76561197960265728');
-		var steam32 = new BigNumber(env.user.steamid+'').sub(steamoffset);
-		env.user.id32 = steam32.toString();
-		after();
 	}
 );
 
