@@ -12,8 +12,17 @@
 </head>
 
 <body>
-  {?user}
-    <img src="{user.avatar}" /> {user.name} <a href="/profile">[profile]</a>
-  {:else}
-    <a href="/auth/steam">Login</a>
-  {/user}
+<ul>
+  <li>
+    {?user}
+      <img src="{user.avatar}" /> {user.name} <a href="/profile">[profile]</a>
+    {:else}
+      <a href="/auth/steam">Login</a>
+    {/user}
+  </li>
+  <li><a href="/seasons">Seasons</a></li>
+  <li><a href="/teams">Teams</a></li>
+  <li><a href="/players">Players</a></li>
+  <li><a href="/standings">Standings</a></li>
+  <li><a href="/schedule">Schedule</a></li>
+</ul>

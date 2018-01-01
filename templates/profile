@@ -1,7 +1,9 @@
 {>header /}
 
+<h1>{profileUser.name}</h1>
+
 <div>
-  <h1>Dota Statistics</h1>
+  <h2>Dota Statistics</h2>
   <ul>
     <li><a href="{dotabuff}">Dotabuff</a></li>
     <li><a href="{opendota}">Opendota</a></li>
@@ -9,41 +11,28 @@
 </div>
 
 <div>
-  <h1>User Info</h1>
+  <h2>User Info</h2>
   <ul>
-    {?privs.JOIN_SEASON}<li>Vouched</li>{/privs.JOIN_SEASON}
-    <li><a href="http://steamcommunity.com/profiles/{user.steamid}">Steam Profile</a></li>
+    {?vouched}<li>Vouched</li>{/vouched}
+    <li><a href="http://steamcommunity.com/profiles/{profileUser.steamid}">Steam Profile</a></li>
 	<li>
-{?user.discord_name}
-	Linked to <img src="https://cdn.discordapp.com/avatars/{user.discord_id}/{user.discord_avatar}.gif?size=32" /> {user.discord_name}#{user.discord_discriminator}
+{?profileUser.discord_name}
+	Linked to <img src="https://cdn.discordapp.com/avatars/{profileUser.discord_id}/{profileUser.discord_avatar}.gif?size=32" /> {profileUser.discord_name}#{profileUser.discord_discriminator}
 	<a href="/auth/discord">Relink or update</a>
 {:else}
 	<a href="/auth/discord">Link discord ID</a>
-{/user.discord_name}
+{/profileUser.discord_name}
     </li>
   </ul>
 </div>
 
 {?showPrivs}
 <div>
-  <h1>Privs</h1>
+  <h2>Privs</h2>
   <ul>
-    <li>Modify accounts
-	  <input type="checkbox" {?privs.MODIFY_ACCOUNT}checked="checked"{/privs.MODIFY_ACCOUNT}
-	    name="modify_account" />
-    </li>
-	<li>Modify seasons
-	  <input type="checkbox" {?privs.MODIFY_SEASON}checked="checked"{/privs.MODIFY_SEASON}
-	    name="modify_season" />
-	</li>
-	<li>Vouched
-	  <input type="checkbox" {?privs.JOIN_SEASON}checked="checked"{/privs.JOIN_SEASON}
-	    name="join_season" />
-    </li>
-	<li>View privs
-	  <input type="checkbox" {?privs.VIEW_PRIVS}checked="checked"{/privs.VIEW_PRIVS}
-	    name="view_privs" />
-    </li>
+    {#privs}
+	  <li>{label} <input type="checkbox" {?has}checked="checked"{/has} name="{name}" /></li>
+	{/privs}
   </ul>
 </div>
 {/showPrivs}
