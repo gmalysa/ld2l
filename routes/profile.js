@@ -120,12 +120,14 @@ var public_profile = new fl.Chain(
 	},
 	users.getUser,
 	function(env, after, displayUser) {
-		if (displayUser === null)
+		if (displayUser === null) {
 			env.$throw(new Error('Unable to find user matching this profile'));
-
-		env.displayUser = displayUser;
-		env.$push(displayUser.steamid);
-		after();
+		}
+		else {
+			env.displayUser = displayUser;
+			env.$push(displayUser.steamid);
+			after();
+		}
 	},
 	privs.getPrivs,
 	function(env, after, displayPrivs) {
