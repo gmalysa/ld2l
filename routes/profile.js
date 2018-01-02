@@ -4,6 +4,13 @@ var privs = require('../lib/privs.js');
 var users = require('../lib/users.js');
 
 /**
+ * Just push the steamid, pretty standard helper
+ */
+function _pushSteamId(env, after) {
+	after(env.user.steamid);
+}
+
+/**
  * Test if the given set of viewer privs can vouch the given set of user/profile privs
  * @param[in] viewPrivs The privs of the person viewing the profile
  * @param[in] userPrivs The privs of the person being viewed
@@ -96,9 +103,7 @@ var public_profile = new fl.Chain(
 	new fl.Branch(
 		privs.isLoggedIn,
 		new fl.Chain(
-			function(env, after) {
-				after(env.user.steamid);
-			},
+			_pushSteamId,
 			privs.getPrivs,
 			function (env, after, viewerPrivs) {
 				env.userPrivs = viewerPrivs;
@@ -132,6 +137,17 @@ var public_profile = new fl.Chain(
 	buildProfile
 );
 
+var vouch = new fl.Chain(
+	function(env, after) {
+		after(env.req.params.steamid);
+	},
+	privs.vouchPlayer,
+	function(env, after) {
+		env.$redirect('/profile/' + env.req.params.steamid);
+		after();
+	}
+);
+
 module.exports.init_routes = function(server) {
 	server.add_route('/profile', {
 		fn : profile,
@@ -141,6 +157,12 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/profile/:steamid', {
 		fn : public_profile,
+		pre : ['default'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/profile/:steamid/vouch', {
+		fn : vouch,
 		pre : ['default'],
 		post : ['default']
 	}, 'get');

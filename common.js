@@ -357,15 +357,9 @@ function finish(env) {
  * Mark this request response as an error, to be passed through the error template
  * @param env The environment to mark
  * @param err The error object in question, for server-side debuggin
- * @param msg The error message to send to the user
- * @param name The module name where the error occurred
  */
-function set_error(env, err, msg, name) {
+function set_error(env, err) {
 	env._cmeta.error = err;
-	_.extend(env._cmeta.error, {
-		_msg : msg,
-		_modname : name
-	});
 }
 
 /**
@@ -423,12 +417,10 @@ function set_redirect(env, base, path) {
  * the exception so that finish() is guaranteed to run
  * handler is invoked.
  * @param env The request environment that has experienced a global-level error
- * @param err An optional error object that will be passed to set_error
- * @param msg An optional user-visible messgae that will be passed to set_error
- * @param mod An optional module name that will be passed to set_error
+ * @param err Error object from exception
  */
-function handle_global_error(env, err, msg, mod) {
-	env.$error(err, msg, mod);
+function handle_global_error(env, err) {
+	env.$error(err);
 	env.$catch();
 }
 
@@ -463,7 +455,7 @@ function static_serve(path) {
  */
 function send_error(env) {
 	var modname = env._cmeta.error._modname || mod_name;
-	var msg = env._cmeta.error._msg || 'An undescribed error occurred.';
+	var msg = env._cmeta.error.message || 'An undescribed error occurred.';
 
 	// Log the error that happened
 	//logger.info('Error occurred while handling route: ' + env.req.route.path, modname);

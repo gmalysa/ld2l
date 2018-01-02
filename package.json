@@ -20,7 +20,7 @@
     "dustjs-linkedin": "2.7.2",
     "express": "*",
     "express-session": "^1.15.6",
-    "flux-link": "*",
+    "flux-link": "github:gmalysa/flux-link",
     "mysql": "2.15.0",
     "passport": "^0.4.0",
     "passport-discord": "^0.1.3",
