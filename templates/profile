@@ -26,9 +26,14 @@
 	<li>
 {?profileUser.discord_name}
 	Linked to <img src="https://cdn.discordapp.com/avatars/{profileUser.discord_id}/{profileUser.discord_avatar}.gif?size=32" /> {profileUser.discord_name}#{profileUser.discord_discriminator}
-	<a href="/auth/discord">Relink or update</a>
+	{?profileUser.canLink}
+	  <a href="/auth/discord">Relink or update</a>
+	{/profileUser.canLink}
 {:else}
-	<a href="/auth/discord">Link discord ID</a>
+	No discord profile linked.
+	{?profileUser.canLink}
+	  <a href="/auth/discord">Link discord ID</a>
+	{/profileUser.canLink}
 {/profileUser.discord_name}
     </li>
   </ul>

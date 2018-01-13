@@ -32,6 +32,10 @@ function buildProfile(env, after) {
 	var userPrivs = env.$pop();
 	var displayUser = env.$pop();
 	var showPrivs = privs.hasPriv(viewPrivs, privs.VIEW_PRIVS);
+	var canLink = false;
+
+	if (env.user && env.user.steamid == displayUser.steamid)
+		canLink = true;
 
 	env.$template('profile');
 	env.$output({
@@ -43,6 +47,7 @@ function buildProfile(env, after) {
 		showPrivs : showPrivs,
 		vouched : privs.hasPriv(userPrivs, privs.JOIN_SEASON),
 		canVouch : canVouch(viewPrivs, userPrivs),
+		canLink : canLink,
 		privs : [
 			{
 				name : 'modify_account',
