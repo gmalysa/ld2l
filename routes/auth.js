@@ -41,27 +41,7 @@ var steamChain = new fl.Chain(
 	function(env, after) {
 		after(env.profile.id);
 	},
-	users.getUser,
-	function(env, after, user) {
-		if (user !== null) {
-			env.user = user;
-			after();
-		}
-		else {
-			// @todo move this into lib/users.js as well
-			var steamoffset = new BigNumber('76561197960265728');
-			var steam32 = new BigNumber(env.profile.id+'').sub(steamoffset);
-			env.profile.id32 = steam32.toString();
-			user = {
-				steamid : env.profile.id,
-				name : env.profile.displayName,
-				avatar : env.profile._json.avatar,
-				id32 : env.profile.id32
-			};
-			env.user = user;
-			env.filters.users.insert(user).exec(after, env.$throw);
-		}
-	}
+	users.addUser
 );
 
 // Set up passport for steam login info
@@ -75,7 +55,10 @@ passport.use(new steamStrategy({
 	var env = new fl.Environment();
 	env.profile = profile;
 
-	steamChain.call(null, env, function() { done(null, env.user); });
+	steamChain.call(null, env, function(user) {
+		env.user = user;
+		done(null, user);
+	});
 }));
 
 // Add or update discord information in an entry
