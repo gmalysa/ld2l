@@ -136,12 +136,22 @@ var season_create = new fl.Chain(
  * Show signup form, if a person is allowed to sign up
  */
 var show_signup_form = new fl.Chain(
+	// Dummy function to avoid crashes
+	function(env, after) {
+		env.$redirect('/seasons');
+		after();
+	}
 );
 
 /**
  * Handle a signup form and send them back if it was incomplete
  */
 var handle_signup_form = new fl.Chain(
+	// Dummy function to avoid crashes
+	function(env, after) {
+		env.$redirect('/seasons');
+		after();
+	}
 );
 
 module.exports.init_routes = function(server) {
