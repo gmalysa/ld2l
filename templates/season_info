@@ -1,0 +1,34 @@
+{>header /}
+
+<div>
+  <h2>{season_name} Signups</h2>
+  {?signups}
+    <table>
+	  <tr>
+	    <th></th><th>Name</th><th>Medal</th><th>Captain?</th><th>Standin/FA?</th><th>Statement</th>
+	  </tr>
+	  {#signups}
+	  <tr>
+	    <td>{@counter/}</td>
+	    <td><a href="/profile/{steamid}">{name}</a></td>
+		<td>{medal}</td>
+		<td>{captain}</td>
+		<td>{standin}</td>
+		<td>{statement}</td>
+	  </tr>
+	  {/signups}
+	</table>
+  {:else}
+    Nobody has signed up yet.
+  {/signups}
+</div>
+
+{?canSignUp}
+  <a href="/seasons/{season_id}/signup_form">Sign up</a>
+{/canSignUp}
+
+{?signedUp}
+  <a href="/seasons/{season_id}/signup_form">Edit your signup</a>
+{/signedUp}
+
+{>footer /}

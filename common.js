@@ -133,7 +133,8 @@ function add_dust_filters(filters) {
  */
 function add_default_dust_helpers() {
 	this.add_dust_helpers({
-		url : dust_url.bind(null, this.options)
+		url : dust_url.bind(null, this.options),
+		counter : dust_counter
 	});
 }
 
@@ -499,6 +500,10 @@ function dust_url(opts, chunk, ctx, bodies, params) {
 		return chunk.write(opts.base_url + url);
 	else
 		return chunk.write(url);
+}
+
+function dust_counter(chunk, ctx, bodies, params) {
+	return chunk.write(ctx.stack.index + 1);
 }
 
 // Create class definition based around common.init
