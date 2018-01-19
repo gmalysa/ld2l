@@ -94,6 +94,13 @@ passport.use(new discordStrategy({
 	discordChain.call(null, env, function() { done(null, profile) });
 }));
 
+function addUserOutput(env, after) {
+	if (env.req.user && env.req.user.steamid) {
+		env.user = env.req.user;
+		env.$output({user : env.user});
+	}
+	after();
+}
 
 // Bind to provided express instance at init time
 module.exports.init_routes = function(common) {
@@ -120,4 +127,6 @@ module.exports.init_routes = function(common) {
 			res.redirect('/profile');
 		}
 	);
+
+	common.add_pre_hook(fl.mkfn(addUserOutput, 0));
 };

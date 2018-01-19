@@ -42,8 +42,7 @@ var season_index = new fl.Chain(
 	function(env, after, seasons) {
 		env.$output({
 			seasons : seasons,
-			canCreateSeason : env.canCreateSeason,
-			user : env.user
+			canCreateSeason : env.canCreateSeason
 		});
 		env.$template('season_list');
 		after();
@@ -108,13 +107,7 @@ var season_info = new fl.Chain(
 		function(env, after) {
 			after();
 		}
-	),
-
-	// Add user information to season page
-	function(env, after) {
-		env.$output({user : env.user});
-		after();
-	}
+	)
 );
 
 /**

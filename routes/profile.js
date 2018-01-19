@@ -40,7 +40,6 @@ function buildProfile(env, after) {
 	env.$template('profile');
 	env.$output({
 		title : 'Profile for '+displayUser.name,
-		user : env.user,
 		profileUser : displayUser,
 		dotabuff : 'https://www.dotabuff.com/players/'+displayUser.id32,
 		opendota : 'https://www.opendota.com/players/'+displayUser.id32,

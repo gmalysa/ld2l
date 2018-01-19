@@ -8,7 +8,6 @@
 function index(env, after) {
 	env.$template('index');
 	env.$output({title : 'Learn Dota 2 League'});
-	env.$output({user : env.req.user});
 	after();
 }
 
