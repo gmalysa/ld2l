@@ -24,11 +24,11 @@
 </div>
 
 {?canSignUp}
-  <a href="/seasons/{season_id}/signup_form">Sign up</a>
+  <a href="/seasons/signup/{season_id}">Sign up</a>
 {/canSignUp}
 
 {?signedUp}
-  <a href="/seasons/{season_id}/signup_form">Edit your signup</a>
+  <a href="/seasons/signup/{season_id}">Edit your signup</a>
 {/signedUp}
 
 {>footer /}
