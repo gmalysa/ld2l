@@ -1,3 +1,6 @@
+/**
+ * @todo this needs audit logging of changes being made
+ */
 
 var fl = require('flux-link');
 var privs = require('../lib/privs.js');
