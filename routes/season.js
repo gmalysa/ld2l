@@ -11,27 +11,20 @@ var _ = require('underscore');
  * Helper chain that is used to check if someone has the ability to create seasons or not and sets
  * an environment variable to indicate this
  */
-var checkSeasonPrivs = new fl.Chain(
-	function(env, after) {
-		env.canCreateSeason = false;
-		after();
-	},
-	new fl.Branch(
-		privs.isLoggedIn,
-		new fl.Chain(
-			function(env, after) {
-				after(env.user.steamid);
-			},
-			privs.getPrivs,
-			function (env, after, adminPrivs) {
-				env.canCreateSeason = privs.hasPriv(adminPrivs, privs.MODIFY_SEASON);
-				after();
-			}
-		),
+var checkSeasonPrivs = new fl.Branch(
+	privs.isLoggedIn,
+	new fl.Chain(
 		function(env, after) {
-			after();
+			after(env.user.steamid);
+		},
+		privs.getPrivs,
+		function (env, after, adminPrivs) {
+			after(privs.hasPriv(adminPrivs, privs.MODIFY_SEASON));
 		}
-	)
+	),
+	function(env, after) {
+		after(false);
+	}
 );
 
 /**
@@ -39,14 +32,12 @@ var checkSeasonPrivs = new fl.Chain(
  */
 var season_index = new fl.Chain(
 	checkSeasonPrivs,
-	function(env, after) {
+	function(env, after, canCreateSeason) {
+		env.$output({canCreateSeason : canCreateSeason});
 		env.filters.seasons.select({}).exec(after, env.$throw);
 	},
 	function(env, after, seasons) {
-		env.$output({
-			seasons : seasons,
-			canCreateSeason : env.canCreateSeason
-		});
+		env.$output({seasons : seasons});
 		env.$template('season_list');
 		after();
 	}
@@ -116,22 +107,22 @@ var season_info = new fl.Chain(
 /**
  * Create a season
  */
-var season_create = new fl.Chain(
+var season_create = new fl.Branch(
 	checkSeasonPrivs,
-	function(env, after) {
-		if (env.canCreateSeason) {
+	new fl.Chain(
+		function(env, after) {
 			env.filters.seasons.insert({
 				name : 'New Season',
 				status : 0
 			}).exec(after, env.$throw);
+		},
+		function(env, after) {
+			env.$redirect('/seasons');
+			after();
 		}
-		else {
-			env.$throw(new Error('You don\'t have privs to create a new season'));
-		}
-	},
+	),
 	function(env, after) {
-		env.$redirect('/seasons');
-		after();
+		env.$throw(new Error('You don\'t have privs to create a new season'));
 	}
 );
 
