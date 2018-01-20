@@ -7,6 +7,8 @@ var privs = require('../lib/privs.js');
 var db = require('db-filters');
 var _ = require('underscore');
 
+var seasons = require('../lib/seasons.js');
+
 /**
  * Helper chain that is used to check if someone has the ability to create seasons or not and sets
  * an environment variable to indicate this
@@ -24,6 +26,40 @@ var checkSeasonPrivs = new fl.Branch(
 	),
 	function(env, after) {
 		after(false);
+	}
+);
+
+/**
+ * Handler to rename a season
+ */
+var edit_season = new fl.Branch(
+	checkSeasonPrivs,
+	new fl.Chain(
+		function(env, after) {
+			var id = parseInt(env.req.params.seasonid);
+			if (isNaN(id)) {
+				env.$throw(new Error('Invalid season ID specified'));
+				return;
+			}
+
+			var seasonStatus = parseInt(env.req.body.status);
+			if (!env.req.body.name || !seasons.isValidStatus(seasonStatus)) {
+				env.$throw(new Error('Bad season update parameters given'));
+				return;
+			}
+
+			env.filters.seasons.update({
+				name : env.req.body.name,
+				status : seasonStatus
+			}, {id : id}).exec(after, env.$throw);
+		},
+		function(env, after) {
+			env.$redirect('/seasons/'+env.req.params.seasonid);
+			after();
+		}
+	),
+	function(env, after) {
+		env.$throw(new Error('You do not have permission to change season settings'));
 	}
 );
 
@@ -89,12 +125,24 @@ var season_info = new fl.Chain(
 			},
 			privs.getPrivs,
 			function (env, after, userPrivs) {
+				var canEdit = privs.hasPriv(userPrivs, privs.MODIFY_SEASON);
 				var canSignUp = privs.hasPriv(userPrivs, privs.JOIN_SEASON);
 				var signedUp = _.reduce(env.season_info$signups, function(memo, v, k) {
 					return memo || (v.steamid == env.user.steamid);
 				}, false);
-				env.$output({canSignUp : canSignUp && !signedUp});
-				env.$output({signedUp : signedUp});
+				var statusLabels = [
+					{value : seasons.STATUS_HIDDEN, label : "Hidden"},
+					{value : seasons.STATUS_SIGNUPS, label : "Signups"},
+					{value : seasons.STATUS_PLAYING, label : "Playing"},
+					{value : seasons.STATUS_FINISHED, label : "Finished"}
+				];
+
+				env.$output({
+					canSignUp : canSignUp && !signedUp,
+					signedUp : signedUp,
+					canEditSeason : canEdit,
+					statuses : statusLabels
+				});
 				after();
 			}
 		),
@@ -178,4 +226,10 @@ module.exports.init_routes = function(server) {
 		pre : ['default'],
 		post : ['default']
 	}, 'get');
+
+	server.add_route('/seasons/edit/:seasonid', {
+		fn : edit_season,
+		pre : ['default'],
+		post : ['default']
+	}, 'post');
 }

@@ -31,4 +31,18 @@
   <a href="/seasons/signup/{season_id}">Edit your signup</a>
 {/signedUp}
 
+{?canEditSeason}
+<h2>Edit Season</h2>
+<form action="/seasons/edit/{season_id}" method="post">
+Season name: <input type="text" name="name" value="{season_name}" /><br />
+Season status:
+<select name="status">
+  {#statuses}
+    <option value="{value}">{label}</option>
+  {/statuses}
+</select><br />
+<input type="submit" value="Update" />
+</form>
+{/canEditSeason}
+
 {>footer /}
