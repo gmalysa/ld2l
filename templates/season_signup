@@ -1,0 +1,43 @@
+{>header /}
+
+<h2>Signup for <a href="/seasons/{season_id}">{season_name}</a></h2>
+<form action="/seasons/signup/{season_id}" method="post">
+<table>
+  <tr><td>Name</td><td>{user.name}</td></tr>
+  <tr><td>Current medal</td><td>{medal}</td></tr>
+  <tr>
+    <td>Would you like to captain?</td>
+    <td>
+	  <input type="radio" name="captain" value="0" {@eq key=captain value="0"}checked{/eq} />
+	  No<br />
+	  <input type="radio" name="captain" value="1" {@eq key=captain value="1"}checked{/eq} />
+	  Yes<br />
+	  <input type="radio" name="captain" value="2" {@eq key=captain value="2"}checked{/eq} />
+	  If needed<br />
+    </td>
+  </tr>
+  <tr>
+    <td>
+	  Would you like to be a standin/free agent <b>only</b>?<br />
+	  Standins and free agents are not drafted at the start of the season.
+	</td>
+	<td>
+	  <input type="radio" name="standin" value="0" {@eq key=standin value="0"}checked{/eq} /> No<br />
+	  <input type="radio" name="standin" value="1" {@eq key=standin value="1"}checked{/eq} /> Yes
+	</td>
+  </tr>
+  <tr>
+    <td>Player statement</td>
+	<td><textarea rows="5" cols="50">{statement}</textarea></td>
+  </tr>
+  <tr>
+	{?editSignup}
+	  <td></td><td><input type="submit" value="Modify sign up" /></td>
+	{:else}
+      <td></td><td><input type="submit" value="Sign up" /></td>
+	{/editSignup}
+  </tr>
+</table>
+</form>
+
+{>footer /}

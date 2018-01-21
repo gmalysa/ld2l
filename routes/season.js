@@ -6,8 +6,10 @@ var fl = require('flux-link');
 var privs = require('../lib/privs.js');
 var db = require('db-filters');
 var _ = require('underscore');
+var request = require('request');
 
 var seasons = require('../lib/seasons.js');
+var users = require('../lib/users.js');
 
 /**
  * Helper chain that is used to check if someone has the ability to create seasons or not and sets
@@ -177,11 +179,61 @@ var season_create = new fl.Branch(
 /**
  * Show signup form, if a person is allowed to sign up
  */
-var show_signup_form = new fl.Chain(
-	// Dummy function to avoid crashes
+var show_signup_form = new fl.Branch(
+	privs.isLoggedIn,
+	new fl.Chain(
+		function(env, after) {
+			after(env.user.steamid);
+		},
+		privs.getPrivs,
+		function(env, after, userPrivs) {
+			var canSignUp = privs.hasPriv(userPrivs, privs.JOIN_SEASON);
+			var id = parseInt(env.req.params.seasonid);
+			if (isNaN(id)) {
+				env.$throw(new Error('Invalid season ID specified'));
+				return;
+			}
+
+			env.filters.seasons.select({id : id}).exec(after, env.$throw);
+		},
+		function(env, after, seasonInfo) {
+			if (seasons.STATUS_SIGNUPS != seasonInfo[0].status) {
+				env.$throw(new Error('This season is not currently accepting signups'));
+				return;
+			}
+
+			env.$output({
+				season_name : seasonInfo[0].name,
+				season_id : seasonInfo[0].id
+			});
+
+			env.filters.signups.select({
+				steamid : env.user.steamid,
+				season : seasonInfo[0].id
+			}).exec(after, env.$throw);
+		},
+		function(env, after, signup) {
+			if (signup.length > 0) {
+				// dust uses === comparison and requires strings, so convert numbers we have
+				env.$output({
+					statement : signup[0].statement,
+					captain : signup[0].captain+'',
+					standin : signup[0].standin+'',
+					editSignup : true
+				});
+			}
+
+			env.$template('season_signup');
+			after(env.user.id32);
+		},
+		users.getMedal,
+		function(env, after, medal) {
+			env.$output({medal : medal});
+			after();
+		}
+	),
 	function(env, after) {
-		env.$redirect('/seasons');
-		after();
+		env.$throw(new Error('You must be logged in to sign up'));
 	}
 );
 
@@ -215,7 +267,7 @@ module.exports.init_routes = function(server) {
 		post : ['default']
 	}, 'get');
 
-	server.add_route('/seasons/handle/:seasonid', {
+	server.add_route('/seasons/signup/:seasonid', {
 		fn : handle_signup_form,
 		pre : ['default'],
 		post : ['default']
