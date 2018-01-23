@@ -28,7 +28,7 @@
   </tr>
   <tr>
     <td>Player statement</td>
-	<td><textarea rows="5" cols="50">{statement}</textarea></td>
+	<td><textarea rows="5" cols="50" name="statement">{statement}</textarea></td>
   </tr>
   <tr>
 	{?editSignup}

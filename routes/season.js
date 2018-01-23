@@ -240,11 +240,76 @@ var show_signup_form = new fl.Branch(
 /**
  * Handle a signup form and send them back if it was incomplete
  */
-var handle_signup_form = new fl.Chain(
-	// Dummy function to avoid crashes
+var handle_signup_form = new fl.Branch(
+	privs.isLoggedIn,
+	new fl.Chain(
+		function(env, after) {
+			after(env.user.steamid);
+		},
+		privs.getPrivs,
+		function(env, after, userPrivs) {
+			var canSignUp = privs.hasPriv(userPrivs, privs.JOIN_SEASON);
+			if (!canSignUp)
+			{
+				env.$throw(new Error('You are not allowed to sign up for this season'));
+				return;
+			}
+
+			var id = parseInt(env.req.params.seasonid);
+			if (isNaN(id)) {
+				env.$throw(new Error('Invalid season ID specified'));
+				return;
+			}
+
+			env.filters.seasons.select({id : id}).exec(after, env.$throw);
+		},
+		function(env, after, seasonInfo) {
+			if (seasons.STATUS_SIGNUPS !== seasonInfo[0].status) {
+				env.$throw(new Error('This season is not currently accepting signups'));
+				return;
+			}
+
+			env.handle_signup$season = seasonInfo[0];
+			after(env.user.id32);
+		},
+		users.getMedal,
+		function(env, after, medal) {
+			env.handle_signup$medal = medal;
+			env.filters.signups.select({
+				steamid : env.user.steamid,
+				season : env.handle_signup$season.id
+			}).exec(after, env.$throw);
+		},
+		function(env, after, signup) {
+			if (signup.length > 0) {
+				env.filters.signups.update({
+					medal : env.handle_signup$medal,
+					statement : env.req.body.statement,
+					captain : parseInt(env.req.body.captain),
+					standin : parseInt(env.req.body.standin)
+				}, {
+					steamid : env.user.steamid,
+					season : env.handle_signup$season.id
+				}).exec(after, env.$throw);
+			}
+			else {
+				env.filters.signups.insert({
+					steamid : env.user.steamid,
+					season : env.handle_signup$season.id,
+					medal : env.handle_signup$medal,
+					statement : env.req.body.statement,
+					captain : parseInt(env.req.body.captain),
+					standin : parseInt(env.req.body.standin)
+				}).exec(after, env.$throw);
+			}
+		},
+		function(env, after) {
+			env.$redirect('/seasons/'+env.handle_signup$season.id);
+			after();
+		}
+	),
 	function(env, after) {
-		env.$redirect('/seasons');
-		after();
+		env.$throw(new Error('You must be logged in to sign up'));
 	}
 );
 
