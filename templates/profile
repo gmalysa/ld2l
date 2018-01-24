@@ -31,9 +31,9 @@
 	{/canLink}
 {:else}
 	No discord profile linked.
-	{?profileUser.canLink}
+	{?canLink}
 	  <a href="/auth/discord">Link discord ID</a>
-	{/profileUser.canLink}
+	{/canLink}
 {/profileUser.discord_name}
     </li>
   </ul>
