@@ -7,7 +7,7 @@ ECHO := @echo -e
 JSFLAGS := -m -c -r "$$,_"
 LESSFLAGS := --plugin=less-plugin-clean-css
 MDFLAGS := --parseImgDimensions --simplifiedAutoLink --excludeTrailingPunctuationFromURLs
-MDFLAGS += --strikethrough --tables --tasklists --simpleLineBreaks --emoji
+MDFLAGS += --strikethrough --tables --tasklists --emoji
 
 CLIENTDIR := $(shell pwd)/client
 STATICDIR := $(shell pwd)/static
@@ -53,7 +53,7 @@ endef
 define BUILD_MD
 $2 : $1 | $$(dir $2)
 	$(ECHO) "$(GREEN)[ MD ]$(NONE) $$(notdir $1)"
-	@$(SHOWDOWN) makehtml $(MDFLAGS) -i $1 -o $2
+	@$(SHOWDOWN) makehtml $(MDFLAGS) -i $1 -o $2 > /dev/null
 
 endef
 

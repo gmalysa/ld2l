@@ -3,5 +3,6 @@ node_modules/
 config.json
 static/css
 static/javascript
+static/markdown
 default.log
 database.json
