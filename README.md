@@ -6,11 +6,24 @@ You need to do some things manually for now
 * Install Node.js
 * Install MySQL
 
+## Global npm packages
+
+You need to have several packages installed globally to build the site (i.e. with `make`) for
+deployment:
+* uglifyjs
+* less
+* less-plugin-clean-css
+* showdown
+
+You need the db-migrate packages to create new db migrations (i.e. during development)
+* db-migrate
+* db-migrate-mysql
+
 ## Scripts
 
 These will install node dependencies and configure mysql for us, if you meet some prereqs:
 
-* Configure your local root mysql user to have no password, or used `mysql -u root -p` below
+* Configure your local root mysql user to have no password, or use `mysql -u root -p` below
 
 ```
 $ npm install
