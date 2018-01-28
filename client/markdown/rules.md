@@ -1,6 +1,6 @@
 # Learn Dota 2 League Rules
 
-This is a league for Herald 0 - Archon 5 (approximately 0-3.2k MMR, “Normal Skill” on Dotabuff) to play Dota in a competitive-style setting without pressure from 5k+ players as may be common in RD2L or other leagues. The goal is to learn about playing Dota in general and about playing in a competitive team-based setting. External coaching, review, and education based on the games is encouraged.
+This is a league for Herald 0 - Archon 5 (approximately 0-3.2k MMR, "Normal Skill" on Dotabuff) to play Dota in a competitive-style setting without pressure from 5k+ players as may be common in RD2L or other leagues. The goal is to learn about playing Dota in general and about playing in a competitive team-based setting. External coaching, review, and education based on the games is encouraged.
 
 ## General Season Rules
 
@@ -29,10 +29,10 @@ This is a league for Herald 0 - Archon 5 (approximately 0-3.2k MMR, “Normal Sk
 1. Matches are expected to start on time. If a team does not have enough players at start time, they should request a standin from the available pool of the same badge tier or lower than the unavailable player.
 
 2. Teams who opt to wait for a late player or who do not have their standin arranged on time will be given increasing draft penalties for the delayed game:
-> 5 minutes, -30 seconds
-> 5-15 minutes, -70 seconds
-> 15-25 minutes, -110 seconds
-> 25+ minutes, game is forfeited. If it is the first game in the series, both games are forfeited
+    > 5 minutes, -30 seconds  
+    > 5-15 minutes, -70 seconds  
+    > 15-25 minutes, -110 seconds  
+    > 25+ minutes, game is forfeited. If it is the first game in the series, both games are forfeited
 
 3. The winner of the in-game coin flip has choice of first pick, second pick, radiant, or dire.
 
@@ -71,7 +71,7 @@ All chat is permitted unless a captain requests no all chat in the lobby or at t
 
 4. Teammates and friends may not communicate through any means during a game. If you suspect there is an issue with this contact an admin for further investigation.
 
-5. “Official” or otherwise admin-sanctioned spectators are always permitted in broadcast slots unless it causes technical issues.
+5. "Official" or otherwise admin-sanctioned spectators are always permitted in broadcast slots unless it causes technical issues.
 
 6. If an official streamer or broadcaster is assigned to a series, penalties will not be applied if they are late or the reason that a match is delayed. You must, however, wait for them unless instructed otherwise. Contact an admin if your game is experiencing delays due to official broadcasters.
 
@@ -79,7 +79,7 @@ All chat is permitted unless a captain requests no all chat in the lobby or at t
 
 1. All players, if present, must be given the opportunity to play at least once in each series.
 
-2. If a player leaves a team, they may be permanently replaced by a Free Agent of the same “draft tier” following discussion with the admins.
+2. If a player leaves a team, they may be permanently replaced by a Free Agent of the same "draft tier" following discussion with the admins.
 
 3. Disbands, kicking players, and leaving teams are strongly discouraged and may result in being unvouched or losing captain permissions for future seasons, depending on circumstances.
 
@@ -88,7 +88,7 @@ Captains should submit a team name to admins and get it approved before the firs
 
 ## Graduation Rule
 
-The stated goal of LD2L for players to improve. In an ideal world, every league player would eventually move on to higher MMR leagues because they would get too good to stay. So we don’t want to punish people for improving. So every league player is allowed one “Graduation Season”. If a player climbs out of the badge range mid-season or between seasons, they are welcome to come back and play the following season as a one-time Graduation Exception to the badge limit. Graduation Exception players are highly encouraged to be Captains.
+The stated goal of LD2L for players to improve. In an ideal world, every league player would eventually move on to higher MMR leagues because they would get too good to stay. So we don’t want to punish people for improving. So every league player is allowed one "Graduation Season". If a player climbs out of the badge range mid-season or between seasons, they are welcome to come back and play the following season as a one-time Graduation Exception to the badge limit. Graduation Exception players are highly encouraged to be Captains.
 
 ## Additional Advice for Captains
 
