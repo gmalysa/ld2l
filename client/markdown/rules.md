@@ -29,10 +29,14 @@ This is a league for Herald 0 - Archon 5 (approximately 0-3.2k MMR, "Normal Skil
 1. Matches are expected to start on time. If a team does not have enough players at start time, they should request a standin from the available pool of the same badge tier or lower than the unavailable player.
 
 2. Teams who opt to wait for a late player or who do not have their standin arranged on time will be given increasing draft penalties for the delayed game:
-    > 5 minutes, -30 seconds  
-    > 5-15 minutes, -70 seconds  
-    > 15-25 minutes, -110 seconds  
-    > 25+ minutes, game is forfeited. If it is the first game in the series, both games are forfeited
+  |               |              |
+  | :------------ | -----------: |
+  | 5 minutes     | -30 seconds  |
+  | 5-15 minutes  | -70 seconds  |
+  | 15-25 minutes | -110 seconds |
+  | 25+ minutes   | forfeit      |
+
+  If it is the first game in the series, both games are forfeited
 
 3. The winner of the in-game coin flip has choice of first pick, second pick, radiant, or dire.
 
