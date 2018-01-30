@@ -9,19 +9,29 @@
   <script type="text/javascript" src="//underscorejs.org/underscore-min.js"></script>
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js">
   </script>
+  <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"
+    integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w"
+	crossorigin="anonymous" />
+  <link rel="stylesheet" href="{@url url="/static/css/ld2l.css" /}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-<ul>
-  <li>
-    {?user}
-      <img src="{user.avatar}" /> {user.name} <a href="/profile">[profile]</a>
-    {:else}
-      <a href="/auth/steam">Login</a>
-    {/user}
-  </li>
-  <li><a href="/rules">Rules</a></li>
-  <li><a href="/seasons">Seasons</a></li>
-  <li><a href="/teams">Teams</a></li>
-  <li><a href="/standings">Standings</a></li>
-</ul>
+<div class="ld2l-layout">
+  <div class="pure-menu ld2l-menu" id="menu">
+    <span class="pure-menu-heading">LD2L</span>
+    <ul class="pure-menu-list">
+      <li class="pure-menu-item">
+        {?user}
+          <img class="ld2l-steam-avatar" src="{user.avatar}" />
+          {user.name} <a href="/profile">[profile]</a><a href="/auth/logout">[logout]</a>
+        {:else}
+          <a href="/auth/steam"><img src="https://steamstore-a.akamaihd.net/public/shared/images/responsive/share_steam_logo.png" class="ld2l-steam-login" />Log in</a>
+        {/user}
+      </li>
+      <li class="pure-menu-item"><a href="/rules">Rules</a></li>
+      <li class="pure-menu-item"><a href="/seasons">Seasons</a></li>
+      <li class="pure-menu-item"><a href="/teams">Teams</a></li>
+      <li class="pure-menu-item"><a href="/standings">Standings</a></li>
+    </ul>
+  </div>

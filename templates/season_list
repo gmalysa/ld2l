@@ -1,25 +1,27 @@
 {>header /}
 
-<div>
-  <h2>Seasons</h2>
-  {?seasons}
-  	<table>
-	  <tr><th></th><th>Name</th><th>Status</th>
-    {#seasons}
-	  <tr>
-		<td>{id}</td>
-		<td><a href="/seasons/{id}">{name}</a></td>
-		<td>{@league_status status="{status}" /}</td>
-	  </tr>
-	{/seasons}
-	</table>
-  {:else}
-    No seasons have started yet.
+<h2>Seasons</h2>
+{?seasons}
+  <table class="pure-table pure-table-horizontal pure-table-striped">
+  <thead>
+    <tr><th></th><th>Name</th><th>Status</th>
+  </thead>
+  <tbody>
+  {#seasons}
+    <tr>
+      <td>{id}</td>
+      <td><a href="/seasons/{id}">{name}</a></td>
+      <td>{@league_status status="{status}" /}</td>
+    </tr>
   {/seasons}
-</div>
+  </tbody>
+</table>
+{:else}
+  <p>No seasons have started yet.</p>
+{/seasons}
 
 {?canCreateSeason}
-  <a href="/seasons/admin/create">Create new season</a>
+  <p><a href="/seasons/admin/create">Create new season</a></p>
 {/canCreateSeason}
 
 {>footer /}

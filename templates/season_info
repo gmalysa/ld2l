@@ -1,47 +1,57 @@
 {>header /}
 
-<div>
-  <h2>{season_name} Signups</h2>
-  {?signups}
-    <table>
-	  <tr>
-	    <th></th><th>Name</th><th>Medal</th><th>Captain?</th><th>Standin/FA?</th><th>Statement</th>
-	  </tr>
-	  {#signups}
-	  <tr>
-	    <td>{@counter/}</td>
-	    <td><a href="/profile/{steamid}">{name}</a></td>
-		<td>{medal}</td>
-		<td>{captain}</td>
-		<td>{standin}</td>
-		<td>{statement}</td>
-	  </tr>
-	  {/signups}
-	</table>
-  {:else}
-    Nobody has signed up yet.
+<h2>{season_name} Signups</h2>
+{?signups}
+  <table class="pure-table pure-table-horizontal pure-table-striped">
+  <thead>
+  <tr>
+    <th></th><th>Name</th><th>Medal</th><th>Captain?</th><th>Standin/FA?</th><th>Statement</th>
+  </tr>
+  </thead>
+  {#signups}
+  <tbody>
+  <tr>
+    <td>{@counter/}</td>
+    <td><a href="/profile/{steamid}">{name}</a></td>
+  <td>{medal}</td>
+  <td>{captain}</td>
+  <td>{standin}</td>
+  <td>{statement}</td>
+  </tr>
+  </tbody>
   {/signups}
-</div>
+</table>
+{:else}
+  <p>Nobody has signed up yet.</p>
+{/signups}
 
 {?canSignUp}
-  <a href="/seasons/signup/{season_id}">Sign up</a>
+  <p><a href="/seasons/signup/{season_id}">Sign up</a></p>
 {/canSignUp}
 
 {?signedUp}
-  <a href="/seasons/signup/{season_id}">Edit your signup</a>
+  <p><a href="/seasons/signup/{season_id}">Edit your signup</a></p>
 {/signedUp}
 
 {?canEditSeason}
 <h2>Edit Season</h2>
-<form action="/seasons/edit/{season_id}" method="post">
-Season name: <input type="text" name="name" value="{season_name}" /><br />
-Season status:
-<select name="status">
-  {#statuses}
-    <option value="{value}">{label}</option>
-  {/statuses}
-</select><br />
-<input type="submit" value="Update" />
+<form class="pure-form pure-form-aligned" action="/seasons/edit/{season_id}" method="post">
+<fieldset>
+<div class="pure-control-group">
+  <label for="name">Season name</label><input type="text" name="name" value="{season_name}" />
+</div>
+<div class="pure-control-group">
+  <label for="status">Season status</label>
+  <select name="status">
+    {#statuses}
+      <option value="{value}">{label}</option>
+    {/statuses}
+  </select>
+</div>
+<div class="pure-controls">
+  <input class="pure-button pure-button-primary" type="submit" value="Update" />
+</div>
+</fieldset>
 </form>
 {/canEditSeason}
 

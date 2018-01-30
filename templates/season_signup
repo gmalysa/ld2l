@@ -1,43 +1,56 @@
 {>header /}
 
 <h2>Signup for <a href="/seasons/{season_id}">{season_name}</a></h2>
-<form action="/seasons/signup/{season_id}" method="post">
-<table>
-  <tr><td>Name</td><td>{user.name}</td></tr>
-  <tr><td>Current medal</td><td>{medal}</td></tr>
-  <tr>
-    <td>Would you like to captain?</td>
-    <td>
-	  <input type="radio" name="captain" value="0" {@eq key=captain value="0"}checked{/eq} />
-	  No<br />
-	  <input type="radio" name="captain" value="1" {@eq key=captain value="1"}checked{/eq} />
-	  Yes<br />
-	  <input type="radio" name="captain" value="2" {@eq key=captain value="2"}checked{/eq} />
-	  If needed<br />
-    </td>
-  </tr>
-  <tr>
-    <td>
-	  Would you like to be a standin/free agent <b>only</b>?<br />
-	  Standins and free agents are not drafted at the start of the season.
-	</td>
-	<td>
-	  <input type="radio" name="standin" value="0" {@eq key=standin value="0"}checked{/eq} /> No<br />
-	  <input type="radio" name="standin" value="1" {@eq key=standin value="1"}checked{/eq} /> Yes
-	</td>
-  </tr>
-  <tr>
-    <td>Player statement</td>
-	<td><textarea rows="5" cols="50" name="statement">{statement}</textarea></td>
-  </tr>
-  <tr>
-	{?editSignup}
-	  <td></td><td><input type="submit" value="Modify sign up" /></td>
-	{:else}
-      <td></td><td><input type="submit" value="Sign up" /></td>
-	{/editSignup}
-  </tr>
-</table>
+<form class="pure-form pure-form-aligned" action="/seasons/signup/{season_id}" method="post">
+<fieldset>
+  <div class="pure-control-group">
+    <label for="username">Name</label>
+    <input type="text" name="username" value="{user.name}" readonly />
+  </div>
+  <div class="pure-control-group">
+    <label for="medal">Medal</label>
+    <input type="text" name="medal" value="{medal}" readonly />
+  </div>
+  <div class="pure-control-group">
+    <label for="captain">Would you like to captain?</label>
+    <label for="captain-0" class="pure-radio">
+      <input id="captain-0" type="radio" name="captain" value="0"
+        {@eq key=captain value="0"}checked{/eq} /> No
+    </label>
+    <label for="captain-1" class="pure-radio">
+      <input id="captain-1" type="radio" name="captain" value="1"
+        {@eq key=captain value="1"}checked{/eq} /> Yes
+    </label>
+    <label for="captain-2" class="pure-radio">
+      <input id="captain-2" type="radio" name="captain" value="2"
+        {@eq key=captain value="2"}checked{/eq} /> If needed
+    </label>
+  </div>
+  <div class="pure-control-group">
+    <label for="standin">Would you like to be a standin/free agent <b>only</b>?</label>
+    <label for="standin-0" class="pure-radio">
+      <input id="standin-0" type="radio" name="standin" value="0"
+        {@eq key=standin value="0"}checked{/eq} /> No
+    </label>
+    <label for="standin-1" class="pure-radio">
+      <input id="standin-1" type="radio" name="standin" value="1"
+        {@eq key=standin value="1"}checked{/eq} /> Yes
+    </label>
+	  <span class="pure-form-message-inline">Standins and free agents are not drafted at the start
+     {~n}of the season.</span>
+  </div>
+  <div class="pure-control-group">
+    <label for="statement">Player statement</label>
+    <textarea rows="5" cols="50" name="statement">{statement}</textarea>
+  </div>
+  <div class="pure-controls">
+    {?editSignup}
+      <input class="pure-button pure-button-primary" type="submit" value="Modify sign up" />
+    {:else}
+      <input class="pure-button pure-button-primary" type="submit" value="Sign up" />
+    {/editSignup}
+  </div>
+</fieldset>
 </form>
 
 {>footer /}
