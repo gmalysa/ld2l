@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>{?title}{title} - {/title}</title>
+  <title>{?title}{title} - {/title}Learn Dota 2 League</title>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/dustjs-linkedin/2.7.2/dust-core.min.js">
   </script>
   <script type="text/javascript" src="{@url url="/ui.js" /}"></script>
@@ -19,19 +19,23 @@
 <body>
 <div class="ld2l-layout">
   <div class="pure-menu ld2l-menu" id="menu">
-    <span class="pure-menu-heading">LD2L</span>
+    <div class="ld2l-menu-heading">LD2L</div>
     <ul class="pure-menu-list">
+	    <li class="pure-menu-item ld2l-menu-sep">
+        <a class="ld2l-menu-link" href="/">Home</a>
+      </li>
       <li class="pure-menu-item">
         {?user}
           <img class="ld2l-steam-avatar" src="{user.avatar}" />
           {user.name} <a href="/profile">[profile]</a><a href="/auth/logout">[logout]</a>
         {:else}
-          <a href="/auth/steam"><img src="https://steamstore-a.akamaihd.net/public/shared/images/responsive/share_steam_logo.png" class="ld2l-steam-login" />Log in</a>
+          <a class="ld2l-menu-link" href="/auth/steam"><img src="https://steamstore-a.akamaihd.net/public/shared/images/responsive/share_steam_logo.png" class="ld2l-steam-login" />Log in</a>
         {/user}
       </li>
-      <li class="pure-menu-item"><a href="/rules">Rules</a></li>
-      <li class="pure-menu-item"><a href="/seasons">Seasons</a></li>
-      <li class="pure-menu-item"><a href="/teams">Teams</a></li>
-      <li class="pure-menu-item"><a href="/standings">Standings</a></li>
+      <li class="pure-menu-item"><a class="ld2l-menu-link" href="/rules">Rules</a></li>
+      <li class="pure-menu-item"><a class="ld2l-menu-link" href="/seasons">Seasons</a></li>
+      <li class="pure-menu-item"><a class="ld2l-menu-link" href="/teams">Teams</a></li>
+      <li class="pure-menu-item"><a class="ld2l-menu-link" href="/standings">Standings</a></li>
     </ul>
   </div>
+  <div class="ld2l-content">

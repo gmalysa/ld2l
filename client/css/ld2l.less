@@ -1,13 +1,60 @@
+@primary-color: #364652;
+@secondary-color: #5a6771;
+@accent-1: #99d5c9;
+@accent-2: #6c969d;
+@accent-3: #645e9d;
+
+a, a:hover, a:visited, a:active {
+	color: @accent-3;
+}
+
 .ld2l-menu {
 	position: fixed;
 	width: 10em;
 	margin-left: -10em;
 	top: 0;
 	bottom: 0;
+	background-color: @primary-color;
+	color: @accent-2;
+}
+
+.ld2l-menu-heading {
+	font-size: 125%;
+	font-weight: 300;
+	color: #fff;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	padding-left: 1em;
+	padding-right: 1em;
+}
+
+.ld2l-menu li:hover {
+	background-color:  @secondary-color;
+}
+
+.ld2l-menu-sep {
+	border-top: solid 1px @accent-2;
+}
+
+.ld2l-menu a {
+	color: @accent-1;
+	text-decoration: none;
+}
+
+a.ld2l-menu-link {
+	display: block;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	padding-left: 1em;
+	padding-right: 1em;
 }
 
 .ld2l-layout {
 	padding-left: 10em;
+}
+
+.ld2l-content {
+	padding-left: 1em;
 }
 
 .ld2l-steam-login {
