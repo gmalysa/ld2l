@@ -45,9 +45,9 @@
   </div>
   <div class="pure-controls">
     {?editSignup}
-      <input class="pure-button pure-button-primary" type="submit" value="Modify sign up" />
+      <input class="pure-button ld2l-button-primary" type="submit" value="Modify sign up" />
     {:else}
-      <input class="pure-button pure-button-primary" type="submit" value="Sign up" />
+      <input class="pure-button ld2l-button-primary" type="submit" value="Sign up" />
     {/editSignup}
   </div>
 </fieldset>

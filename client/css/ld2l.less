@@ -6,6 +6,7 @@
 
 a, a:hover, a:visited, a:active {
 	color: @accent-3;
+	text-decoration: none;
 }
 
 .ld2l-menu {
@@ -16,6 +17,15 @@ a, a:hover, a:visited, a:active {
 	bottom: 0;
 	background-color: @primary-color;
 	color: @accent-2;
+
+	a:hover {
+		background-color:  @secondary-color;
+	}
+
+	a {
+		color: @accent-1;
+		text-decoration: none;
+	}
 }
 
 .ld2l-menu-heading {
@@ -28,17 +38,9 @@ a, a:hover, a:visited, a:active {
 	padding-right: 1em;
 }
 
-.ld2l-menu li:hover {
-	background-color:  @secondary-color;
-}
 
 .ld2l-menu-sep {
 	border-top: solid 1px @accent-2;
-}
-
-.ld2l-menu a {
-	color: @accent-1;
-	text-decoration: none;
 }
 
 a.ld2l-menu-link {
@@ -49,12 +51,9 @@ a.ld2l-menu-link {
 	padding-right: 1em;
 }
 
-.ld2l-layout {
-	padding-left: 10em;
-}
-
-.ld2l-content {
-	padding-left: 1em;
+.ld2l-steam {
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
 }
 
 .ld2l-steam-login {
@@ -67,6 +66,19 @@ a.ld2l-menu-link {
 	padding-right: 3px;
 }
 
+.ld2l-layout {
+	padding-left: 10em;
+}
+
+.ld2l-content {
+	padding-left: 1em;
+}
+
 .ld2l-priv-checkbox {
 	text-align: left;
+}
+
+.ld2l-button-primary {
+	background-color: @accent-3;
+	color: #fff;
 }

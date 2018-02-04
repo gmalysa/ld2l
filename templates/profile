@@ -54,7 +54,7 @@
       </div>
     {/privs}
     <div class="pure-controls">
-      <input type="button" class="pure-button pure-button-primary" type="submit"
+      <input type="button" class="pure-button ld2l-button-primary" type="submit"
         value="Update Privs" />
     </div>
   </fieldset>
