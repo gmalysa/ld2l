@@ -8,6 +8,7 @@ JSFLAGS := -m -c -r "$$,_"
 LESSFLAGS := --plugin=less-plugin-clean-css
 MDFLAGS := --parseImgDimensions --simplifiedAutoLink --excludeTrailingPunctuationFromURLs
 MDFLAGS += --strikethrough --tables --tasklists --emoji
+MDFLAGS += -e $(shell readlink -f ./lib/showdown-table.js)
 
 CLIENTDIR := $(shell pwd)/client
 STATICDIR := $(shell pwd)/static
