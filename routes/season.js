@@ -149,8 +149,9 @@ var season_info = new fl.Chain(
 			},
 			privs.getPrivs,
 			function (env, after, userPrivs) {
+				// @todo leave can sign up in the template for if we ban people
 				var canEdit = privs.hasPriv(userPrivs, privs.MODIFY_SEASON);
-				var canSignUp = privs.hasPriv(userPrivs, privs.JOIN_SEASON);
+				var canSignUp = true;
 				var signedUp = _.reduce(env.season_info$signups, function(memo, v, k) {
 					return memo || (v.steamid == env.user.steamid);
 				}, false);
