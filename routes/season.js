@@ -102,7 +102,29 @@ var season_info = new fl.Chain(
 	},
 	function(env, after, signups) {
 		env.season_info$signups = signups;
-		env.$output({signups : signups});
+		if (signups.length > 0) {
+			env.filters.privs.select({
+				steamid : signups.map(function(v, k) { return v.steamid; }),
+				priv : privs.JOIN_SEASON
+			}).exec(after, env.$throw);
+		}
+		else {
+			after([]);
+		}
+	},
+	function(env, after, allPrivs) {
+		var privTable = {};
+		allPrivs.forEach(function(v, k) {
+			privTable[v.steamid] = 1;
+		});
+		env.season_info$signups.forEach(function(v, k) {
+			if (privTable[v.steamid] !== undefined)
+				v.vouched = 1;
+			else
+				v.vouched = 0;
+		});
+
+		env.$output({signups : env.season_info$signups});
 		env.$template('season_info');
 		env.filters.seasons.select({
 			id : env.seasonId
@@ -183,11 +205,6 @@ var show_signup_form = new fl.Branch(
 	privs.isLoggedIn,
 	new fl.Chain(
 		function(env, after) {
-			after(env.user.steamid);
-		},
-		privs.getPrivs,
-		function(env, after, userPrivs) {
-			var canSignUp = privs.hasPriv(userPrivs, privs.JOIN_SEASON);
 			var id = parseInt(env.req.params.seasonid);
 			if (isNaN(id)) {
 				env.$throw(new Error('Invalid season ID specified'));
@@ -244,17 +261,6 @@ var handle_signup_form = new fl.Branch(
 	privs.isLoggedIn,
 	new fl.Chain(
 		function(env, after) {
-			after(env.user.steamid);
-		},
-		privs.getPrivs,
-		function(env, after, userPrivs) {
-			var canSignUp = privs.hasPriv(userPrivs, privs.JOIN_SEASON);
-			if (!canSignUp)
-			{
-				env.$throw(new Error('You are not allowed to sign up for this season'));
-				return;
-			}
-
 			var id = parseInt(env.req.params.seasonid);
 			if (isNaN(id)) {
 				env.$throw(new Error('Invalid season ID specified'));

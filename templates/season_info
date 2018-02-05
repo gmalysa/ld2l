@@ -5,7 +5,13 @@
   <table class="pure-table pure-table-horizontal pure-table-striped">
   <thead>
   <tr>
-    <th></th><th>Name</th><th>Medal</th><th>Captain?</th><th>Standin/FA?</th><th>Statement</th>
+    <th></th>
+	<th>Name</th>
+	<th>Medal</th>
+	<th>Captain?</th>
+	<th>Standin/FA?</th>
+	<th>Vouched?</th>
+	<th>Statement</th>
   </tr>
   </thead>
   {#signups}
@@ -16,6 +22,7 @@
   <td>{medal}</td>
   <td>{captain}</td>
   <td>{standin}</td>
+  <td>{vouched}</td>
   <td>{statement}</td>
   </tr>
   </tbody>
