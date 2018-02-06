@@ -11,7 +11,7 @@
     <tr>
       <td>{id}</td>
       <td><a href="/seasons/{id}">{name}</a></td>
-      <td>{@league_status status="{status}" /}</td>
+      <td>{status}</td>
     </tr>
   {/seasons}
   </tbody>

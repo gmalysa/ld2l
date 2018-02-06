@@ -51,7 +51,7 @@
   <label for="status">Season status</label>
   <select name="status">
     {#statuses}
-      <option value="{value}">{label}</option>
+      <option value="{value}" {@eq key=selected value="1"}selected{/eq}>{label}</option>
     {/statuses}
   </select>
 </div>

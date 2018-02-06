@@ -133,9 +133,11 @@ var season_info = new fl.Chain(
 
 	// Add season status
 	function(env, after, season) {
+		env.season_info$season = season[0];
 		env.$output({
 			season_name : season[0].name,
-			season_id : season[0].id
+			season_id : season[0].id,
+			season_status : season[0].status
 		});
 		after();
 	},
@@ -159,8 +161,16 @@ var season_info = new fl.Chain(
 					{value : seasons.STATUS_HIDDEN, label : "Hidden"},
 					{value : seasons.STATUS_SIGNUPS, label : "Signups"},
 					{value : seasons.STATUS_PLAYING, label : "Playing"},
+					{value : seasons.STATUS_DRAFTING, label : "Drafting"},
 					{value : seasons.STATUS_FINISHED, label : "Finished"}
 				];
+
+				statusLabels.forEach(function(v, k) {
+					if (v.value == env.season_info$season.status)
+						v.selected = '1';
+					else
+						v.selected = '0';
+				});
 
 				env.$output({
 					canSignUp : canSignUp && !signedUp,
