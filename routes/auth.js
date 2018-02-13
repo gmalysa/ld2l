@@ -8,6 +8,7 @@ var config = require('../config');
 var mysql = require('../mysql');
 
 var users = require('../lib/users.js');
+var privs = require('../lib/privs.js');
 
 var passport = require('passport');
 var steamStrategy = require('passport-steam');
@@ -94,6 +95,7 @@ passport.use(new discordStrategy({
 	discordChain.call(null, env, function() { done(null, profile) });
 }));
 
+// Add user info to each page's output whether logged in or not
 function addUserOutput(env, after) {
 	if (env.req.user && env.req.user.steamid) {
 		env.user = env.req.user;
@@ -101,6 +103,66 @@ function addUserOutput(env, after) {
 	}
 	after();
 }
+
+/**
+ * This requires that a user be logged in, typically used to gatekeep pages. It will generate
+ * an exception if nobody is logged in.
+ * @throws Error message about not being logged in
+ */
+var requireUser = new fl.Chain(
+	function(env, after) {
+		if (env.req.user && env.req.user.steamid) {
+			after(env.req.user.steamid);
+		}
+		else {
+			env.$throw(new Error('You must be logged in to access this page.'));
+		}
+	},
+	users.getUser,
+	function(env, after, user) {
+		if (null == user) {
+			env.$throw(
+				new Error('User object not found for logged in user--database may be corrupted')
+			);
+		}
+		else {
+			env.user = user;
+			after();
+		}
+	}
+);
+
+/**
+ * This loads a user's full information and privs if they're logged in, but does not cause an error
+ * otherwise
+ */
+var loadOptionalUser = new fl.Branch(
+	function(env, after) {
+		if (env.req.user && env.req.user.steamid) {
+			after(true);
+		}
+		else {
+			after(false);
+		}
+	},
+	new fl.Chain(
+		function(env, after) {
+			after(env.req.user.steamid);
+		},
+		users.getUser,
+		function(env, after, user) {
+			env.user = user;
+			after();
+		}
+	),
+	function(env, after) {
+		// A dummy user object--update lib/users to provide a "logged out" user for this
+		env.user = {
+			privs : []
+		};
+		after();
+	}
+);
 
 // Bind to provided express instance at init time
 module.exports.init_routes = function(common) {
@@ -129,4 +191,6 @@ module.exports.init_routes = function(common) {
 	);
 
 	common.add_pre_hook(fl.mkfn(addUserOutput, 0));
+	common.add_pre_hook(requireUser, 'require_user');
+	common.add_pre_hook(loadOptionalUser, 'optional_user');
 };
