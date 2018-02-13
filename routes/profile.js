@@ -78,47 +78,25 @@ function buildProfile(env, after) {
 	after();
 }
 
+/**
+ * Handlers: default, require_user
+ */
 var profile = new fl.Chain(
-	new fl.Branch(
-		privs.isLoggedIn,
-		new fl.Chain(
-			function(env, after) {
-				env.$push(env.user);
-				env.$push(env.user.steamid);
-				after();
-			},
-			privs.getPrivs,
-			function(env, after, userPrivs) {
-				// Same privs to display and view profile
-				env.$push(userPrivs);
-				env.$push(userPrivs);
-				after();
-			},
-			buildProfile
-		),
-		function(env, after) {
-			env.$redirect('/');
-			after();
-		}
-	)
+	function(env, after) {
+		env.$push(env.user);
+		env.$push(env.user.privs);
+		env.$push(env.user.privs);
+		after();
+	},
+	buildProfile
 );
 
+/**
+ * Handlers: default, optional_user
+ * @param[in] steamid ID of the profile to view, in any format
+ * @throws Exception if nobody with that ID has registered here yet
+ */
 var public_profile = new fl.Chain(
-	new fl.Branch(
-		privs.isLoggedIn,
-		new fl.Chain(
-			_pushSteamId,
-			privs.getPrivs,
-			function (env, after, viewerPrivs) {
-				env.userPrivs = viewerPrivs;
-				after();
-			}
-		),
-		function(env, after) {
-			env.userPrivs = [];
-			after();
-		}
-	),
 	function(env, after) {
 		after(env.req.params.steamid);
 	},
@@ -128,26 +106,33 @@ var public_profile = new fl.Chain(
 			env.$throw(new Error('Unable to find user matching this profile'));
 		}
 		else {
-			env.displayUser = displayUser;
-			env.$push(displayUser.steamid);
+			env.$push(displayUser);
+			env.$push(displayUser.privs);
+			env.$push(env.user.privs);
 			after();
 		}
-	},
-	privs.getPrivs,
-	function(env, after, displayPrivs) {
-		env.$push(env.displayUser);
-		env.$push(displayPrivs);
-		env.$push(env.userPrivs);
-		after();
 	},
 	buildProfile
 );
 
+/**
+ * Handlers: default, require_user
+ * @throws Exception if the logged in player is not allowed to vouch people
+ */
 var vouch = new fl.Chain(
 	function(env, after) {
 		after(env.req.params.steamid);
 	},
-	privs.vouchPlayer,
+	users.getUser,
+	function(env, after, player) {
+		if (null == player) {
+			env.$throw(new Error('This person hasn\'t registered yet and cannot be vouched'));
+		}
+		else {
+			after(env.user, player);
+		}
+	},
+	users.vouchUser,
 	function(env, after) {
 		env.$redirect('/profile/' + env.req.params.steamid);
 		after();
@@ -157,19 +142,19 @@ var vouch = new fl.Chain(
 module.exports.init_routes = function(server) {
 	server.add_route('/profile', {
 		fn : profile,
-		pre : ['default'],
+		pre : ['default', 'require_user'],
 		post : ['default']
 	}, 'get');
 
 	server.add_route('/profile/:steamid', {
 		fn : public_profile,
-		pre : ['default'],
+		pre : ['default', 'optional_user'],
 		post : ['default']
 	}, 'get');
 
 	server.add_route('/profile/:steamid/vouch', {
 		fn : vouch,
-		pre : ['default'],
+		pre : ['default', 'require_user'],
 		post : ['default']
 	}, 'get');
 }
