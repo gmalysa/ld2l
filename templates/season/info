@@ -1,36 +1,7 @@
 {>header /}
 
 <h2>{season_name} Signups</h2>
-{?signups}
-  <table class="pure-table pure-table-horizontal pure-table-striped">
-  <thead>
-  <tr>
-    <th></th>
-	<th>Name</th>
-	<th>Medal</th>
-	<th>Captain?</th>
-	<th>Standin/FA?</th>
-	<th>Vouched?</th>
-	<th>Statement</th>
-  </tr>
-  </thead>
-  <tbody>
-  {#signups}
-    <tr>
-      <td>{@counter/}</td>
-      <td><a href="/profile/{steamid}">{name}</a></td>
-      <td>{medal}</td>
-      <td>{captain}</td>
-      <td>{standin}</td>
-      <td>{vouched}</td>
-      <td>{statement}</td>
-    </tr>
-  {/signups}
-  </tbody>
-</table>
-{:else}
-  <p>Nobody has signed up yet.</p>
-{/signups}
+{>season_signups /}
 
 {?canSignUp}
   <p><a href="/seasons/signup/{season_id}">Sign up</a></p>
