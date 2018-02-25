@@ -9,6 +9,9 @@
   <script type="text/javascript" src="//underscorejs.org/underscore-min.js"></script>
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js">
   </script>
+  {#scripts}
+    <script type="text/javascript" src="{@url url="/static/javascript/{.}.js" /}"></script>
+  {/scripts}
   <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"
     integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w"
     crossorigin="anonymous" />
