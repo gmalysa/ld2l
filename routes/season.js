@@ -3,13 +3,13 @@
  */
 
 var fl = require('flux-link');
-var privs = require('../lib/privs.js');
 var db = require('db-filters');
 var _ = require('underscore');
 var request = require('request');
 
-var seasons = require('../lib/seasons.js');
+var privs = require('../lib/privs.js');
 var users = require('../lib/users.js');
+var seasons = require('../lib/seasons.js');
 
 /**
  * Helper chain that is used to check if someone has the ability to create seasons or not
@@ -82,60 +82,13 @@ var season_info = new fl.Chain(
 		}
 
 		env.seasonId = id;
-		env.filters.signups.select({season : id})
-			.left_join(env.filters.users, 'u')
-			.on(['steamid', 'steamid'])
-			.order(0, db.$asc('time'))
-			.exec(after, env.$throw);
+		after(id);
 	},
-	function(env, after, signups) {
-		env.season_info$signups = signups;
-		if (signups.length > 0) {
-			env.filters.privs.select({
-				steamid : signups.map(function(v, k) { return v.steamid; }),
-				priv : privs.JOIN_SEASON
-			}).exec(after, env.$throw);
-		}
-		else {
-			after([]);
-		}
-	},
-	function(env, after, allPrivs) {
-		var privTable = {};
-		allPrivs.forEach(function(v, k) {
-			privTable[v.steamid] = 1;
-		});
-		env.season_info$signups.forEach(function(v, k) {
-			if (privTable[v.steamid] !== undefined)
-				v.vouched = 1;
-			else
-				v.vouched = 0;
-		});
-
-		env.$output({signups : env.season_info$signups});
-		env.$template('season_info');
-		env.filters.seasons.select({
-			id : env.seasonId
-		}).exec(after, env.$throw);
-	},
-
-	// Add season status
-	function(env, after, season) {
-		env.season_info$season = season[0];
-		env.$output({
-			season_name : season[0].name,
-			season_id : season[0].id,
-			season_status : season[0].status
-		});
-		after();
-	},
-
-	// Check if they can sign up
-	function (env, after) {
-		// leave can sign up in the template for if we ban people
+	seasons.getSeason,
+	function (env, after, season) {
 		var canEdit = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
 		var canSignUp = true;
-		var signedUp = _.reduce(env.season_info$signups, function(memo, v, k) {
+		var signedUp = _.reduce(season.signups, function(memo, v, k) {
 			return memo || (v.steamid == env.user.steamid);
 		}, false);
 		var statusLabels = [
@@ -145,19 +98,23 @@ var season_info = new fl.Chain(
 			{value : seasons.STATUS_DRAFTING, label : "Drafting"},
 			{value : seasons.STATUS_FINISHED, label : "Finished"}
 		];
+		var isDrafting = (season.status == seasons.STATUS_DRAFTING);
 
 		statusLabels.forEach(function(v, k) {
-			if (v.value == env.season_info$season.status)
+			if (v.value == season.status)
 				v.selected = '1';
 			else
 				v.selected = '0';
 		});
 
+		env.$template('season_info');
 		env.$output({
 			canSignUp : canSignUp && !signedUp,
 			signedUp : signedUp,
 			canEditSeason : canEdit,
-			statuses : statusLabels
+			isDrafting : isDrafting,
+			statuses : statusLabels,
+			season : season
 		});
 		after();
 	}

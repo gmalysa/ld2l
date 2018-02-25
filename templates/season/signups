@@ -1,4 +1,4 @@
-{?signups}
+{?season.signups}
   <table class="pure-table pure-table-horizontal pure-table-striped">
   <thead>
   <tr>
@@ -12,7 +12,7 @@
   </tr>
   </thead>
   <tbody>
-  {#signups}
+  {#season.signups}
     <tr>
       <td>{@counter/}</td>
       <td><a href="/profile/{steamid}">{name}</a></td>
@@ -22,9 +22,9 @@
       <td>{vouched}</td>
       <td>{statement}</td>
     </tr>
-  {/signups}
+  {/season.signups}
   </tbody>
 </table>
 {:else}
   <p>Nobody has signed up yet.</p>
-{/signups}
+{/season.signups}

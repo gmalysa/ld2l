@@ -1,22 +1,26 @@
 {>header /}
 
-<h2>{season_name} Signups</h2>
-{>season_signups /}
+<h2>{season.name} Signups</h2>
+{?isDrafting}
+  {>season_draft_signups /}
+{:else}
+  {>season_signups /}
+{/isDrafting}
 
 {?canSignUp}
-  <p><a href="/seasons/signup/{season_id}">Sign up</a></p>
+  <p><a href="/seasons/signup/{season.id}">Sign up</a></p>
 {/canSignUp}
 
 {?signedUp}
-  <p><a href="/seasons/signup/{season_id}">Edit your signup</a></p>
+  <p><a href="/seasons/signup/{season.id}">Edit your signup</a></p>
 {/signedUp}
 
 {?canEditSeason}
 <h2>Edit Season</h2>
-<form class="pure-form pure-form-aligned" action="/seasons/edit/{season_id}" method="post">
+<form class="pure-form pure-form-aligned" action="/seasons/edit/{season.id}" method="post">
 <fieldset>
 <div class="pure-control-group">
-  <label for="name">Season name</label><input type="text" name="name" value="{season_name}" />
+  <label for="name">Season name</label><input type="text" name="name" value="{season.name}" />
 </div>
 <div class="pure-control-group">
   <label for="status">Season status</label>
