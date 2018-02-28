@@ -1,5 +1,8 @@
 {?season.signups}
-  <table class="pure-table pure-table-horizontal pure-table-striped">
+  <div id="draft-menu" class="pure-menu ld2l-draft-menu"></div>
+  <table class="pure-table pure-table-horizontal pure-table-striped"
+         data-season="{season.id}"
+		 id="draft-list">
   <thead>
   <tr>
     <th></th>
@@ -9,11 +12,22 @@
 	<th>Standin/FA?</th>
 	<th>Vouched?</th>
 	<th>Statement</th>
+	{?isDrafting}
+	  <th>Draftable</th>
+	{/isDrafting}
+	{?showTeams}
+	  <th>Team</th>
+	{/showTeams}
   </tr>
   </thead>
   <tbody>
   {#season.signups}
-    <tr>
+    <tr data-steamid="{steamid}"
+	    data-team="{teamid}"
+		data-captain="{captain}"
+		data-draftable="{draftable}"
+		data-freeagent="{free_agent}"
+		onclick="showMenu(this, event);">
       <td>{@counter/}</td>
       <td><a href="/profile/{steamid}">{name}</a></td>
       <td>{medal}</td>
@@ -21,6 +35,12 @@
       <td>{standin}</td>
       <td>{vouched}</td>
       <td>{statement}</td>
+	  {?isDrafting}
+	    <td>{draftable}</td>
+	  {/isDrafting}
+	  {?showTeams}
+	    <td>Team here</td>
+	  {/showTeams}
     </tr>
   {/season.signups}
   </tbody>

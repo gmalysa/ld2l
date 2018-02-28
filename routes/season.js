@@ -10,6 +10,7 @@ var request = require('request');
 var privs = require('../lib/privs.js');
 var users = require('../lib/users.js');
 var seasons = require('../lib/seasons.js');
+var teams = require('../lib/teams.js');
 
 /**
  * Helper chain that is used to check if someone has the ability to create seasons or not
@@ -113,8 +114,12 @@ var season_info = new fl.Chain(
 			signedUp : signedUp,
 			canEditSeason : canEdit,
 			isDrafting : isDrafting,
+			showTeams : false,
 			statuses : statusLabels,
-			season : season
+			season : season,
+			scripts : [
+				'draft'
+			]
 		});
 		after();
 	}
@@ -251,6 +256,48 @@ var handle_signup_form = new fl.Chain(
 	}
 );
 
+/**
+ * Ajax callback to create a new team with the given captain
+ */
+var create_team = new fl.Chain(
+	function(env, after) {
+		env.seasonId = parseInt(env.req.body.season);
+		if (isNaN(env.seasonId)) {
+			env.$throw(new Error('Invalid season ID specified'));
+			return;
+		}
+
+		env.steamid = env.req.body.steamid;
+		after(env.seasonId);
+	},
+	seasons.getSeason,
+	function(env, after, season) {
+		env.season = season;
+		env.foundPlayer = season.signups.reduce(function(memo, v) {
+			return memo || (v.steamid == env.steamid);
+		}, false);
+
+		if (!env.foundPlayer) {
+			env.$throw(new Error('Nobody with this steam ID signed up'));
+			return;
+		}
+
+		after(env.steamid);
+	},
+	users.getUser,
+	function(env, after, captain) {
+		after(env.user, captain, env.season.id);
+	},
+	teams.create,
+	function(env, after, team) {
+		env.$json({
+			name : team.name,
+			id : team.id,
+		});
+		after();
+	}
+).use_local_env(true);
+
 module.exports.init_routes = function(server) {
 	server.add_route('/seasons', {
 		fn : season_index,
@@ -284,6 +331,12 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/seasons/edit/:seasonid', {
 		fn : edit_season,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/seasons/new_team', {
+		fn : create_team,
 		pre : ['default', 'require_user'],
 		post : ['default']
 	}, 'post');

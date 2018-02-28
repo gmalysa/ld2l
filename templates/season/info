@@ -1,11 +1,7 @@
 {>header /}
 
 <h2>{season.name} Signups</h2>
-{?isDrafting}
-  {>season_draft_signups /}
-{:else}
-  {>season_signups /}
-{/isDrafting}
+{>season_signups /}
 
 {?canSignUp}
   <p><a href="/seasons/signup/{season.id}">Sign up</a></p>
