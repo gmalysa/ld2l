@@ -1,0 +1,31 @@
+{>header /}
+
+<h2>{season.name} Teams</h2>
+{?teams}
+  <table class="pure-table pure-table-horizontal pure-table-striped">
+    <thead>
+      <tr><th></th><th>Logo</th><th>Name</th><th>Tag</th><th>Captain</th></tr>
+    </thead>
+    <tbody>
+      {#teams}
+        <tr>
+          <td>{@counter/}</td>
+          <td>
+            {?teams_logo}
+              <img src="{teams_logo}" width="64" height="64" />
+            {:else}
+              No logo
+            {/teams_logo}
+          </td>
+          <td><a href="/teams/about/{teams_id}">{teams_name}</td>
+          <td>{teams_tag}</td>
+          <td><a href="/profile/{users_steamid}">{users_name}</a></td>
+         </tr>
+      {/teams}
+    </tbody>
+  </table>
+{:else}
+  <p>No teams have been created yet.</p>
+{/teams}
+
+{>footer /}
