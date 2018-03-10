@@ -1,0 +1,5 @@
+<p>
+  <img src="{avatar}" class="ld2l-steam-avatar" />
+  <a href="/profiles/{steamid}">{name}</a><br />
+  Medal {medal}
+</p>

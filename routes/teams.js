@@ -15,9 +15,31 @@ var team_info = new fl.Chain(
 	function(env, after) {
 		env.teamId = parseInt(env.req.params.teamid);
 		if (isNaN(env.teamId)) {
+			env.$throw(new Error('A team ID must be given.'));
+			return;
 		}
+
+		after(env.teamId);
+	},
+	teams.get,
+	function(env, after, team) {
+		env.team = team;
+		env.filters.seasons.select({id : team.seasonid})
+			.exec(after, env.$throw);
+	},
+	function(env, after, season) {
+		// @todo admins can also update in the future
+		var isCaptain = teams.isCaptain(env.team, env.user);
+
+		env.$template('teams_about');
+		env.$output({
+			team : env.team,
+			season : season[0],
+			canUpdate : isCaptain
+		});
+		after();
 	}
-);
+).use_local_env(true);
 
 /**
  * Get all the teams in the given season

@@ -1,0 +1,22 @@
+{>header /}
+
+<h2>{team.name}</h2>
+{! @todo make this played/playing based on season status for high quality polish !}
+<p>Played in <a href="/seasons/{season.id}">{season.name}</a></p>
+
+<h3>Captain</h3>
+{#team.captain}
+  {>roster_card /}
+{/team.captain}
+
+<h3>Roster</h3>
+{#team.players}
+  {>roster_card /}
+{:else}
+  <p>Nobody has been drafted to this team yet</p>
+{/team.players}
+
+<h3>Matches</h3>
+<p>Match listing will go here with links to specifics.</p>
+
+{>footer /}
