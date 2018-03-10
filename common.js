@@ -154,8 +154,6 @@ function add_dust_helpers(helpers) {
  * @param path Directory to load routing modules from
  */
 function load_routes(path) {
-	logger.info('Loading routes from '+path.yellow, 'Common');
-
 	var that = this;
 	var files = fs.readdirSync(path);
 	_.each(files, function(v) {
@@ -163,10 +161,13 @@ function load_routes(path) {
 			return;
 
 		fs.stat(path+'/'+v, function(err, stats) {
-			if (stats.isDirectory())
+			if (stats.isDirectory()) {
 				that.load_routes(path+'/'+v);
-			else
+			}
+			else {
 				require('./'+path+'/'+v.replace(/\.js$/, '')).init_routes(that);
+				logger.info('Loading route '+(path+'/'+v).yellow, 'Common');
+			}
 		});
 	});
 }
