@@ -134,7 +134,11 @@ var vouch = new fl.Chain(
 	},
 	users.vouchUser,
 	function(env, after) {
-		env.$redirect('/profile/' + env.req.params.steamid);
+		// When called from ajax don't redirect
+		if (env.req.accepts('json'))
+			env.$json({success : true});
+		else
+			env.$redirect('/profile/' + env.req.params.steamid);
 		after();
 	}
 );

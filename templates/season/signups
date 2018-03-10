@@ -27,6 +27,7 @@
 		data-captain="{captain}"
 		data-draftable="{draftable}"
 		data-freeagent="{free_agent}"
+		data-vouched="{vouched}"
 		onclick="showMenu(this, event);">
       <td>{@counter/}</td>
       <td><a href="/profile/{steamid}">{name}</a></td>

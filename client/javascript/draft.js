@@ -1,6 +1,6 @@
 function createTeam(season, steamid) {
 	console.log('Creating new team in season '+season+' run by '+steamid);
-	var row = $('tr[data-steamid="'+steamid+'"]')[0];
+//	var row = $('tr[data-steamid="'+steamid+'"]')[0];
 
 	$.ajax({
 		url : '/seasons/new_team',
@@ -13,6 +13,19 @@ function createTeam(season, steamid) {
 	}).done(function(data, status, xhr) {
 		console.log(data);
 		console.log(status);
+	});
+}
+
+function vouch(steamid) {
+	$.ajax({
+		url : '/profile/'+steamid+'/vouch',
+		method : 'GET',
+		dataType : 'json'
+	}).done(function(data, status, xhr) {
+		if (data.success) {
+			var row = $('tr[data-steamid="'+steamid+'"]')[0];
+			row.dataset.vouched = "1";
+		}
 	});
 }
 
@@ -45,6 +58,13 @@ function showMenu(elem, event) {
 	var seasonId = $('#draft-list')[0].dataset.season;
 	var menu = $('#draft-menu');
 	menu.html('');
+
+	if ("0" == elem.dataset.vouched) {
+		menu.append('<li class="pure-menu-item">' +
+				    '<a href="#"' +
+				    '    onclick="vouch(\''+elem.dataset.steamid+'\');"' +
+				    '    class="ld2l-menu-link">Vouch</a></li>');
+	}
 
 	if ("0" == elem.dataset.team) {
 		menu.append('<li class="pure-menu-item">' +
