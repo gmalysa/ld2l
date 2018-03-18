@@ -35,7 +35,10 @@
         {?user}
           <div class="ld2l-steam">
             <img class="ld2l-steam-avatar" src="{user.avatar}" />
-            {user.name} <a href="/profile">[profile]</a><a href="/auth/logout">[logout]</a>
+            <div class="ld2l-steam-user">
+			  {user.name}<br />
+			  <a href="/profile">[profile]</a><a href="/auth/logout">[logout]</a>
+			</div>
           </div>
         {:else}
           <a class="ld2l-menu-link" href="/auth/steam"><img src="https://steamstore-a.akamaihd.net/public/shared/images/responsive/share_steam_logo.png" class="ld2l-steam-login" />Log in</a>
