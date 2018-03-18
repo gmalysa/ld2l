@@ -28,9 +28,10 @@
         <a class="ld2l-menu-link" href="/">Home</a>
       </li>
       <li class="pure-menu-item"><a class="ld2l-menu-link" href="/rules">Rules</a></li>
-      <li class="pure-menu-item"><a class="ld2l-menu-link" href="/seasons">Seasons</a></li>
-      <li class="pure-menu-item"><a class="ld2l-menu-link" href="/teams">Teams</a></li>
-      <li class="pure-menu-item"><a class="ld2l-menu-link" href="/standings">Standings</a></li>
+      <li class="pure-menu-item"><a class="ld2l-menu-link" href="/seasons">Past Seasons</a></li>
+	  {#sidebar_seasons}
+	    {>sidebar_season_item /}
+	  {/sidebar_seasons}
       <li class="pure-menu-item ld2l-menu-sep">
         {?user}
           <div class="ld2l-steam">

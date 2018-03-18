@@ -1,0 +1,28 @@
+<li class="pure-menu-item ld2l-menu-sep">
+  <div class="ld2l-menu-item">{name}</div>
+</li>
+
+{! signups !}
+{@eq key=status value=1}
+<li class="pure-menu-item">
+    <a class="ld2l-menu-link" href="/seasons/{id}">Signups</a>
+</li>
+{/eq}
+{! drafting !}
+{@eq key=status value=4}
+<li class="pure-menu-item">
+  <a class="ld2l-menu-link" href="/seasons/{id}">Draft</a>
+</li>
+<li class="pure-menu-item">
+  <a class="ld2l-menu-link" href="/teams/{id}">Teams</a>
+</li>
+{/eq}
+{! playing !}
+{@eq key=status value=2}
+<li class="pure-menu-item">
+    <a class="ld2l-menu-link" href="/teams/{id}">Teams</a>
+</li>
+<li class="pure-menu-item">
+    <a class="ld2l-menu-link" href="/schedule/{id}">Schedule</a>
+</li>
+{/eq}

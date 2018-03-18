@@ -298,7 +298,27 @@ var create_team = new fl.Chain(
 	}
 ).use_local_env(true);
 
+var sidebar_seasons = new fl.Chain(
+	function(env, after) {
+		env.filters.seasons.select({
+			status : [
+				seasons.STATUS_SIGNUPS,
+				seasons.STATUS_PLAYING,
+				seasons.STATUS_DRAFTING
+			]
+		}).exec(after, env.$throw);
+	},
+	function(env, after, seasons) {
+		env.$output({
+			'sidebar_seasons' : seasons
+		});
+		after();
+	}
+);
+
 module.exports.init_routes = function(server) {
+	server.add_pre_hook(sidebar_seasons, 'default');
+
 	server.add_route('/seasons', {
 		fn : season_index,
 		pre : ['default', 'optional_user'],
