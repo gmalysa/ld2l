@@ -1,32 +1,56 @@
 # Learn Dota 2 League Rules
 
-This is a league for Herald 0 - Archon 5 (approximately 0-3.2k MMR, "Normal Skill" on Dotabuff) to play Dota in a competitive-style setting without pressure from 5k+ players as may be common in RD2L or other leagues. The goal is to learn about playing Dota in general and about playing in a competitive team-based setting. External coaching, review, and education based on the games is encouraged.
+This is a league for Herald 0 - Legend 3 (approximately "Normal Skill" and "High Skill" on Dotabuff) to play Dota in a competitive-style setting without pressure from 5k+ players as may be common in RD2L or other leagues. The goal is to learn about playing Dota in general and about playing in a competitive team-based setting. External coaching, review, and education based on the games is encouraged.
 
-## General Season Rules
 
-1. Signups end on January 12th, captains will be notified and confirmed on the 13th, and the draft will take place live on Discord and stream on the 14th.
+## Draft Rules
 
-2. Regular season games are played in a best-of-2 (bo2) format on Sundays at 5 PM EST, starting January 21
+1. Signups are handled via the league website using your Steam account.
 
-3. Matches may be rescheduled if both captains agree. If no other agreement is reached, the default time is binding.
+2. In order to be draft-eligible or be added to the Free Agent or Standin lists, players must have a current badge of Legend 3 or below at the time of the draft (except those covered by the Graduation Rule), and their behavior must be vouched by a previous league participant. Vouching most commonly happens via inhouse games during the signup period.
 
-4. The regular season will be 7 weeks long (January 21 - March 11) with play proceeding in a round robin fashion.
+3. Draft-eligibility for vouched players will be determined by signup date, on a first-come first-served basis. Remaining signups will compose the Free Agent pool.
 
-5. Playoff matches will be in a best-of-3 (bo3) format for the top four teams by wins over the regular season. Consolation playoff brackets for other teams are voluntary. Ties will be broken first by head-to-head result, and then a bo1 tiebreaker match.
+4. Each team will have 6 fixed players consisting of a Captain and 5 drafted players. The Captain is responsible for all official communication with the admins and other Captains.
 
-6. Playoff games will be played on Sunday, March 18th and Sunday, March 25th at 5 PM EDT. If necessary, the tiebreaker for playoff spots will be played sometime before the first playoff date (by Captain and Admin arrangement).
+7. Draft order will be determined for each round by the average badge of the partially-drafted teams, lowest to highest.
 
-7. Each team has 6 fixed players consisting of a Captain and 5 players drafted before the season. The Captain is responsible for all official communication with the admins and other Captains.
+8. For the purposes of the draft, all Heralds and Guardians will count toward draft order as if they were Crusader 0. 
 
-8. All players must have a current in-game badge of Archon 5 or below at the time of the draft (January 14) except those covered by the Graduation Rule.
+9. Players who sign up and are vouched mid-season may be added to the Free Agent and Standin lists. Players may not join the Free Agent or Standin list during a season in which they were drafted. 
 
-9. Round robin schedule will be posted at the start of the season. The playoff bracket will be posted by the Monday after the regular season in order to give teams time to prepare.
 
-10. Results, standings, and other administrative information will be maintained on Discord and the website.
+## Regular Season Rules
+
+1. Regular season matches are played in a best-of-2 (bo2) format on Sundays at 5 PM Eastern on the USEast server.
+
+2. Matches may be played on another server if both captains agree. If no other agreement is reached, the match should be played on the default server. Alternate server matches must be confirmed to the League Admins by both Captains via Discord.
+
+3. Matches may be rescheduled if both captains agree. If no other agreement is reached, the default time is binding. Reschedules must be confirmed to the League Admins by both Captains via Discord.
+
+4. Rescheduled matches may be completed earlier in the week of a scheduled match, or no later than 24 hours after the default time.
+
+5. Regular season schedule will be posted via the website and Discord on the Monday following the Draft.
+
+6. Each won game in a match is worth a point toward playoff seeding. Wins by forfeit count as wins for playoff qualifying purposes. Byes count for no points.
+
+
+
+## Playoff Rules
+
+1. Playoff matches are played in a best-of-3 (bo3) format on Sundays at 5 PM Eastern on the USEast server.
+
+2. Reschedule/alternate server/result reporting rules are the same for the playoffs as for the regular season.
+
+3. The single-elimination playoff bracket will be posted the Monday after the conclusion of the regular season.
+
+4. Ties for playoff seeding will be settled first by head-to-head record, then by a bo1 tiebreaker match to be played during the week between the regular season and playoffs.
+
+
 
 ## Match Rules
 
-1. Matches are expected to start on time. If a team does not have enough players at start time, they should request a standin from the available pool of the same badge tier or lower than the unavailable player.
+1. Matches are expected to start on time. If a team does not have enough players at start time, they should request a standin from the available pool of the same badge tier or lower than the unavailable player. Players from other teams may not stand in.
 
 2. Teams who opt to wait for a late player or who do not have their standin arranged on time will be given increasing draft penalties for the delayed game:
   | Delay         | Draft Penalty |
@@ -47,23 +71,24 @@ This is a league for Herald 0 - Archon 5 (approximately 0-3.2k MMR, "Normal Skil
 6. In the playoffs, should a third game be necessary, a new coin flip determines who has choice in the third game.
 
 7. A team may not use more than one standin for each game. If a team only has 3 players present they must forfeit the game or series.
-All chat is permitted unless a captain requests no all chat in the lobby or at the start of the match.
 
-8. Bad manners, including but not limited to excessive flaming, harassment, racism, sexism, or other discrimination, are not permitted in or out of game, and punishment will be decided on a case by case basis ranging from individual warnings to being removed (even mid season).
+8. All-chat is permitted unless a captain requests no all-chat in the lobby or at the start of the match.
 
-9. Each team is permitted up to ten minutes of pause time (up to 20 total) for technical or connectivity issues. A pause may be initiated at any time outside of an ongoing teamfight, and a succinct explanation of the reason provided in all chat (regardless of all chat allowance). BM pauses, tactical pauses, etc. are not permitted and will be dealt with on a case-by-case basis.
+9. Bad manners, including but not limited to excessive flaming, harassment, racism, sexism, or other discrimination, are not permitted in or out of game, and punishment will be decided on a case by case basis ranging from individual warnings to being removed (even mid season).
 
-10. Resuming from a pause is permitted once both teams have acknowledged they are ready to continue. If the team that did not initiate the pause is not ready to continue, their pause time is used for the remaining duration.
+10. Each team is permitted up to ten minutes of pause time (up to 20 total) for technical or connectivity issues. A pause may be initiated at any time outside of an ongoing teamfight, and a succinct explanation of the reason provided in all chat (regardless of all chat allowance). BM pauses, tactical pauses, etc. are not permitted and will be dealt with on a case-by-case basis.
 
-11. If a team does not have pause time remaining, the match may be unpaused at any time. If pause is abused after time has expired to continue delaying the game, an admin will determine if a forfeit loss is to be awarded. If an admin is not in the lobby, the game should be played to conclusion (if possible) and will be reviewed afterwards.
+11. Resuming from a pause is permitted once both teams have acknowledged they are ready to continue. If the team that did not initiate the pause is not ready to continue, their pause time is used for the remaining duration.
 
-12. If a player disconnects before first blood and cannot reconnect, the game can be remade with a fresh draft replacing the disconnected player. Suspected abuse of this rule will be dealt with on a case-by-case basis.
+12. If a team does not have pause time remaining, the match should be unpaused at that time. If pause is abused after time has expired to continue delaying the game, an admin will determine if a forfeit loss is to be awarded. If an admin is not in the lobby, the game should be played to conclusion (if possible) and will be reviewed afterwards.
 
-13. Match results must be reported on Discord in the \#results channel, including a screenshot of the score screen for each game in a series unless a forfeit was recorded. Results should be confirmed by both team captains.
+13. If a player disconnects before first blood and cannot reconnect, the game can be remade with a fresh draft replacing the disconnected player. Suspected abuse of this rule will be dealt with on a case-by-case basis.
 
-14. Each won game in a match is worth a point toward qualifying for the playoffs. Wins by forfeit count as wins for playoff qualifying purposes. Byes count for no points.
+14. Match results must be reported on Discord in the \#results channel, including a screenshot of the score screen for each game in a series unless a forfeit was recorded. Results should be confirmed by both team captains.
 
-15. Replay files must be uploaded for matches played to https://drive.google.com/open?id=0B6Dv_pNnNg88LWFnbkNkWDdJUjg, within 2 days of the series. Replays must include name of teams and game number in the series.
+15. Results, standings, and other administrative information will be maintained on Discord and the website.
+
+
 
 ## Broadcast and Spectating
 
@@ -71,13 +96,15 @@ All chat is permitted unless a captain requests no all chat in the lobby or at t
 
 2. Spectators, including broadcast slots, are permitted at captain discretion for friends.
 
-3. Teammates are always permitted to spectate in game or use a broadcast slot for games they are not playing in.
+3. Teammates are always permitted to spectate in game by using a broadcast slot for games they are not playing in.
 
 4. Teammates and friends may not communicate through any means during a game. If you suspect there is an issue with this contact an admin for further investigation.
 
 5. "Official" or otherwise admin-sanctioned spectators are always permitted in broadcast slots unless it causes technical issues.
 
 6. If an official streamer or broadcaster is assigned to a series, penalties will not be applied if they are late or the reason that a match is delayed. You must, however, wait for them unless instructed otherwise. Contact an admin if your game is experiencing delays due to official broadcasters.
+
+
 
 ## Team Rules
 
@@ -88,7 +115,9 @@ All chat is permitted unless a captain requests no all chat in the lobby or at t
 3. Disbands, kicking players, and leaving teams are strongly discouraged and may result in being unvouched or losing captain permissions for future seasons, depending on circumstances.
 
 4. There are no player trades, swaps, or package deals.
-Captains should submit a team name to admins and get it approved before the first week of matches.
+
+5. Captains should submit a team name to admins and get it approved before the first week of matches.
+
 
 ## Graduation Rule
 
