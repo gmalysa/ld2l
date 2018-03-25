@@ -1,0 +1,34 @@
+{>header /}
+
+{?edit}
+<h2>Edit news</h2>
+  <form class="pure-form pure-form-aligned" action="/news/edit/{id}" method="post">
+    <input type="hidden" value="{id}" name="id" />
+{:else}
+<h2>Post news</h2>
+  <form class="pure-form pure-form-aligned" action="/news/edit/0" method="post">
+{/edit}
+<fieldset>
+  <div class="pure-control-group">
+    <label for="title">Title</label>
+	<input type="text" name="title" value="{title}" />
+  </div>
+  <div class="pure-control-group">
+    <label for="content">Body</label>
+	<textarea rows="20" cols="50" name="content">{content}</textarea>
+  </div>
+  <div class="pure-controls">
+    {?edit}
+      <input class="pure-button ld2l-button-primary" type="submit" value="Save" />
+	  {~n}{~n}
+	  <a href="/news/delete/{id}">
+	    <input class="pure-button ld2l-button-secondary" type="button" value="Delete" />
+	  </a>
+	{:else}
+      <input class="pure-button ld2l-button-primary" type="submit" value="Post" />
+	{/edit}
+  </div>
+</fieldset>
+</form>
+
+{>footer /}

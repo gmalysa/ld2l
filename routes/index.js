@@ -3,15 +3,26 @@
  */
 
 var fs = require('fs');
+var db = require('db-filters');
+var fl = require('flux-link');
+
+var news = require('../lib/news');
 
 /**
  * Just show the main page
  */
-function index(env, after) {
-	env.$template('index');
-	env.$output({title : 'Learn Dota 2 League'});
-	after();
-}
+var index = new fl.Chain(
+	news.getLatest,
+	function(env, after, newsList) {
+		env.$template('index');
+		env.$output({
+			title : 'Learn Dota 2 League',
+			news : newsList,
+			canEdit : news.canEdit(env.user)
+		});
+		after();
+	}
+);
 
 /**
  * Show the generated rules content
@@ -35,13 +46,13 @@ function rules(env, after) {
 module.exports.init_routes = function(server) {
 	server.add_route('/', {
 		fn : index,
-		pre : ['default'],
+		pre : ['default', 'optional_user'],
 		post : ['default']
 	}, 'get');
 
 	server.add_route('/rules', {
 		fn : rules,
-		pre : ['default'],
+		pre : ['default', 'optional_user'],
 		post : ['default']
 	}, 'get');
 };

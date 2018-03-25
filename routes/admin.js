@@ -34,6 +34,12 @@ var loadPrivs = new fl.Chain(
 			steamid : env.user.steamid,
 			priv : privs.VOUCH
 		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.privs.insert({
+			steamid : env.user.steamid,
+			priv : privs.POST_NEWS
+		}).exec(after, env.$throw);
 	}
 );
 

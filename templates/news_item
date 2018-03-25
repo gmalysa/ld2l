@@ -1,0 +1,9 @@
+<h3 class="ld2l-news-title"><a href="/news/{id}">{title}</a></h3>
+<div class="ld2l-news-info">
+  Posted on <span class="ld2l-news-date">{posted}</span>{~n}
+  by <a class="ld2l-news-author" href="/profile/{steamid}">{name}</a>
+  {?canEdit}
+  {~n}[<a href="/news/edit/{id}">Edit</a>]
+  {/canEdit}
+</div>
+<div class="ld2l-news">{content|s|md}</div>

@@ -80,6 +80,23 @@ migrations.up().then(function() {
 	logger.info('Finished running db migrations', 'db-migrate');
 });
 
+// Initialize showdown, the markdown converter for various content on the site
+// These settings should match those specified in the makefile
+var showdown = require('showdown');
+var showdown_converter = new showdown.Converter({
+	parseImgDimensions : true,
+	simplifiedAutoLink : true,
+	excludeTrailingPunctuationFromURLs : true,
+	strikethrough : true,
+	tables : true,
+	tasklists : true,
+	emoji : true
+});
+function dust_markdown_filter(value) {
+	return showdown_converter.makeHtml(value);
+}
+
+
 // Initialize express
 var server = express();
 _.each(config.set, function(v, k) {
@@ -123,6 +140,7 @@ var ci = new common.init(server, {
 // Add helpers and hooks
 ci.add_pre_hook(fl.mkfn(init_db, 0));
 ci.add_post_hook(fl.mkfn(cleanup_db, 0));
+ci.add_dust_filters({md : dust_markdown_filter});
 
 // Finally!
 logger.module_init(mod_name, mod_version, 'ld2l online');
