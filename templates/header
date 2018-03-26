@@ -22,7 +22,10 @@
 <body>
 <div class="ld2l-layout">
   <div class="pure-menu ld2l-menu" id="menu">
-    <div class="ld2l-menu-heading">LD2L</div>
+    <div class="ld2l-menu-heading">
+	  <img class="ld2l-logo" src="/static/images/ld2l-logo.png" />
+	  {~n}<div class="ld2l-title">LD2L</div>
+	</div>
     <ul class="pure-menu-list">
       <li class="pure-menu-item ld2l-menu-sep">
         <a class="ld2l-menu-link" href="/">Home</a>
