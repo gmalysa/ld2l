@@ -16,11 +16,16 @@ var discordStrategy = require('passport-discord');
 
 // Passport basic config
 passport.serializeUser(function(user, done) {
-	done(null, user);
+	done(null, user.steamid);
 });
 
-passport.deserializeUser(function(obj, done) {
-	done(null, obj);
+passport.deserializeUser(function(steamid, done) {
+	var env = new fl.Environment();
+	env.steamid = steamid;
+
+	steamChain.call(null, env, function() {
+		done(null, env.user);
+	});
 });
 
 /**
@@ -36,13 +41,24 @@ function init_db(env, after) {
 	});
 }
 
+function cleanup_db(env, after) {
+	if (env.conn)
+		env.conn.release();
+	after();
+}
+
 // Load or create a user entry
 var steamChain = new fl.Chain(
 	init_db,
 	function(env, after) {
-		after(env.profile.id);
+		after(env.steamid);
 	},
-	users.addUser
+	users.addUser,
+	function(env, after, user) {
+		env.user = user;
+		after();
+	},
+	cleanup_db
 );
 
 // Set up passport for steam login info
@@ -54,11 +70,10 @@ passport.use(new steamStrategy({
 	logger.info('Received steam ID: ' +id, 'Steam');
 
 	var env = new fl.Environment();
-	env.profile = profile;
+	env.steamid = profile.id;
 
-	steamChain.call(null, env, function(user) {
-		env.user = user;
-		done(null, user);
+	steamChain.call(null, env, function() {
+		done(null, env.user);
 	});
 }));
 
@@ -74,7 +89,8 @@ var discordChain = new fl.Chain(
 		}, {
 			steamid : env.user.steamid
 		}).exec(after, env.$throw);
-	}
+	},
+	cleanup_db
 );
 
 // Set up passport to link discord profile to existing steam account

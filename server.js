@@ -114,14 +114,14 @@ server.use(function(req, res, next) {
 
 // Configure middleware that runs before route handlers
 server.use(config.static_path, express.static(config.static_dir));
-server.use(bodyParser.urlencoded({extended : false}));
-server.use(bodyParser.json());
 // server.use(cookieParser());
 server.use(expressSession({
 	secret : config.session_secret,
 	resave : false,
 	saveUninitialized : false
 }));
+server.use(bodyParser.urlencoded({extended : false}));
+server.use(bodyParser.json());
 server.use(passport.initialize());
 server.use(passport.session());
 
