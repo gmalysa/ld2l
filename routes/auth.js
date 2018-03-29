@@ -71,6 +71,7 @@ passport.use(new steamStrategy({
 
 	var env = new fl.Environment();
 	env.steamid = profile.id;
+	env.profile = profile;
 
 	steamChain.call(null, env, function() {
 		done(null, env.user);
