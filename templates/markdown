@@ -1,5 +1,5 @@
 {>header /}
 
-{rules|s}
+{content|s}
 
 {>footer /}

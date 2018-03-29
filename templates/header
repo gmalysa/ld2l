@@ -30,6 +30,7 @@
       <li class="pure-menu-item ld2l-menu-sep">
         <a class="ld2l-menu-link" href="/">Home</a>
       </li>
+      <li class="pure-menu-item"><a class="ld2l-menu-link" href="/about">About</a></li>
       <li class="pure-menu-item"><a class="ld2l-menu-link" href="/rules">Rules</a></li>
       <li class="pure-menu-item"><a class="ld2l-menu-link" href="/seasons">Past Seasons</a></li>
 	  {#sidebar_seasons}
