@@ -241,6 +241,7 @@ var handle_signup_form = new fl.Chain(
 		}
 		else {
 			env.filters.signups.insert({
+				time : db.$now(),
 				steamid : env.user.steamid,
 				season : env.handle_signup$season.id,
 				medal : env.handle_signup$medal,
