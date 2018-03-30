@@ -1,6 +1,14 @@
 {>header /}
 
 <h2>{season.name} Signups</h2>
+{?canSignUp}
+  <p><a href="/seasons/signup/{season.id}">Sign up</a></p>
+{/canSignUp}
+
+{?signedUp}
+  <p><a href="/seasons/signup/{season.id}">Edit your signup</a></p>
+{/signedUp}
+
 {>season_signups /}
 
 {?canSignUp}
