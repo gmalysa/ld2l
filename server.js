@@ -47,8 +47,10 @@ function init_db(env, after) {
  * Cleans up the database connection
  */
 function cleanup_db(env, after) {
-	if (env.conn)
+	if (env.conn) {
 		env.conn.release();
+		delete env.conn;
+	}
 	after();
 }
 
@@ -139,7 +141,7 @@ var ci = new common.init(server, {
 
 // Add helpers and hooks
 ci.add_pre_hook(fl.mkfn(init_db, 0));
-ci.add_post_hook(fl.mkfn(cleanup_db, 0));
+ci.add_finally_hook(fl.mkfn(cleanup_db, 0));
 ci.add_dust_filters({md : dust_markdown_filter});
 
 // Finally!

@@ -32,12 +32,16 @@ function init(server, options) {
 	// Initialize hook chains
 	this.pre_hooks = {};
 	this.post_hooks = {};
+	this.finally_hooks = {};
 	var hook = new fl.Chain();
 	hook.name = 'default';
 	this.pre_hooks.default = hook;
 	hook = new fl.Chain();
 	hook.name = 'default';
 	this.post_hooks.default = hook;
+	hook = new fl.Chain();
+	hook.name = 'default';
+	this.finally_hooks.default = hook;
 
 	// dustjs-linkedin template and routing configuration
 	this.load_dust_templates(this.options.template_dir, this.options.client_prefix);
@@ -180,7 +184,7 @@ function load_routes(path) {
  */
 function add_route(path, handler, verb) {
 	verb = verb || 'get';
-	this.server[verb].call(this.server, path, this.create_route(handler.fn, handler.pre, handler.post));
+	this.server[verb].call(this.server, path, this.create_route(handler));
 }
 
 /**
@@ -224,6 +228,19 @@ function add_pre_hook(fn, name) {
 function add_post_hook(fn, name) {
 	name = name || 'default';
 	var hooks = get_chain(this.post_hooks, name);
+	hooks.push(fn);
+}
+
+/**
+ * Adds a function to the finally chain, which is executed regardless of whether an
+ * exception was caught or not (contrast with post hooks which will not execute in the
+ * event of an exception
+ * @param fn The function to add to the finally chain
+ * @param name The name of the finally chain, optional, defaults to 'default'
+ */
+function add_finally_hook(fn, name) {
+	name = name || 'default';
+	var hooks = get_chain(this.finally_hooks, name);
 	hooks.push(fn);
 }
 
@@ -279,15 +296,16 @@ function prepare_env(req, res, options) {
 
 /**
  * Receives a routed request from express, calls the pre_hooks chain, then the user
- * callback, and then the post_hooks chain, and finally the output handler.
- * @param cb The user-defined callback, as a Chain or mkfn() output
- * @param pre Array of pre-hook chain names to include, in order. Defaults to ['default']
- * @param post Array of post-hook chain names to include, in order. Defaults to ['default']
+ * callback, then the post_hooks chain, then the finally chain, and finally the output handler.
+ * @param[in] handler Dictionary of handler definitions including cb, the callback;
+ *            pre, an array of pre-chains; post, an array of post-chains; and finally,
+ *            an array of finally-chains
  */
-function create_route(cb, pre, post) {
+function create_route(handler) {
 	// Default values in case pre and post hooks were omitted
-	pre = pre || ['default'];
-	post = post || ['default'];
+	var pre = handler.pre || ['default'];
+	var post = handler.post || ['default'];
+	var fin = handler.finally || ['default'];
 
 	// Map names to chains for hooks
 	pre = pre.map(function(v, k) {
@@ -296,13 +314,23 @@ function create_route(cb, pre, post) {
 	post = post.map(function(v, k) {
 		return get_chain(this.post_hooks, v);
 	}, this);
+	fin = fin.map(function(v, k) {
+		return get_chain(this.finally_hooks, v);
+	}, this);
 
 	// Create a single array with all of the appropriate hooks and handlers in place
-	var handlers = pre.concat([cb], post);
+	var handlers = pre.concat([handler.fn], post);
 	var handler_chain = new fl.Chain(handlers);
 	handler_chain.set_exception_handler(handle_global_error);
-	handler_chain.set_bind_after_env(true);
 	handler_chain.name = 'Common Route Handler';
+
+	// Create the finally chain, which could still have an exception thrown (...), so
+	// defend against that and guarantee that we make it to finish
+	var finally_chain = new fl.Chain([handler_chain].concat(fin));
+	finally_chain.set_exception_handler(handle_global_error);
+	finally_chain.set_bind_after_env(true);
+	finally_chain.name = 'Route Safety Wrapper';
+
 	var finish = this.finish.bind(this);
 	finish.name = 'finish';
 
@@ -310,7 +338,7 @@ function create_route(cb, pre, post) {
 	var that = this;
 	return function(req, res) {
 		var env = prepare_env(req, res, that.options);
-		handler_chain.call(null, env, finish);
+		finally_chain.call(null, env, finish);
 	};
 }
 
@@ -516,6 +544,7 @@ _.extend(init.prototype, {
 	add_dust_helpers			: add_dust_helpers,
 	shutdown					: shutdown,
 	add_pre_hook				: add_pre_hook,
+	add_finally_hook            : add_finally_hook,
 	add_post_hook				: add_post_hook,
 	create_route				: create_route,
 	load_routes					: load_routes,
