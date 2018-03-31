@@ -100,6 +100,7 @@ var season_info = new fl.Chain(
 			{value : seasons.STATUS_FINISHED, label : "Finished"}
 		];
 		var isDrafting = (season.status == seasons.STATUS_DRAFTING);
+		var scripts = [];
 
 		statusLabels.forEach(function(v, k) {
 			if (v.value == season.status)
@@ -108,22 +109,43 @@ var season_info = new fl.Chain(
 				v.selected = '0';
 		});
 
+		if (isDrafting) {
+			scripts.push('draft');
+		}
+
+		env.season = season;
 		env.$template('season_info');
 		env.$output({
-			canSignUp : canSignUp && !signedUp,
-			signedUp : signedUp,
+			canSignUp : canSignUp && !signedUp && !isDrafting,
+			signedUp : signedUp && !isDrafting,
 			canEditSeason : canEdit,
 			isDrafting : isDrafting,
 			showTeams : false,
 			statuses : statusLabels,
 			season : season,
-			scripts : [
-				'draft'
-			]
+			scripts : scripts
 		});
 		after();
-	}
-);
+	},
+	new fl.Branch(
+		function(env, after) {
+			after(env.season.status == seasons.STATUS_DRAFTING);
+		},
+		new fl.Chain(
+			function(env, after) {
+				after(env.season.id);
+			},
+			teams.getAllTeams,
+			function(env, after, teams) {
+				env.$output({teams : teams});
+				after();
+			}
+		),
+		function(env, after) {
+			after();
+		}
+	)
+).use_local_env(true);
 
 /**
  * Create a season

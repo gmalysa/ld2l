@@ -1,8 +1,13 @@
 {?season.signups}
+{?isDrafting}
   <div id="draft-menu" class="pure-menu ld2l-draft-menu"></div>
-  <table class="pure-table pure-table-horizontal pure-table-striped"
-         data-season="{season.id}"
-		 id="draft-list">
+  <div class="pure-g">
+    <div class="pure-u-2-3">
+{/isDrafting}
+<table class="pure-table pure-table-horizontal pure-table-striped"
+       data-season="{season.id}"
+	   data-edit="{canEditSeason}"
+       id="draft-list">
   <thead>
   <tr>
     <th></th>
@@ -10,14 +15,12 @@
 	<th>Medal</th>
 	<th>Captain?</th>
 	<th>Standin/FA?</th>
-	<th>Vouched?</th>
+	{! <th>Vouched?</th> !}
 	<th>Statement</th>
 	{?isDrafting}
 	  <th>Draftable</th>
 	{/isDrafting}
-	{?showTeams}
-	  <th>Team</th>
-	{/showTeams}
+	<th>Team</th>
   </tr>
   </thead>
   <tbody>
@@ -28,20 +31,19 @@
 		data-draftable="{draftable}"
 		data-freeagent="{free_agent}"
 		data-vouched="{vouched}"
+		data-standin="{standin}"
 		onclick="showMenu(this, event);">
       <td>{@counter/}</td>
       <td><a href="/profile/{steamid}">{name}</a></td>
       <td>{medal}</td>
       <td>{captain}</td>
       <td>{standin}</td>
-      <td>{vouched}</td>
+      {! <td>{vouched}</td> !}
       <td>{statement}</td>
 	  {?isDrafting}
-	    <td>{draftable}</td>
+	    <td id="draftable">{draftable}</td>
 	  {/isDrafting}
-	  {?showTeams}
-	    <td>Team here</td>
-	  {/showTeams}
+	  <td id="team">{teamid}</td>
     </tr>
   {/season.signups}
   </tbody>
@@ -49,3 +51,46 @@
 {:else}
   <p>Nobody has signed up yet.</p>
 {/season.signups}
+
+{?isDrafting}
+  </div>
+  <div class="pure-u-1-3">
+	<div id="draft-teams">
+	  <h3>Current Teams</h3>
+<table class="pure-table pure-table-horizontal pure-table-striped">
+  <thead>
+    <tr>
+	  <th>Name</th>
+	  <th>Captain</th>
+	  <th>Players</th>
+	  <th>Avg. Medal</th>
+	</tr>
+  </thead>
+  <tbody>
+    {#teams}
+      <tr>
+	    <td><a href="/teams/{id}">{name}</a></td>
+		<td>{captain.name}</td>
+		<td id="team-{id}-count">{players.length}</td>
+		<td id="team-{id}-medal">{medal}</td>
+	  </tr>
+    {/teams}
+  </tbody>
+</table>
+	</div>
+
+    <div>
+	  <h3>Draft Order - <span id="draft-round">Not Started</span></h3>
+	  <ul id="draft-order">
+	  </ul>
+	</div>
+
+    <div class="ld2l-draft-log">
+	  <h3>Draft Log</h3>
+        <ul id="draft-log">
+        </ul>
+	</div>
+  </div>
+</div>
+
+{/isDrafting}

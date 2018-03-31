@@ -39,6 +39,16 @@
 </div>
 </fieldset>
 </form>
+
+{?isDrafting}
+<a href="/draft/start/{season.id}">
+  <input class="pure-button ld2l-button-primary" type="button" value="Start Draft" />
+</a>
+{~n}
+<a href="/draft/next/{season.id}">
+  <input class="pure-button ld2l-button-primary" type="button" value="Next Round" />
+</a>
+{/isDrafting}
 {/canEditSeason}
 
 {>footer /}

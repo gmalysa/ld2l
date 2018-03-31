@@ -16,12 +16,18 @@ require('dustjs-helpers');
 var fs = require('fs');
 var fl = require('flux-link');
 
+// Attach socket.io to http server inside express
+var http = require('http');
+var sio = require('socket.io');
+
 // Load other common modules that we will handle
 var logger = require('./logger');
 
 /**
  * Initialization routine takes an express server instance and a list of options
  * and then configures things
+ * @param[in] server Express server object
+ * @param[in] options Dictionary of options and values
  */
 function init(server, options) {
 	var that = this;
@@ -65,8 +71,16 @@ function init(server, options) {
 	// Add shutdown method as our SIGINT handler
 	process.on('SIGINT', this.shutdown.bind(this));
 
-	// Finally, listen for express connections
-	server.listen(options.port);
+	// Finally, listen connections
+	var localServer = http.Server(server);
+
+	localServer.listen(options.port);
+	this.io = sio(localServer);
+//	this.options.shutdown.push({
+//		fn : this.io.close,
+//		ctx : this.io
+//	});
+
 	logger.module_init(mod_name, mod_version, 'Express server listening on port '+options.port);
 }
 
