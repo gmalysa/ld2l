@@ -91,7 +91,7 @@ function vouch(steamid) {
 	$.ajax({
 		url : '/profile/'+steamid+'/vouch',
 		method : 'GET',
-		dataType : 'json'
+		accepts : 'application/json'
 	}).done(function(data, status, xhr) {
 		if (data.success) {
 			var row = $('tr[data-steamid="'+steamid+'"]')[0];
