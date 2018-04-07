@@ -44,21 +44,21 @@
 {?showPrivs}
 <div class="pure-u-1-3">
   <h2>Privs</h2>
-  <form class="pure-form"  action="" method="post">
+  <form class="pure-form"  action="/profile/{profileUser.steamid}/priv" method="post">
   <fieldset>
     {#privs}
       <div class="pure-control-group">
         <label for="{name}" class="pure-checkbox ld2l-priv-checkbox">
-          <input type="checkbox" {?has}checked="checked"{/has} name="{name}" /> {label}
+          <input type="checkbox"
+		         {?has}checked="checked"{/has}
+				 name="{name}"
+				 onclick="changePriv(this, '{profileUser.steamid}', {id});" /> {label}
         </label>
       </div>
     {/privs}
-    <div class="pure-controls">
-      <input type="button" class="pure-button ld2l-button-primary" type="submit"
-        value="Update Privs" />
-    </div>
   </fieldset>
   </form>
+  <div id="priv-update"></div>
 </div>
 {/showPrivs}
 

@@ -33,9 +33,13 @@ function buildProfile(env, after) {
 	var displayUser = env.$pop();
 	var showPrivs = privs.hasPriv(viewPrivs, privs.VIEW_PRIVS);
 	var canLink = false;
+	var scripts = [];
 
 	if (env.user && env.user.steamid == displayUser.steamid)
 		canLink = true;
+
+	if (showPrivs)
+		scripts.push('profile');
 
 	env.$template('profile');
 	env.$output({
@@ -47,30 +51,36 @@ function buildProfile(env, after) {
 		vouched : privs.hasPriv(userPrivs, privs.JOIN_SEASON),
 		canVouch : canVouch(viewPrivs, userPrivs),
 		canLink : canLink,
+		scripts : scripts,
 		privs : [
 			{
 				name : 'modify_account',
 				has : privs.hasPriv(userPrivs, privs.MODIFY_ACCOUNT),
+				id : privs.MODIFY_ACCOUNT,
 				label : 'Modify accounts'
 			},
 			{
 				name : 'modify_season',
 				has : privs.hasPriv(userPrivs, privs.MODIFY_SEASON),
+				id : privs.MODIFY_SEASON,
 				label : 'Modify seasons'
 			},
 			{
 				name : 'join_season',
 				has : privs.hasPriv(userPrivs, privs.JOIN_SEASON),
+				id : privs.JOIN_SEASON,
 				label : 'Vouched'
 			},
 			{
 				name : 'view_privs',
 				has : privs.hasPriv(userPrivs, privs.VIEW_PRIVS),
+				id : privs.VIEW_PRIVS,
 				label : 'View privs'
 			},
 			{
 				name : 'vouch',
 				has : privs.hasPriv(userPrivs, privs.VOUCH),
+				id : privs.VOUCH,
 				label : 'Vouch'
 			}
 		]
@@ -143,6 +153,42 @@ var vouch = new fl.Chain(
 	}
 );
 
+/**
+ * Add or remove a single priv when the box is checked
+ */
+var change_priv = new fl.Chain(
+	function(env, after) {
+		after(env.req.params.steamid);
+	},
+	users.getUser,
+	new fl.Branch(
+		function(env, after, player) {
+			if (null == player) {
+				env.$throw(new Error('This person hasn\'t registered and cannot have privs changed'));
+			}
+			else {
+				after('1' == env.req.body.value);
+			}
+		},
+		new fl.Chain(
+			function(env, after) {
+				after(env.req.params.steamid, env.req.body.priv);
+			},
+			privs.addPriv
+		),
+		new fl.Chain(
+			function(env, after) {
+				after(env.req.params.steamid, env.req.body.priv);
+			},
+			privs.removePriv
+		)
+	),
+	function(env, after) {
+		env.$json({success : true});
+		after();
+	}
+);
+
 module.exports.init_routes = function(server) {
 	server.add_route('/profile', {
 		fn : profile,
@@ -161,4 +207,10 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'require_user'],
 		post : ['default']
 	}, 'get');
+
+	server.add_route('/profile/:steamid/priv', {
+		fn : change_priv,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
 }
