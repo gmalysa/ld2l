@@ -82,6 +82,12 @@ function buildProfile(env, after) {
 				has : privs.hasPriv(userPrivs, privs.VOUCH),
 				id : privs.VOUCH,
 				label : 'Vouch'
+			},
+			{
+				name : 'news',
+				has : privs.hasPriv(userPrivs, privs.POST_NEWS),
+				id : privs.POST_NEWS,
+				label : 'Post News',
 			}
 		]
 	});
