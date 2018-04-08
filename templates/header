@@ -10,6 +10,7 @@
   <script type="text/javascript" src="//underscorejs.org/underscore-min.js"></script>
   <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js">
   </script>
+  <script type="text/javascript" src="{@url url="/static/javascript/menu.js" /}"></script>
   {#scripts}
     <script type="text/javascript" src="{@url url="/static/javascript/{.}.js" /}"></script>
   {/scripts}
@@ -21,7 +22,8 @@
 </head>
 
 <body>
-<div class="ld2l-layout">
+<div id="ld2l-layout">
+  <a href="#menu" id="menu-link" class="menu-link"><span></span></a>
   <div class="pure-menu ld2l-menu" id="menu">
     <div class="ld2l-menu-heading">
 	  <img class="ld2l-logo" src="/static/images/ld2l-logo.png" />
