@@ -1,3 +1,14 @@
+<style>
+.ld2l-news-title {
+    text-shadow: 5px 5px #f0f0f5;
+    border-bottom: 2px solid #d0d0e1;
+}
+.ld2l-news {
+    background-color: #f0f0f5;
+    padding: 3%;
+    border-radius: 15px;
+}
+</style>
 <h2 class="ld2l-news-title"><a href="/news/{id}">{title}</a></h2>
 <div class="ld2l-news-info">
   Posted on <span class="ld2l-news-date">{posted}</span>{~n}
