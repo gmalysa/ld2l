@@ -69,7 +69,7 @@
   <tbody>
     {#teams}
       <tr>
-	    <td><a href="/teams/{id}">{name}</a></td>
+	    <td><a href="/teams/about/{id}">{name}</a></td>
 		<td>{captain.name}</td>
 		<td id="team-{id}-count">{players.length}</td>
 		<td id="team-{id}-medal">{medal}</td>
