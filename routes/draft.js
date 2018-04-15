@@ -74,7 +74,15 @@ function Draft(season) {
 	this.room.on('connect', function(socket) {
 		socket.emit('log', that.log);
 		socket.emit('round', that.round);
-		that.sendDrafters();
+		socket.emit('clearDrafters');
+
+		that.drafters.forEach(function(v) {
+			socket.emit('drafter', {
+				name : v.captain.name,
+				steamid : v.captain.steamid,
+				drafted : v.drafted
+			});
+		});
 	});
 
 	this.start();
@@ -119,6 +127,7 @@ Draft.prototype.startRound = function(round) {
 	this.teams.forEach(function(v, k) {
 		that.addDrafter(v.captain);
 	});
+	this.sendDrafters();
 
 	this.round = round;
 	this.logEvent('<b>Round '+round+'</b> started!');
@@ -135,8 +144,6 @@ Draft.prototype.addDrafter = function(captain) {
 		captain : captain,
 		drafted : false
 	});
-
-	this.sendDrafters();
 }
 
 /**

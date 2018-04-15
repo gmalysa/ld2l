@@ -14,11 +14,11 @@
     <th></th>
 	<th>Name</th>
 	<th>M</th>
-	<th>C?</th>
-	<th>S?</th>
-	<th>V?</th>
 	{?isDrafting}
-	  <th>D</th>
+	{:else}
+	  <th>C?</th>
+	  <th>S?</th>
+	  <th>V?</th>
 	{/isDrafting}
 	<th>T</th>
 	<th>Statement</th>
@@ -33,15 +33,18 @@
 		data-freeagent="{free_agent}"
 		data-vouched="{vouched}"
 		data-standin="{standin}"
+		{@gt key=teamid value="0"}
+		  class="drafted"
+		{/gt}
 		onclick="showMenu(this, event);">
       <td>{@counter/}</td>
       <td><a href="/profile/{steamid}">{name}</a></td>
       <td>{medal}</td>
-      <td>{captain}</td>
-      <td>{standin}</td>
-      <td>{vouched}</td>
 	  {?isDrafting}
-	    <td id="draftable">{draftable}</td>
+	  {:else}
+        <td>{captain}</td>
+        <td>{standin}</td>
+        <td>{vouched}</td>
 	  {/isDrafting}
 	  <td id="team">{teamid}</td>
       <td>{statement}</td>

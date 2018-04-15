@@ -40,10 +40,10 @@ $(window).load(function() {
 	});
 
 	draft.socket.on('drafted', function(data) {
-		// For now set the teamid to nonzero value to make them "drafted"
 		$('#drafter-'+data.steamid).wrap('<s></s>');
-		$('tr[data-steamid="'+data.drafted+'"]')[0].dataset.team = 1;
+		$('tr[data-steamid="'+data.drafted+'"]')[0].dataset.team = data.team;
 		$('tr[data-steamid="'+data.drafted+'"] > #team').html(data.team);
+		$('tr[data-steamid="'+data.drafted+'"]').addClass('drafted');
 	});
 });
 
