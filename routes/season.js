@@ -113,6 +113,10 @@ var season_info = new fl.Chain(
 			scripts.push('draft');
 		}
 
+		season.signups.forEach(function(v, k) {
+			v.linear_medal = users.adjustMedal(v.medal);
+		});
+
 		env.season = season;
 		env.$template('season_info');
 		env.$output({

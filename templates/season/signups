@@ -14,6 +14,7 @@
     <th></th>
 	<th>Name</th>
 	<th>M</th>
+	<th>L</th>
 	{?isDrafting}
 	{:else}
 	  <th>C?</th>
@@ -40,6 +41,7 @@
       <td>{@counter/}</td>
       <td><a href="/profile/{steamid}">{name}</a></td>
       <td>{medal}</td>
+	  <td>{linear_medal}</td>
 	  {?isDrafting}
 	  {:else}
         <td>{captain}</td>
