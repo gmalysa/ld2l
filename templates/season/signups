@@ -16,11 +16,11 @@
 	<th></th>
 	<th>M</th>
 	<th>L</th>
+	<th>S?</th>
+	<th>V?</th>
 	{?isDrafting}
 	{:else}
 	  <th>C?</th>
-	  <th>S?</th>
-	  <th>V?</th>
 	{/isDrafting}
 	<th>T</th>
 	<th>Statement</th>
@@ -47,11 +47,11 @@
       </td>
       <td>{medal}</td>
 	  <td>{linear_medal}</td>
+      <td>{standin}</td>
+      <td>{vouched}</td>
 	  {?isDrafting}
 	  {:else}
         <td>{captain}</td>
-        <td>{standin}</td>
-        <td>{vouched}</td>
 	  {/isDrafting}
 	  <td id="team">{teamid}</td>
       <td>{statement}</td>
