@@ -13,6 +13,7 @@
   <tr>
     <th></th>
 	<th>Name</th>
+	<th></th>
 	<th>M</th>
 	<th>L</th>
 	{?isDrafting}
@@ -40,6 +41,10 @@
 		onclick="showMenu(this, event);">
       <td>{@counter/}</td>
       <td><a href="/profile/{steamid}">{name}</a></td>
+	  <td>
+	    <a href="https://www.dotabuff.com/players/{id32}">DB</a><br />
+        <a href="https://www.opendota.com/players/{id32}">OD</a>
+      </td>
       <td>{medal}</td>
 	  <td>{linear_medal}</td>
 	  {?isDrafting}
