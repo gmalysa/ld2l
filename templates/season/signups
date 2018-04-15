@@ -1,10 +1,11 @@
 {?season.signups}
 {?isDrafting}
   <div id="draft-menu" class="pure-menu ld2l-draft-menu"></div>
-  <div class="pure-g">
-    <div class="pure-u-2-3">
+  <div class="ld2l-g">
+    <div class="ld2l-block">
+	  <h3>Current Players</h3>
 {/isDrafting}
-<table class="pure-table pure-table-horizontal pure-table-striped"
+<table class="ld2l-table"
        data-season="{season.id}"
 	   data-edit="{canEditSeason}"
        id="draft-list">
@@ -12,15 +13,15 @@
   <tr>
     <th></th>
 	<th>Name</th>
-	<th>Medal</th>
-	<th>Captain?</th>
-	<th>Standin/FA?</th>
-	{! <th>Vouched?</th> !}
-	<th>Statement</th>
+	<th>M</th>
+	<th>C?</th>
+	<th>S?</th>
+	<th>V?</th>
 	{?isDrafting}
-	  <th>Draftable</th>
+	  <th>D</th>
 	{/isDrafting}
-	<th>Team</th>
+	<th>T</th>
+	<th>Statement</th>
   </tr>
   </thead>
   <tbody>
@@ -38,12 +39,12 @@
       <td>{medal}</td>
       <td>{captain}</td>
       <td>{standin}</td>
-      {! <td>{vouched}</td> !}
-      <td>{statement}</td>
+      <td>{vouched}</td>
 	  {?isDrafting}
 	    <td id="draftable">{draftable}</td>
 	  {/isDrafting}
 	  <td id="team">{teamid}</td>
+      <td>{statement}</td>
     </tr>
   {/season.signups}
   </tbody>
@@ -54,21 +55,23 @@
 
 {?isDrafting}
   </div>
-  <div class="pure-u-1-3">
+  <div class="ld2l-block">
 	<div id="draft-teams">
 	  <h3>Current Teams</h3>
-<table class="pure-table pure-table-horizontal pure-table-striped">
+<table class="ld2l-table">
   <thead>
     <tr>
+	  <th></th>
 	  <th>Name</th>
 	  <th>Captain</th>
 	  <th>Players</th>
-	  <th>Avg. Medal</th>
+	  <th>Avg.</th>
 	</tr>
   </thead>
   <tbody>
     {#teams}
       <tr>
+	    <td>{id}</td>
 	    <td><a href="/teams/about/{id}">{name}</a></td>
 		<td>{captain.name}</td>
 		<td id="team-{id}-count">{players.length}</td>

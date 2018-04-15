@@ -4,6 +4,7 @@
 @accent-2: #6c969d;
 @accent-3: #645e9d;
 @responsive-width: 48em;
+@table-border: #cbcbcb;
 
 a, a:hover, a:visited, a:active {
 	color: @accent-3;
@@ -207,4 +208,54 @@ div.ld2l-menu-item {
 .ld2l-draft-log {
 	height: 20em;
 	overflow-y: scroll;
+}
+
+.ld2l-g {
+	display: flex;
+	flex-flow: row wrap;
+}
+
+.ld2l-block {
+	padding-left: 0.5em;
+}
+
+.ld2l-table {
+	border: 1px solid @table-border;
+	empty-cells: show;
+	width: 600px;
+
+	thead {
+		background-color: #e0e0e0;
+	}
+
+	tr {
+		height: 2em;
+	}
+
+	tr:nth-child(2n-1) td {
+		background-color: #f2f2f2;
+	}
+
+	td, th {
+		border-bottom: 1px solid @table-border;
+	}
+
+	td:first-child {
+		padding-left: 0.25em;
+	}
+
+	td:last-child {
+		padding-right: 0.25em;
+	}
+
+	td {
+		padding: 0.25em;
+		word-wrap: break-word;
+		max-width: 40em;
+	}
+
+	th {
+		padding-left: 0.25em;
+		padding-right: 0.25em;
+	}
 }
