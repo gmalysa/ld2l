@@ -1,0 +1,19 @@
+<h3>Week {week}</h3>
+<table class="ld2l-table">
+  <thead>
+    <tr>
+	  <th>Home</th>
+	  <th></th>
+	  <th>Away</th>
+	</tr>
+  </thead>
+  <tbody>
+    {#matchups}
+	  <tr>
+	    <td><a href="/teams/about/{home.id}">{home.team.name}</a> ({home.team.captain.name})</td>
+		<td>{home.points} - {away.points}</td>
+	    <td><a href="/teams/about/{away.id}">{away.team.name}</a> ({away.team.captain.name})</td>
+	  </tr>
+    {/matchups}
+  </tbody>
+</table>

@@ -2,25 +2,12 @@
 
 <h2>{season.name} Schedule</h2>
 
-<h3>Week {week}</h3>
+{>matchups matchups=matchups /}
 
-<table class="ld2l-table">
-  <thead>
-    <tr>
-	  <th>Home</th>
-	  <th></th>
-	  <th>Away</th>
-	</tr>
-  </thead>
-  <tbody>
-    {#matchups}
-	  <tr>
-	    <td><a href="/teams/about/{home.id}">{home.name}</a></td>
-		<td></td>
-	    <td><a href="/teams/about/{away.id}">{away.name}</a></td>
-	  </tr>
-    {/matchups}
-  </tbody>
-</table>
+{?past_matchups}
+  {#past_matchups}
+    {>matchups /}
+  {/past_matchups}
+{/past_matchups}
 
 {>footer /}

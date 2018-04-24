@@ -10,6 +10,7 @@ var privs = require('../lib/privs.js');
 var users = require('../lib/users.js');
 var seasons = require('../lib/seasons.js');
 var teams = require('../lib/teams.js');
+var matches = require('../lib/matches.js');
 
 /**
  * Show all matches from the given season
@@ -32,17 +33,36 @@ var show_matches = new fl.Chain(
 		env.season = season;
 		after(env.seasonId);
 	},
-	seasons.getCurrentMatchups,
-	function(env, after, matchups) {
-		var week = 0;
-		if (matchups.length > 0)
-			week = matchups[0].week;
+	matches.getAllSeries,
+	function(env, after, series) {
+		var week = _.reduce(series, function(memo, v) {
+			return v[0].round > memo ? v[0].round : memo;
+		}, 0);
+
+		var current = [];
+		var past = [];
+		_.each(series, function(v, k) {
+			if (week == k) {
+				current = v;
+			}
+			else {
+				past.push({
+					matchups : v,
+					week : v[0].round
+				});
+			}
+		});
+
+		past.sort(function(a, b) {
+			return b.week - a.week;
+		});
 
 		env.$template('schedule');
 		env.$output({
 			season : env.season,
 			week : week,
-			matchups : matchups
+			matchups : current,
+			past_matchups : past
 		});
 		after();
 	}
@@ -67,7 +87,7 @@ var generate_matchups = new fl.Chain(
 		env.seasonId = id;
 		after(id);
 	},
-	seasons.generateMatchups,
+	matches.generateMatchups,
 	function(env, after) {
 		env.$redirect('/schedule/'+env.seasonId);
 		after();
