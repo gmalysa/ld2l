@@ -7,6 +7,7 @@ var privs = require('../lib/privs.js');
 var users = require('../lib/users.js');
 var seasons = require('../lib/seasons.js');
 var teams = require('../lib/teams.js');
+var matches = require('../lib/matches.js');
 
 /**
  * Get info about a specific team
@@ -63,13 +64,13 @@ var team_index = new fl.Chain(
 		}
 
 		env.seasonInfo = results[0];
-		env.filters.teams.select({seasonid : env.seasonId})
-			.left_join(env.filters.users, 'users')
-			.on(['captainid', 'steamid'])
-			.options({nestTables : '_'})
-			.order(0, db.$asc('id'))
-			.exec(after, env.$throw);
+		after(env.seasonId);
 	},
+	teams.getAllTeams,
+	function(env, after, teams) {
+		after(teams, env.seasonId);
+	},
+	matches.addStandings,
 	function(env, after, teams) {
 		env.$template('teams_list');
 		env.$output({

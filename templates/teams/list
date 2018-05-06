@@ -4,22 +4,30 @@
 {?teams}
   <table class="pure-table pure-table-horizontal pure-table-striped">
     <thead>
-      <tr><th></th><th>Logo</th><th>Name</th><th>Tag</th><th>Captain</th></tr>
+      <tr>
+	    <th></th>
+		<th>Logo</th>
+		<th>Name</th>
+		<th>Tag</th>
+		<th>Captain</th>
+		<th>Record</th>
+	  </tr>
     </thead>
     <tbody>
       {#teams}
         <tr>
           <td>{@counter/}</td>
           <td>
-            {?teams_logo}
-              <img src="{teams_logo}" width="64" height="64" />
+            {?logo}
+              <img src="{logo}" width="64" height="64" />
             {:else}
               No logo
-            {/teams_logo}
+            {/logo}
           </td>
-          <td><a href="/teams/about/{teams_id}">{teams_name}</td>
-          <td>{teams_tag}</td>
-          <td><a href="/profile/{users_steamid}">{users_name}</a></td>
+          <td><a href="/teams/about/{id}">{name}</td>
+          <td>{tag}</td>
+          <td><a href="/profile/{captain.steamid}">{captain.name}</a></td>
+		  <td>{wins} - {losses} ({tiebreaker})</td>
          </tr>
       {/teams}
     </tbody>
