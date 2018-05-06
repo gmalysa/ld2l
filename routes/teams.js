@@ -32,6 +32,14 @@ var team_info = new fl.Chain(
 		// @todo admins can also update in the future
 		var isCaptain = teams.isCaptain(env.team, env.user);
 
+		env.team.players.forEach(function(v) {
+			v.linear_medal = users.adjustMedal(v.medal);
+		});
+
+		if (env.team.captain) {
+			env.team.captain.linear_medal = users.adjustMedal(env.team.captain.medal);
+		}
+
 		env.$template('teams_about');
 		env.$output({
 			team : env.team,
