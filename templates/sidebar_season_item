@@ -25,4 +25,7 @@
 <li class="pure-menu-item">
     <a class="ld2l-menu-link" href="/schedule/{id}">Schedule</a>
 </li>
+<li class="pure-menu-item">
+	<a class="ld2l-menu-link" href="/standins/{id}">Standins</a>
+</li>
 {/eq}

@@ -2,7 +2,7 @@
 
 <h2>Standin Lists for {season.name}</h2>
 <p>Remember that standins and free agents must still meet the requirements on the rules
-page.</p>
+{~n}page.</p>
 
 <div class="ld2l-g">
   <div class="ld2l-block" style="width: 50%">
