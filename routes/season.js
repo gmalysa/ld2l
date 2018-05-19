@@ -111,6 +111,7 @@ var season_info = new fl.Chain(
 
 		if (isDrafting) {
 			scripts.push('draft');
+			scripts.push('sort');
 		}
 
 		env.season = season;

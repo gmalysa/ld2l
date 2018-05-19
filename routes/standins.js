@@ -40,7 +40,8 @@ var standin_list = new fl.Chain(
 		env.$output({
 			season : season,
 			vouched : vouched,
-			unvouched : unvouched
+			unvouched : unvouched,
+			scripts : ['sort']
 		});
 
 		after();
