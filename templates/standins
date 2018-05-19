@@ -1,0 +1,16 @@
+{>header /}
+
+<div class="ld2l-g">
+  <div class="ld2l-block">
+    <h2>Vouched Standins for {season.name}</h2>
+    {>standin_table signups=vouched /}
+  </div>
+
+  <div class="ld2l-block">
+    <h2>Unvouched Standins for {season.name}</h2>
+    {>standin_table signups=unvouched /}
+  </div>
+
+</div>
+
+{>footer /}
