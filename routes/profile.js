@@ -88,6 +88,18 @@ function buildProfile(env, after) {
 				has : privs.hasPriv(userPrivs, privs.POST_NEWS),
 				id : privs.POST_NEWS,
 				label : 'Post News',
+			},
+			{
+				name : 'ineligible',
+				has : privs.hasPriv(userPrivs, privs.INELIGIBLE),
+				id : privs.INELIGIBLE,
+				label : 'Ineligible (mmr)'
+			},
+			{
+				name : 'banned',
+				has : privs.hasPriv(userPrivs, privs.BANNED),
+				id : privs.BANNED,
+				label : 'Banned'
 			}
 		]
 	});
