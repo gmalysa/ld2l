@@ -1,6 +1,5 @@
 {?season.signups}
 {?isDrafting}
-  <div id="draft-menu" class="pure-menu ld2l-draft-menu"></div>
   <div class="ld2l-g">
     <div class="ld2l-block">
 	  <h3>Current Players</h3>
@@ -32,13 +31,13 @@
 	    data-team="{teamid}"
 		data-captain="{captain}"
 		data-draftable="{draftable}"
-		data-freeagent="{free_agent}"
+		data-validstandin="{valid_standin}"
 		data-vouched="{vouched}"
 		data-standin="{standin}"
 		{@gt key=teamid value="0"}
 		  class="drafted"
 		{/gt}
-		onclick="showMenu(this, event);">
+		onclick="ld2l.showMenu(this, event);">
       <td>{@counter/}</td>
       <td><a href="/profile/{steamid}">{name}</a></td>
 	  <td>

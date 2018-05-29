@@ -25,26 +25,35 @@ var standin_list = new fl.Chain(
 	seasons.getSeason,
 	function(env, after, season) {
 		var standins = season.signups.filter(function(v) {
-			return v.teamid == 0;
-		});
-
-		var vouched = standins.filter(function(v) {
-			return v.vouched == 1;
-		});
-
-		var unvouched = standins.filter(function(v) {
-			return v.vouched == 0;
+			return v.valid_standin == 1;
 		});
 
 		env.$template('standins');
 		env.$output({
 			season : season,
-			vouched : vouched,
-			unvouched : unvouched,
+			vouched : standins,
 			scripts : ['sort']
 		});
 
 		after();
+	}
+);
+
+var toggle_standin = new fl.Chain(
+	function(env, after) {
+		if (!privs.hasPriv(env.user.privs, privs.MODIFY_SEASON)) {
+			env.$throw(new Error('You don\'t have the authority to change standin status'));
+			return;
+		}
+
+		env.$json({success : true});
+
+		env.filters.signups.update({
+			valid_standin : env.req.body.standin ? 1 : 0
+		}, {
+			steamid : env.req.body.steamid,
+			season : env.req.body.season
+		}).exec(after, env.$throw);
 	}
 );
 
@@ -54,4 +63,10 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'optional_user'],
 		post : ['default']
 	}, 'get');
+
+	server.add_route('/standin/toggle', {
+		fn : toggle_standin,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
 };

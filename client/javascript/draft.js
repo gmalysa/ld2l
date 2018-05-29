@@ -143,42 +143,46 @@ function setDraftable(steamid, draftable) {
 	});
 }
 
-function setFreeAgent(steamid, free) {
-	console.log('Setting free agent to '+free+' for player '+steamid+' in season '+draft.season);
-}
-
-function clearMenu() {
-	$('#draft-menu').css({display : 'none'});
-	$('body').off('click');
+function setStandin(steamid, free) {
+	console.log('Setting standin to '+free+' for player '+steamid+' in season '+draft.season);
+	$.ajax({
+		url : '/standin/toggle',
+		data : {
+			steamid : steamid,
+			standin : free,
+			season : draft.season
+		},
+		method : 'POST',
+		dataType : 'json'
+	}).done(function(data, status, xhr) {
+		var row = $('tr[data-steamid="'+steamid+'"]')[0];
+		if (free) {
+			row.dataset.validstandin = "1";
+		}
+		else
+		{
+			row.dataset.validstandin = "0";
+		}
+	});
 }
 
 /**
- * @todo use a dust template to render the menu contents more intelligently; do it inline for now
- * to expedite the design cycle
+ * Called by ld2l.showMenu when a context menu should be generated, populate it with
+ * draft-page-related options
  */
 function showMenu(elem, event) {
-	var menu = $('#draft-menu');
-	menu.html('');
-
 	if (draft.admin && "0" == elem.dataset.vouched && "0" == elem.dataset.standin) {
-		menu.append('<li class="pure-menu-item">' +
-				    '<a href="#"' +
-				    '    onclick="vouch(\''+elem.dataset.steamid+'\');"' +
-				    '    class="ld2l-menu-link">Vouch</a></li>');
+		ld2l.addMenuItem('Vouch', 'vouch(\''+elem.dataset.steamid+'\');');
 	}
 
 	if ("0" == elem.dataset.team) {
 		if (draft.admin) {
-			menu.append('<li class="pure-menu-item">' +
-						'<a href="#"' +
-						'    onclick="createTeam(\''+elem.dataset.steamid+'\');"' +
-						'    class="ld2l-menu-link">Create team</a></li>');
+			ld2l.addMenuItem('Create Team',
+			                 'createTeam(\''+elem.dataset.steamid+'\');');
 		}
 		if ("1" == elem.dataset.draftable) {
-			menu.append('<li class="pure-menu-item">' +
-						'<a href="#"' +
-						'    onclick="draftPlayer(\''+elem.dataset.steamid+'\');"' +
-						'    class="ld2l-menu-link">Draft</a></li>');
+			ld2l.addMenuItem('Draft',
+			                 'draftPlayer(\''+elem.dataset.steamid+'\');');
 		}
 	}
 	else {
@@ -190,38 +194,24 @@ function showMenu(elem, event) {
 	}
 
 	if (draft.admin && "0" == elem.dataset.draftable) {
-		menu.append('<li class="pure-menu-item">' +
-				    '<a href="#"' +
-				    '    onclick="setDraftable(\''+elem.dataset.steamid+'\', true);"' +
-				    '    class="ld2l-menu-link">Mark Draftable</a></li>');
+		ld2l.addMenuItem('Make Draftable',
+		                 'setDraftable(\''+elem.dataset.steamid+'\', true);');
 	}
 	else if (draft.admin) {
-		menu.append('<li class="pure-menu-item">' +
-				    '<a href="#"' +
-				    '    onclick="setDraftable(\''+elem.dataset.steamid+'\', false);"' +
-				    '    class="ld2l-menu-link">Mark Undraftable</a></li>');
+		ld2l.addMenuItem('Make Undraftable',
+		                 'setDraftable(\''+elem.dataset.steamid+'\', false);');
 	}
 
-	if (draft.admin && "0" == elem.dataset.freeagent) {
-		menu.append('<li class="pure-menu-item">' +
-				    '<a href="#"' +
-				    '    onclick="setFreeAgent(\''+elem.dataset.steamid+'\', true);"' +
-				    '    class="ld2l-menu-link">Make Free Agent</a></li>');
+	if (draft.admin && "0" == elem.dataset.validstandin) {
+		ld2l.addMenuItem('Make Standin',
+		                 'setStandin(\''+elem.dataset.steamid+'\', true);');
 	}
 	else if (draft.admin) {
-		menu.append('<li class="pure-menu-item">' +
-				    '<a href="#"' +
-				    '    onclick="setFreeAgent(\''+elem.dataset.steamid+'\', false);"' +
-				    '    class="ld2l-menu-link">Remove Free Agent</a></li>');
+		ld2l.addMenuItem('Remove Standin',
+		                 'setStandin(\''+elem.dataset.steamid+'\', false);');
 	}
-
-	menu.wrap('<ul class="pure-menu-list"></ul>');
-	menu.css({
-		top : event.clientY,
-		left : event.clientX,
-		display : 'block'
-	});
-
-	$('body').on('click', clearMenu);
-	event.stopPropagation();
 }
+
+$(document).ready(function() {
+	ld2l.registerMenuHandler(showMenu);
+});

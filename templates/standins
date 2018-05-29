@@ -1,20 +1,10 @@
 {>header /}
 
-<h2>Standin Lists for {season.name}</h2>
+<h2>Standin List for {season.name}</h2>
 <p>Remember that standins and free agents must still meet the requirements on the rules
-{~n}page.</p>
+{~n}page. Please confirm that a free agent will be available for the entire season
+{~n}before asking them to join your team permanently.</p>
 
-<div class="ld2l-g">
-  <div class="ld2l-block" style="width: 50%">
-    <h3>Vouched</h3>
-    {>standin_table signups=vouched /}
-  </div>
-
-  <div class="ld2l-block">
-    <h3>Unvouched</h3>
-    {>standin_table signups=unvouched /}
-  </div>
-
-</div>
+{>standin_table signups=vouched /}
 
 {>footer /}

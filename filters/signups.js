@@ -8,7 +8,7 @@ module.exports = function(db) {
 		standin : db.int_t,
 		captain : db.int_t,
 		draftable : db.int_t,
-		free_agent : db.int_t,
+		valid_standin : db.int_t,
 		statement : [db.varchar_t, 255]
 	};
 
