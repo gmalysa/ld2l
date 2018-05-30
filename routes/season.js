@@ -109,7 +109,7 @@ var season_info = new fl.Chain(
 				v.selected = '0';
 		});
 
-		if (isDrafting) {
+		if (isDrafting || canEdit) {
 			scripts.push('draft');
 			scripts.push('sort');
 		}
