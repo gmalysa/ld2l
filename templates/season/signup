@@ -5,7 +5,7 @@
 <fieldset>
   <div class="pure-control-group">
     <label for="username">Name</label>
-    <input type="text" name="username" value="{user.name}" readonly />
+    <input type="text" name="username" value="{user.display_name}" readonly />
   </div>
   <div class="pure-control-group">
     <label for="medal">Medal</label>

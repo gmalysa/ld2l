@@ -3,6 +3,7 @@ module.exports = function(db) {
 		steamid : [db.varchar_t, 25],
 		avatar : [db.varchar_t, 128],
 		name : [db.varchar_t, 64],
+		display_name : [db.varchar_t, 64],
 		discord_id : [db.varchar_t, 25],
 		discord_name : [db.varchar_t, 64],
 		discord_avatar : [db.varchar_t, 128],

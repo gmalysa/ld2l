@@ -1,6 +1,14 @@
 {>header /}
 
-<h1>{profileUser.name}</h1>
+{?canEdit}
+  <h1 data-name="{profileUser.display_name}"
+      data-steamid="{profileUser.steamid}"
+      onclick="editName(this);">
+    {profileUser.display_name}
+  </h1>
+{:else}
+  <h1>{profileUser.display_name}</h1>
+{/canEdit}
 
 <div class="pure-g">
 
@@ -24,7 +32,9 @@
 	    <li><b>Not</b> vouched yet</li>
 	  {/canVouch}
 	{/vouched}
-    <li><a href="http://steamcommunity.com/profiles/{profileUser.steamid}">Steam Profile</a></li>
+    <li><a href="http://steamcommunity.com/profiles/{profileUser.steamid}">
+	    Steam Profile ({profileUser.name})
+	</a></li>
 	<li>
 {?profileUser.discord_name}
 	Linked to <img src="https://cdn.discordapp.com/avatars/{profileUser.discord_id}/{profileUser.discord_avatar}.gif?size=32" /> {profileUser.discord_name}#{profileUser.discord_discriminator}

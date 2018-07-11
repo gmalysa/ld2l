@@ -33,23 +33,32 @@ function buildProfile(env, after) {
 	var displayUser = env.$pop();
 	var showPrivs = privs.hasPriv(viewPrivs, privs.VIEW_PRIVS);
 	var canLink = false;
+	var canEdit = false;
 	var scripts = [];
 
-	if (env.user && env.user.steamid == displayUser.steamid)
+	if (env.user && env.user.steamid == displayUser.steamid) {
 		canLink = true;
+		canEdit = true;
+	}
 
-	if (showPrivs)
-		scripts.push('profile');
+	if (privs.hasPriv(userPrivs, privs.MODIFY_ACCOUNT))
+		canEdit = true;
+
+	if (!displayUser.display_name || displayUser.display_name.length < 1)
+		displayUser.display_name = displayUser.name;
+
+	scripts.push('profile');
 
 	env.$template('profile');
 	env.$output({
-		title : 'Profile for '+displayUser.name,
+		title : displayUser.display_name,
 		profileUser : displayUser,
 		dotabuff : 'https://www.dotabuff.com/players/'+displayUser.id32,
 		opendota : 'https://www.opendota.com/players/'+displayUser.id32,
 		showPrivs : showPrivs,
 		vouched : privs.hasPriv(userPrivs, privs.JOIN_SEASON),
 		canVouch : canVouch(viewPrivs, userPrivs),
+		canEdit : canEdit,
 		canLink : canLink,
 		scripts : scripts,
 		privs : [
@@ -207,6 +216,43 @@ var change_priv = new fl.Chain(
 	}
 );
 
+/**
+ * Rename a profile, must be yours or you must be an admin
+ */
+var rename = new fl.Chain(
+	function(env, after) {
+		after(env.req.params.steamid);
+	},
+	users.getUser,
+	new fl.Branch(
+		function(env, after, player) {
+			if (null == player) {
+				env.$throw(new Error('Invalid steamid supplied!'));
+				return;
+			}
+
+			if (env.user.steamid == player.steamid)
+				after(true);
+			else if (privs.hasPriv(env.user.privs, privs.MODIFY_ACCOUNT))
+				after(true);
+			else
+				after(false);
+		},
+		function(env, after) {
+			env.$json({success : true});
+			env.filters.users.update({
+				display_name : env.req.body.name
+			}, {
+				steamid : env.req.params.steamid
+			}).limit(1).exec(after, env.$throw);
+		},
+		function(env, after) {
+			env.$json({success : false});
+			after();
+		}
+	)
+);
+
 module.exports.init_routes = function(server) {
 	server.add_route('/profile', {
 		fn : profile,
@@ -228,6 +274,12 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/profile/:steamid/priv', {
 		fn : change_priv,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/profile/:steamid/rename', {
+		fn : rename,
 		pre : ['default', 'require_user'],
 		post : ['default']
 	}, 'post');
