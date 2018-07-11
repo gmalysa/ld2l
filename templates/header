@@ -47,7 +47,7 @@
           <div class="ld2l-steam">
             <img class="ld2l-steam-avatar" src="{user.avatar}" />
             <div class="ld2l-steam-user">
-			  {user.name}<br />
+			  {user.display_name}<br />
 			  <a href="/profile">[profile]</a><a href="/auth/logout">[logout]</a>
 			</div>
           </div>
