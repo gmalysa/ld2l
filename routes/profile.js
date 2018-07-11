@@ -41,7 +41,7 @@ function buildProfile(env, after) {
 		canEdit = true;
 	}
 
-	if (privs.hasPriv(userPrivs, privs.MODIFY_ACCOUNT))
+	if (privs.hasPriv(viewPrivs, privs.MODIFY_ACCOUNT))
 		canEdit = true;
 
 	if (!displayUser.display_name || displayUser.display_name.length < 1)
