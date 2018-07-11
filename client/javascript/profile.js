@@ -45,7 +45,7 @@ function submitName(oldName, el) {
 	var parent = $(el).parent();
 	$(el).detach();
 
-	parent.html(newName);
+	parent.html(newName+'&nbsp;<span class="fa fa-edit"></span>');
 	parent.data('name', newName);
 	editing = false;
 
