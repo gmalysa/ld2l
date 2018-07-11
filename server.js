@@ -17,9 +17,9 @@ var fl = require('flux-link');
 var db_migrate = require('db-migrate');
 
 // Express middleware
-//var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var expressSession = require('express-session');
+var sessionFileStore = require('session-file-store')(expressSession);
 var passport = require('passport');
 
 // local modules
@@ -98,7 +98,6 @@ function dust_markdown_filter(value) {
 	return showdown_converter.makeHtml(value);
 }
 
-
 // Initialize express
 var server = express();
 _.each(config.set, function(v, k) {
@@ -116,18 +115,19 @@ server.use(function(req, res, next) {
 
 // Configure middleware that runs before route handlers
 server.use(config.static_path, express.static(config.static_dir));
-// server.use(cookieParser());
 server.use(expressSession({
 	secret : config.session_secret,
 	resave : false,
-	saveUninitialized : false
+	saveUninitialized : false,
+	maxAge : 30 * 24 * 60 * 60 * 1000,
+	store : new sessionFileStore({
+		ttl : 30 * 24 * 60 * 60
+	})
 }));
 server.use(bodyParser.urlencoded({extended : false}));
 server.use(bodyParser.json());
 server.use(passport.initialize());
 server.use(passport.session());
-
-// @todo need to add a session store system here, before launching in deployment
 
 var ci = new common.init(server, {
 	shutdown		: [{fn : mysql.cleanup}],

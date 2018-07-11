@@ -1,5 +1,6 @@
 *.swp
 node_modules/
+sessions/
 config.json
 static/css
 static/javascript
