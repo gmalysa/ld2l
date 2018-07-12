@@ -119,9 +119,9 @@ server.use(expressSession({
 	secret : config.session_secret,
 	resave : false,
 	saveUninitialized : false,
-	maxAge : 30 * 24 * 60 * 60 * 1000,
+	maxAge : 15 * 24 * 60 * 60 * 1000,
 	store : new sessionFileStore({
-		ttl : 30 * 24 * 60 * 60
+		ttl : 15 * 24 * 60 * 60
 	})
 }));
 server.use(bodyParser.urlencoded({extended : false}));
