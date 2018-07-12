@@ -5,6 +5,21 @@
 <p>Played in <a href="/seasons/{season.id}">{season.name}</a> with an average linear
 {~n}medal of {team.medal}.</p>
 
+{?team.disbanded}
+  <p><span style="color: red" class="fa fa-ban"></span> This team disbanded during the regular season.</p>
+  {?canEditTeam}
+    <p><a href="/teams/about/{team.id}/undisband">
+	  <input class="pure-button ld2l-button-secondary" type="button" value="Un-disband" />
+	</a></p>
+  {/canEditTeam}
+{:else}
+  {?canEditTeam}
+    <p><a href="/teams/about/{team.id}/disband">
+      <input class="pure-button ld2l-button-secondary" type="button" value="Disband" />
+    </a></p>
+  {/canEditTeam}
+{/team.disbanded}
+
 <h3>Captain</h3>
 {#team.captain}
   {>roster_card /}
@@ -14,7 +29,7 @@
 {#team.players}
   {>roster_card /}
 {:else}
-  <p>Nobody has been drafted to this team yet</p>
+  <p>Nobody has been drafted to this team yet.</p>
 {/team.players}
 
 <h3>Matches</h3>

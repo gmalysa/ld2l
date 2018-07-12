@@ -29,8 +29,9 @@ var team_info = new fl.Chain(
 			.exec(after, env.$throw);
 	},
 	function(env, after, season) {
-		// @todo admins can also update in the future
 		var isCaptain = teams.isCaptain(env.team, env.user);
+		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
+		var canEditName = isCaptain || isAdmin;
 
 		env.team.players.forEach(function(v) {
 			v.linear_medal = users.adjustMedal(v.medal);
@@ -44,7 +45,8 @@ var team_info = new fl.Chain(
 		env.$output({
 			team : env.team,
 			season : season[0],
-			canUpdate : isCaptain
+			canEditName : canEditName,
+			canEditTeam : isAdmin
 		});
 		after();
 	}
@@ -89,6 +91,50 @@ var team_index = new fl.Chain(
 	}
 );
 
+/**
+ * Mark a team as disbanded, used by admins
+ */
+var disband = new fl.Chain(
+	function(env, after) {
+		env.teamID = parseInt(env.req.params.teamid);
+		if (isNaN(env.teamID)) {
+			env.$throw(new Error('Invalid team ID given.'));
+			return;
+		}
+
+		env.$push(env.user);
+		after(env.teamID);
+	},
+	teams.get,
+	teams.disband,
+	function(env, after) {
+		env.$redirect('/teams/about/'+env.teamID);
+		after();
+	}
+);
+
+/**
+ * Mark a team as un-disbanded, used by admins
+ */
+var undisband = new fl.Chain(
+	function(env, after) {
+		env.teamID = parseInt(env.req.params.teamid);
+		if (isNaN(env.teamID)) {
+			env.$throw(new Error('Invalid team ID given.'));
+			return;
+		}
+
+		env.$push(env.user);
+		after(env.teamID);
+	},
+	teams.get,
+	teams.undisband,
+	function(env, after) {
+		env.$redirect('/teams/about/'+env.teamID);
+		after();
+	}
+);
+
 module.exports.init_routes = function(server) {
 	server.add_route('/teams/:seasonid', {
 		fn : team_index,
@@ -99,6 +145,18 @@ module.exports.init_routes = function(server) {
 	server.add_route('/teams/about/:teamid', {
 		fn : team_info,
 		pre : ['default', 'optional_user'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/teams/about/:teamid/disband', {
+		fn : disband,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/teams/about/:teamid/undisband', {
+		fn : undisband,
+		pre : ['default', 'require_user'],
 		post : ['default']
 	}, 'get');
 }
