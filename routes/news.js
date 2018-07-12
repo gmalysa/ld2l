@@ -63,6 +63,7 @@ var show_edit = new fl.Chain(
 
 /**
  * Process the results of the edit/create news form
+ * @todo move update into a news function as well
  */
 var do_edit = new fl.Chain(
 	function(env, after) {
@@ -70,32 +71,45 @@ var do_edit = new fl.Chain(
 		if (isNaN(id))
 			id = 0;
 
+		env.newsID = id;
+
 		if (news.canEdit(env.user))
-			after(id);
+			after();
 		else
 			env.$throw(new Error('You do not have permission to edit or post news'));
 	},
-	function(env, after, newsID) {
-		env.newsID = newsID;
-		if (0 == newsID) {
-			env.filters.news.insert({
-				title : env.req.body.title,
-				content : env.req.body.content,
-				author : env.user.steamid
-			}).exec(after, env.$throw);
-		}
-		else {
-			env.filters.news.update({
-				title : env.req.body.title,
-				content : env.req.body.content
-			}, {
-				id : newsID
-			}).exec(after, env.$throw);
-		}
-	},
-	function(env, after, result) {
+	new fl.Branch(
+		function(env, after) {
+			after(0 == env.newsID);
+		},
+		new fl.Chain(
+			function(env, after) {
+				after(env.req.body.title, env.req.body.content, env.user);
+			},
+			news.insert,
+			function(env, after, result) {
+				env.result = result;
+				after();
+			}
+		),
+		new fl.Chain(
+			function(env, after) {
+				env.filters.news.update({
+					title : env.req.body.title,
+					content : env.req.body.content
+				}, {
+					id : env.newsID
+				}).exec(after, env.$throw);
+			},
+			function(env, after, result) {
+				env.result = result;
+				after();
+			}
+		)
+	),
+	function(env, after) {
 		if (0 == env.newsID)
-			env.$redirect('/news/'+result.insertId);
+			env.$redirect('/news/'+env.result.insertId);
 		else
 			env.$redirect('/news/'+env.newsID);
 		after();

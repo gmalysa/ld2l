@@ -38,6 +38,8 @@ var defaults = {
 	// Discord application settings
 	discord_client_id : '',
 	discord_client_secret : '',
+
+	discord_news_webhook : '',
 };
 
 module.exports = _.extend({}, defaults, local);
