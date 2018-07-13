@@ -222,36 +222,16 @@ var change_priv = new fl.Chain(
  */
 var rename = new fl.Chain(
 	function(env, after) {
+		env.$push(env.user);
+		env.$push(env.req.body.name);
 		after(env.req.params.steamid);
 	},
 	users.getUser,
-	new fl.Branch(
-		function(env, after, player) {
-			if (null == player) {
-				env.$throw(new Error('Invalid steamid supplied!'));
-				return;
-			}
-
-			if (env.user.steamid == player.steamid)
-				after(true);
-			else if (privs.hasPriv(env.user.privs, privs.MODIFY_ACCOUNT))
-				after(true);
-			else
-				after(false);
-		},
-		function(env, after) {
-			env.$json({success : true});
-			env.filters.users.update({
-				display_name : env.req.body.name
-			}, {
-				steamid : env.req.params.steamid
-			}).limit(1).exec(after, env.$throw);
-		},
-		function(env, after) {
-			env.$json({success : false});
-			after();
-		}
-	)
+	users.rename,
+	function(env, after) {
+		env.$json({success : true});
+		after();
+	}
 );
 
 module.exports.init_routes = function(server) {
