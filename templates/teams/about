@@ -1,7 +1,15 @@
 {>header /}
 
-<h2>{team.name}</h2>
-{! @todo make this played/playing based on season status for high quality polish !}
+{?canEditName}
+  <h2 data-name="{team.name}"
+      data-rename-url="/teams/about/{team.id}/rename"
+	  onclick="ld2l.editName(this);">
+	{team.name}{~n}<span class="fa fa-edit"></span>
+  </h2>
+{:else}
+  <h2>{team.name}</h2>
+{/canEditName}
+
 <p>Played in <a href="/seasons/{season.id}">{season.name}</a> with an average linear
 {~n}medal of {team.medal}.</p>
 

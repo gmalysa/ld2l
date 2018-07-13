@@ -2,8 +2,8 @@
 
 {?canEdit}
   <h1 data-name="{profileUser.display_name}"
-      data-steamid="{profileUser.steamid}"
-      onclick="editName(this);">
+      data-rename-url="/profile/{profileUser.steamid}/rename"
+      onclick="ld2l.editName(this);">
     {profileUser.display_name}
 	{~n}<span class="fa fa-edit"></span>
   </h1>

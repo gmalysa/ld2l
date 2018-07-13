@@ -48,6 +48,7 @@ function buildProfile(env, after) {
 		displayUser.display_name = displayUser.name;
 
 	scripts.push('profile');
+	scripts.push('name');
 
 	env.$template('profile');
 	env.$output({

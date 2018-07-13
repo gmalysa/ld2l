@@ -46,7 +46,8 @@ var team_info = new fl.Chain(
 			team : env.team,
 			season : season[0],
 			canEditName : canEditName,
-			canEditTeam : isAdmin
+			canEditTeam : isAdmin,
+			scripts : ['name']
 		});
 		after();
 	}
@@ -87,6 +88,34 @@ var team_index = new fl.Chain(
 			season : env.seasonInfo,
 			teams : teams
 		});
+		after();
+	}
+);
+
+/**
+ * Rename a team
+ */
+var rename = new fl.Chain(
+	function(env, after) {
+		var teamID = parseInt(env.req.params.teamid);
+		if (isNaN(teamID)) {
+			env.$throw(new Error('Invalid team ID given.'));
+			return;
+		}
+
+		after(teamID);
+	},
+	teams.get,
+	function(env, after, team) {
+		if(null === team) {
+			env.$throw(new Error('Team not found'));
+			return;
+		}
+		after(env.user, team, env.req.body.name);
+	},
+	teams.rename,
+	function(env, after) {
+		env.$json({success : true});
 		after();
 	}
 );
@@ -159,4 +188,10 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'require_user'],
 		post : ['default']
 	}, 'get');
+
+	server.add_route('/teams/about/:teamid/rename', {
+		fn : rename,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
 }
