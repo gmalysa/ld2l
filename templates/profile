@@ -73,4 +73,42 @@
 </div>
 {/showPrivs}
 
+</div>
+
+<h2>Past Teams</h2>
+{?signups}
+  <table class="ld2l-table">
+    <thead>
+	<tr>
+	  <th></th>
+	  <th>Season</th>
+	  <th>Team</th>
+	  <th>Record</th>
+	</tr>
+	</thead>
+	<tbody>
+      {#signups}
+	    <tr>
+		  <td>{@counter/}</td>
+		  <td><a href="/seasons/{season.id}">{season.name}</a></td>
+          {@eq key=teamid value="0" type="number"}
+		    <td>Standin/FA</td>
+			<td></td>
+		  {:else}
+		    <td>
+		      <a href="/teams/about/{team.id}">{team.name}</a>
+			  {~n}(<a href="/profile/{team.captain.steamid}">
+			    {team.captain.display_name}
+		  	  </a>)
+	        </td>
+		    <td></td>
+	      {/eq}
+		  </tr>
+      {/signups}
+    </tbody>
+  </table>
+{:else}
+  <p>No LD2L team history.</p>
+{/signups}
+
 {>footer /}

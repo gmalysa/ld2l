@@ -27,94 +27,104 @@ function canVouch(viewPrivs, userPrivs) {
  * @param[in] userPrivs Privs of user being viewed
  * @param[in] viewPrivs Privs of viewing user
  */
-function buildProfile(env, after) {
-	var viewPrivs = env.$pop();
-	var userPrivs = env.$pop();
-	var displayUser = env.$pop();
-	var showPrivs = privs.hasPriv(viewPrivs, privs.VIEW_PRIVS);
-	var canLink = false;
-	var canEdit = false;
-	var scripts = [];
+var buildProfile = new fl.Chain(
+	function(env, after) {
+		env.viewPrivs = env.$pop();
+		env.userPrivs = env.$pop();
+		env.displayUser = env.$pop();
+		after(env.displayUser);
+	},
+	users.getSignupHistory,
+	function(env, after, signupHistory) {
+		var viewPrivs = env.viewPrivs;
+		var userPrivs = env.userPrivs;
+		var displayUser = env.displayUser;
+		var showPrivs = privs.hasPriv(viewPrivs, privs.VIEW_PRIVS);
+		var canLink = false;
+		var canEdit = false;
+		var scripts = [];
 
-	if (env.user && env.user.steamid == displayUser.steamid) {
-		canLink = true;
-		canEdit = true;
+		if (env.user && env.user.steamid == displayUser.steamid) {
+			canLink = true;
+			canEdit = true;
+		}
+
+		if (privs.hasPriv(viewPrivs, privs.MODIFY_ACCOUNT))
+			canEdit = true;
+
+		if (!displayUser.display_name || displayUser.display_name.length < 1)
+			displayUser.display_name = displayUser.name;
+
+		scripts.push('profile');
+		scripts.push('name');
+
+		env.$template('profile');
+		env.$output({
+			title : displayUser.display_name,
+			profileUser : displayUser,
+			dotabuff : 'https://www.dotabuff.com/players/'+displayUser.id32,
+			opendota : 'https://www.opendota.com/players/'+displayUser.id32,
+			showPrivs : showPrivs,
+			vouched : privs.hasPriv(userPrivs, privs.JOIN_SEASON),
+			canVouch : canVouch(viewPrivs, userPrivs),
+			canEdit : canEdit,
+			canLink : canLink,
+			signups : signupHistory,
+			scripts : scripts,
+			privs : [
+				{
+					name : 'modify_account',
+					has : privs.hasPriv(userPrivs, privs.MODIFY_ACCOUNT),
+					id : privs.MODIFY_ACCOUNT,
+					label : 'Modify accounts'
+				},
+				{
+					name : 'modify_season',
+					has : privs.hasPriv(userPrivs, privs.MODIFY_SEASON),
+					id : privs.MODIFY_SEASON,
+					label : 'Modify seasons'
+				},
+				{
+					name : 'join_season',
+					has : privs.hasPriv(userPrivs, privs.JOIN_SEASON),
+					id : privs.JOIN_SEASON,
+					label : 'Vouched'
+				},
+				{
+					name : 'view_privs',
+					has : privs.hasPriv(userPrivs, privs.VIEW_PRIVS),
+					id : privs.VIEW_PRIVS,
+					label : 'View privs'
+				},
+				{
+					name : 'vouch',
+					has : privs.hasPriv(userPrivs, privs.VOUCH),
+					id : privs.VOUCH,
+					label : 'Vouch'
+				},
+				{
+					name : 'news',
+					has : privs.hasPriv(userPrivs, privs.POST_NEWS),
+					id : privs.POST_NEWS,
+					label : 'Post News',
+				},
+				{
+					name : 'ineligible',
+					has : privs.hasPriv(userPrivs, privs.INELIGIBLE),
+					id : privs.INELIGIBLE,
+					label : 'Ineligible (mmr)'
+				},
+				{
+					name : 'banned',
+					has : privs.hasPriv(userPrivs, privs.BANNED),
+					id : privs.BANNED,
+					label : 'Banned'
+				}
+			]
+		});
+		after();
 	}
-
-	if (privs.hasPriv(viewPrivs, privs.MODIFY_ACCOUNT))
-		canEdit = true;
-
-	if (!displayUser.display_name || displayUser.display_name.length < 1)
-		displayUser.display_name = displayUser.name;
-
-	scripts.push('profile');
-	scripts.push('name');
-
-	env.$template('profile');
-	env.$output({
-		title : displayUser.display_name,
-		profileUser : displayUser,
-		dotabuff : 'https://www.dotabuff.com/players/'+displayUser.id32,
-		opendota : 'https://www.opendota.com/players/'+displayUser.id32,
-		showPrivs : showPrivs,
-		vouched : privs.hasPriv(userPrivs, privs.JOIN_SEASON),
-		canVouch : canVouch(viewPrivs, userPrivs),
-		canEdit : canEdit,
-		canLink : canLink,
-		scripts : scripts,
-		privs : [
-			{
-				name : 'modify_account',
-				has : privs.hasPriv(userPrivs, privs.MODIFY_ACCOUNT),
-				id : privs.MODIFY_ACCOUNT,
-				label : 'Modify accounts'
-			},
-			{
-				name : 'modify_season',
-				has : privs.hasPriv(userPrivs, privs.MODIFY_SEASON),
-				id : privs.MODIFY_SEASON,
-				label : 'Modify seasons'
-			},
-			{
-				name : 'join_season',
-				has : privs.hasPriv(userPrivs, privs.JOIN_SEASON),
-				id : privs.JOIN_SEASON,
-				label : 'Vouched'
-			},
-			{
-				name : 'view_privs',
-				has : privs.hasPriv(userPrivs, privs.VIEW_PRIVS),
-				id : privs.VIEW_PRIVS,
-				label : 'View privs'
-			},
-			{
-				name : 'vouch',
-				has : privs.hasPriv(userPrivs, privs.VOUCH),
-				id : privs.VOUCH,
-				label : 'Vouch'
-			},
-			{
-				name : 'news',
-				has : privs.hasPriv(userPrivs, privs.POST_NEWS),
-				id : privs.POST_NEWS,
-				label : 'Post News',
-			},
-			{
-				name : 'ineligible',
-				has : privs.hasPriv(userPrivs, privs.INELIGIBLE),
-				id : privs.INELIGIBLE,
-				label : 'Ineligible (mmr)'
-			},
-			{
-				name : 'banned',
-				has : privs.hasPriv(userPrivs, privs.BANNED),
-				id : privs.BANNED,
-				label : 'Banned'
-			}
-		]
-	});
-	after();
-}
+).use_local_env(true);
 
 /**
  * Handlers: default, require_user
