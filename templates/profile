@@ -101,7 +101,7 @@
 			    {team.captain.display_name}
 		  	  </a>)
 	        </td>
-		    <td></td>
+		    <td>{team.wins} - {team.losses}</td>
 	      {/eq}
 		  </tr>
       {/signups}

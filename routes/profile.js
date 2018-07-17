@@ -2,6 +2,8 @@
 var fl = require('flux-link');
 var privs = require('../lib/privs.js');
 var users = require('../lib/users.js');
+var teams = require('../lib/teams.js');
+var matches = require('../lib/matches.js');
 
 /**
  * Just push the steamid, pretty standard helper
@@ -36,6 +38,42 @@ var buildProfile = new fl.Chain(
 	},
 	users.getSignupHistory,
 	function(env, after, signupHistory) {
+		env.signups = signupHistory;
+
+		env.teamIDs = env.signups.filter(function(v, k) {
+			return v.teamid > 0;
+		}).map(function(v, k) { return v.teamid; });
+		env.idx = 0;
+		env.teams = {};
+		after();
+	},
+	new fl.LoopChain(
+		function(env, after) {
+			after(env.idx < env.teamIDs.length);
+		},
+		function(env, after) {
+			after(env.teamIDs[env.idx]);
+		},
+		teams.get,
+		function(env, after, team) {
+			env.teams[team.id] = team;
+			after(team);
+		},
+		matches.addRecord,
+		function(env, after, team) {
+			env.idx += 1;
+			after();
+		}
+	),
+	function(env, after) {
+		env.signups.forEach(function(v, k) {
+			if (v.teamid > 0) {
+				v.team = env.teams[v.teamid];
+			}
+		});
+		after();
+	},
+	function(env, after) {
 		var viewPrivs = env.viewPrivs;
 		var userPrivs = env.userPrivs;
 		var displayUser = env.displayUser;
@@ -69,7 +107,7 @@ var buildProfile = new fl.Chain(
 			canVouch : canVouch(viewPrivs, userPrivs),
 			canEdit : canEdit,
 			canLink : canLink,
-			signups : signupHistory,
+			signups : env.signups,
 			scripts : scripts,
 			privs : [
 				{
