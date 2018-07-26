@@ -1,0 +1,29 @@
+{>header /}
+
+<h2>Player Search</h2>
+
+<form class="pure-form pure-form-aligned" action="/search" method="post">
+<fieldset>
+  <div class="pure-control-group">
+    <label for="key">Name</label>
+	<input type="text" name="key" value="{searchtext}" />
+  </div>
+  <div class="pure-controls">
+    <input class="pure-button ld2l-button-primary" type="submit" value="Search" />
+  </div>
+</fieldset>
+</form>
+
+{?search}
+<h3>Search Results</h3>
+{#search}
+  <div class="ld2l-player">
+    <a href="/profile/{steamid}">
+      <img src="{avatar}" />
+      <span>{display_name}</span>
+	</a>
+  </div>
+{/search}
+{/search}
+
+{>footer /}
