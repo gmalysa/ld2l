@@ -43,10 +43,14 @@ ld2l.registerMenuHandler = function(fn) {
 
 ld2l.addMenuItem = function(text, action) {
 	var menu = $('#float-menu');
-	menu.append(
-		'<li class="pure-menu-item">' +
-		'<a href="#" onclick="'+action+'" class="ld2l-menu-link">' +
-		text +
-		'</a></li>'
-	);
+	var item = $(document.createElement('li'));
+	item.addClass('pure-menu-item');
+	menu.append(item);
+
+	var link = $(document.createElement('a'));
+	link.addClass('ld2l-menu-link');
+	link.click(action);
+	link.append(text);
+
+	item.append(link);
 }

@@ -172,17 +172,16 @@ function setStandin(steamid, free) {
  */
 function showMenu(elem, event) {
 	if (draft.admin && "0" == elem.dataset.vouched && "0" == elem.dataset.standin) {
-		ld2l.addMenuItem('Vouch', 'vouch(\''+elem.dataset.steamid+'\');');
+		ld2l.addMenuItem('Vouch', vouch.bind(null, elem.dataset.steamid));
 	}
 
 	if ("0" == elem.dataset.team) {
 		if (draft.admin) {
 			ld2l.addMenuItem('Create Team',
-			                 'createTeam(\''+elem.dataset.steamid+'\');');
+			                 createTeam.bind(null, elem.dataset.steamid));
 		}
 		if ("1" == elem.dataset.draftable) {
-			ld2l.addMenuItem('Draft',
-			                 'draftPlayer(\''+elem.dataset.steamid+'\');');
+			ld2l.addMenuItem('Draft', draftPlayer.bind(null, elem.dataset.steamid));
 		}
 	}
 	else {
@@ -195,20 +194,20 @@ function showMenu(elem, event) {
 
 	if (draft.admin && "0" == elem.dataset.draftable) {
 		ld2l.addMenuItem('Make Draftable',
-		                 'setDraftable(\''+elem.dataset.steamid+'\', true);');
+		                 setDraftable.bind(null, elem.dataset.steamid, true));
 	}
 	else if (draft.admin) {
 		ld2l.addMenuItem('Make Undraftable',
-		                 'setDraftable(\''+elem.dataset.steamid+'\', false);');
+		                 setDraftable.bind(null, elem.dataset.steamid, false));
 	}
 
 	if (draft.admin && "0" == elem.dataset.validstandin) {
 		ld2l.addMenuItem('Make Standin',
-		                 'setStandin(\''+elem.dataset.steamid+'\', true);');
+		                 setStandin.bind(null, elem.dataset.steamid, true));
 	}
 	else if (draft.admin) {
 		ld2l.addMenuItem('Remove Standin',
-		                 'setStandin(\''+elem.dataset.steamid+'\', false);');
+		                 setStandin.bind(null, elem.dataset.steamid, false));
 	}
 }
 
