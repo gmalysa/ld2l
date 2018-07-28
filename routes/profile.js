@@ -147,6 +147,12 @@ var buildProfile = new fl.Chain(
 					label : 'Post News',
 				},
 				{
+					name : 'lobbies',
+					has : privs.hasPriv(userPrivs, privs.CREATE_LOBBY),
+					id : privs.CREATE_LOBBY,
+					label : 'Create Lobbies'
+				},
+				{
 					name : 'ineligible',
 					has : privs.hasPriv(userPrivs, privs.INELIGIBLE),
 					id : privs.INELIGIBLE,

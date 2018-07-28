@@ -1,0 +1,66 @@
+{>header /}
+
+<h2>Lobbies</h2>
+<p>Listing of ongoing lobbies here</p>
+{lobbies}
+
+{?canCreate}
+<h2>Create Lobby</h2>
+<form class="pure-form pure-form-aligned">
+<fieldset>
+<div class="ld2l-lobby-side" id="radiant">
+  <span class="ld2l-lobby-team radiant">Radiant</span>
+  <div class="ld2l-lobby-player pure-control-group">
+    <input type="radio" name="radiantCaptain" value="0" checked="checked" />
+    <input type="text" class="ld2l-name-autocomplete" />
+  </div>
+  <div class="ld2l-lobby-player pure-control-group">
+    <input type="radio" name="radiantCaptain" value="1" />
+    <input type="text" class="ld2l-name-autocomplete" />
+  </div>
+  <div class="ld2l-lobby-player pure-control-group">
+    <input type="radio" name="radiantCaptain" value="2" />
+    <input type="text" class="ld2l-name-autocomplete" />
+  </div>
+  <div class="ld2l-lobby-player pure-control-group">
+    <input type="radio" name="radiantCaptain" value="3" />
+    <input type="text" class="ld2l-name-autocomplete" />
+  </div>
+  <div class="ld2l-lobby-player pure-control-group">
+    <input type="radio" name="radiantCaptain" value="4" />
+    <input type="text" class="ld2l-name-autocomplete" />
+  </div>
+</div>
+
+<div class="ld2l-lobby-side" id="dire" style="width:15 em;">
+  <span class="ld2l-lobby-team dire">Dire</span>
+  <div class="ld2l-lobby-player pure-control-group">
+    <input type="text" class="ld2l-name-autocomplete" />
+    <input type="radio" name="direCaptain" value="0" checked="checked" />
+  </div>
+  <div class="ld2l-lobby-player pure-control-group">
+    <input type="text" class="ld2l-name-autocomplete" />
+    <input type="radio" name="direCaptain" value="1" />
+  </div>
+  <div class="ld2l-lobby-player pure-control-group">
+    <input type="text" class="ld2l-name-autocomplete" />
+    <input type="radio" name="direCaptain" value="2" />
+  </div>
+  <div class="ld2l-lobby-player pure-control-group">
+    <input type="text" class="ld2l-name-autocomplete" />
+    <input type="radio" name="direCaptain" value="3" />
+  </div>
+  <div class="ld2l-lobby-player pure-control-group">
+    <input type="text" class="ld2l-name-autocomplete" />
+    <input type="radio" name="direCaptain" value="4" />
+  </div>
+</div>
+
+<div style="width: 36.5em; text-align:center;">
+  <input class="pure-button ld2l-button-primary" type="button" value="Create" onclick="ld2l.createLobby();" />
+</div>
+</fieldset>
+</form>
+{/canCreate}
+
+{>footer /}

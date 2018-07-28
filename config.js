@@ -40,6 +40,10 @@ var defaults = {
 	discord_client_secret : '',
 
 	discord_news_webhook : '',
+
+	// KBaaS settings
+	kbaas_url : 'http://api.kaedebot.com',
+	kbaas_key : ''
 };
 
 module.exports = _.extend({}, defaults, local);
