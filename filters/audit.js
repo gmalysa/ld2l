@@ -4,6 +4,7 @@ module.exports = function(db) {
 		time : db.datetime_t,
 		steamid : [db.varchar_t, 25],
 		action : db.int_t,
+		targettype : db.int_t,
 		targetid : [db.varchar_t, 25],
 		data : db.text_t
 	};

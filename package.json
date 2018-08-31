@@ -35,6 +35,9 @@
     "swiss-pairing": "^1.2.1",
     "underscore": "*"
   },
+  "devDependencies": {
+    "commander": "^1.3.2"
+  },
   "license": "BSD-3-Clause",
   "repository": "https://github.com/gmalysa/ld2l.git"
 }

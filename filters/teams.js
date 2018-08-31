@@ -3,6 +3,7 @@ module.exports = function(db) {
 		id : db.int_t,
 		seasonid : db.int_t,
 		captainid : [db.varchar_t, 25],
+		disbanded : db.int_t,
 		steam_teamid : db.int_t,
 		name : [db.varchar_t, 64],
 		tag : [db.varchar_t, 10],
