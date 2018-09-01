@@ -1,0 +1,42 @@
+<p><a href="/teams/about/{team.id}">{team.name}</a> ({team.captain.display_name})</p>
+<table class="ld2l-table">
+<thead>
+  <tr>
+    <th></th>
+    <th>Hero</th>
+	<th>Player</th>
+	<th>K</th>
+	<th>D</th>
+	<th>A</th>
+	<th>LH</th>
+	<th>DN</th>
+	<th>GPM</th>
+	<th>XPM</th>
+	<th>Damage</th>
+	<th>Healing</th>
+	<th>Tower</th>
+	<th>Items</th>
+  </tr>
+</thead>
+<tbody>
+{#team.match_players}
+  <tr>
+    <td>{level}</td>
+    <td>{hero}</td>
+    <td><a href="/profile/{steamid}">{display_name}</a></td>
+	<td>{kills}</td>
+	<td>{deaths}</td>
+	<td>{assists}</td>
+	<td>{last_hits}</td>
+	<td>{denies}</td>
+	<td>{gpm}</td>
+	<td>{xpm}</td>
+	<td>{damage}</td>
+	<td>{healing}</td>
+	<td>{tower_damage}</td>
+	<td>{#items}{.}{@sep}, {/sep}{/items}</td>
+  </tr>
+{/team.match_players}
+</tbody>
+</table>
+

@@ -1,0 +1,8 @@
+{>header /}
+<h3>{match.season.name} - Round {match.week} (Match ID: {match.id})</h3>
+
+{>match_player_table team=match.home /}
+
+{>match_player_table team=match.away /}
+
+{>footer /}

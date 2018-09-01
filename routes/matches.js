@@ -13,6 +13,29 @@ var teams = require('../lib/teams.js');
 var matches = require('../lib/matches.js');
 
 /**
+ * Show detailed information for the single match specified
+ * @param[in] env.req.params.matchid The integer database id of the match to look up
+ */
+var match_details = new fl.Chain(
+	function(env, after) {
+		var id = parseInt(env.req.params.matchid);
+		if (isNaN(id)) {
+			env.$throw(new Error('Invalid match ID specified'));
+			return;
+		}
+
+		env.matchId = id;
+		after(id);
+	},
+	matches.getDetails,
+	function(env, after, match) {
+		env.$output({match : match});
+		env.$template('match');
+		after();
+	}
+).use_local_env(true);
+
+/**
  * Show all matches from the given season
  * @param[in] season id
  * @todo handle weeks, separate into weeks, show results, etc.
@@ -104,6 +127,12 @@ module.exports.init_routes = function(server) {
 	server.add_route('/schedule/:seasonid/next', {
 		fn : generate_matchups,
 		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/matches/:matchid', {
+		fn : match_details,
+		pre : ['default', 'optional_user'],
 		post : ['default']
 	}, 'get');
 };
