@@ -1,6 +1,16 @@
 {>header /}
 <h3>{match.season.name} - Round {match.week} (Match ID: {match.id})</h3>
 
+<p class="ld2l-result-description">
+{@select key=match.result}
+  {@eq value=0}Match not yet played.{/eq}
+  {@eq value=1}{match.home.name} victory!{/eq}
+  {@eq value=2}{match.away.name} victory!{/eq}
+  {@eq value=3}{match.home.name} forfeit ({match.away.name} victory)!{/eq}
+  {@eq value=4}{match.away.name} forfeit ({match.home.name} victory)!{/eq}
+  {@eq value=5}Double forfeit!{/eq}
+{/select}</p>
+
 {>match_player_table team=match.home /}
 
 {>match_player_table team=match.away /}
