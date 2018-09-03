@@ -1,0 +1,15 @@
+{!
+   requires a team object with
+   {
+     id,
+	 name,
+	 captain : {
+	   display_name,
+	   steamid
+	 }
+   }
+   defined at minimum, as the 'team' parameter or defined in the enclosing context
+!}
+<a href="/teams/about/{team.id}">{team.name}</a>
+{~n}
+(<a href="/profile/{team.captain.steamid}">{team.captain.display_name}</a>)

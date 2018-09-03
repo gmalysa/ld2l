@@ -10,9 +10,9 @@
   <tbody>
     {#matchups}
 	  <tr>
-	    <td><a href="/teams/about/{home.id}">{home.team.name}</a> ({home.team.captain.display_name})</td>
+	    <td>{>team_link team=home.team /}</td>
 		<td>{home.points} - {away.points}</td>
-	    <td><a href="/teams/about/{away.id}">{away.team.name}</a> ({away.team.captain.display_name})</td>
+	    <td>{>team_link team=away.team /}</td>
 	  </tr>
     {/matchups}
   </tbody>

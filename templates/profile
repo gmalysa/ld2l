@@ -95,12 +95,7 @@
 		    <td>Standin/FA</td>
 			<td></td>
 		  {:else}
-		    <td>
-		      <a href="/teams/about/{team.id}">{team.name}</a>
-			  {~n}(<a href="/profile/{team.captain.steamid}">
-			    {team.captain.display_name}
-		  	  </a>)
-	        </td>
+		    <td>{>team_link team=team /}</td>
 		    <td>{team.wins} - {team.losses}</td>
 	      {/eq}
 		  </tr>

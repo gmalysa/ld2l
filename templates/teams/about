@@ -55,17 +55,17 @@
   <tr>
     <td>
 	  {@eq key=result value=1}
-	    <b>{home}</b>
+	    <b>{>team_link team=home /}</b>
 	  {:else}
-	    {home}
+	    {>team_link team=home /}
 	  {/eq}
 	</td>
 	<td><a href="/matches/{id}">{>match_summary match=. /}</a></td>
 	<td>
 	  {@eq key=result value=2}
-	    <b>{away}</b>
+	    <b>{>team_link team=away /}</b>
 	  {:else}
-	    {away}
+	    {>team_link team=away /}
 	  {/eq}
 	</td>
   </tr>
