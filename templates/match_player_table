@@ -8,6 +8,7 @@
 	<th>K</th>
 	<th>D</th>
 	<th>A</th>
+	<th>Net Worth</th>
 	<th>LH</th>
 	<th>DN</th>
 	<th>GPM</th>
@@ -27,6 +28,7 @@
 	<td>{kills}</td>
 	<td>{deaths}</td>
 	<td>{assists}</td>
+	<td>{net_worth}</td>
 	<td>{last_hits}</td>
 	<td>{denies}</td>
 	<td>{gpm}</td>
