@@ -25,7 +25,12 @@ var team_info = new fl.Chain(
 	teams.get,
 	function(env, after, team) {
 		env.team = team;
-		env.filters.seasons.select({id : team.seasonid})
+		after(env.team);
+	},
+	matches.getTeamHistory,
+	function(env, after, history) {
+		env.history = history;
+		env.filters.seasons.select({id : env.team.seasonid})
 			.exec(after, env.$throw);
 	},
 	function(env, after, season) {
@@ -45,6 +50,7 @@ var team_info = new fl.Chain(
 		env.$output({
 			team : env.team,
 			season : season[0],
+			history : env.history,
 			canEditName : canEditName,
 			canEditTeam : isAdmin,
 			scripts : ['name']

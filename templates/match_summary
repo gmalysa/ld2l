@@ -1,0 +1,9 @@
+{#match.heroes.home}
+  {@dota_hero_icon hero=. /}
+{/match.heroes.home}
+
+{~n}vs.{~n}
+
+{#match.heroes.away}
+  {@dota_hero_icon hero=. /}
+{/match.heroes.away}
