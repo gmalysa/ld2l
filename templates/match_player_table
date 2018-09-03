@@ -1,4 +1,8 @@
+{?team.id}
 <p><a href="/teams/about/{team.id}">{team.name}</a> ({team.captain.display_name})</p>
+{:else}
+<p>{team.name}</p>
+{/team.id}
 <table class="ld2l-table">
 <thead>
   <tr>
