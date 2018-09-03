@@ -23,7 +23,7 @@
 {#team.match_players}
   <tr>
     <td>{level}</td>
-    <td>{hero}</td>
+    <td>{@dota_hero_icon hero=hero /}</td>
     <td><a href="/profile/{steamid}">{display_name}</a></td>
 	<td>{kills}</td>
 	<td>{deaths}</td>
@@ -36,7 +36,7 @@
 	<td>{damage}</td>
 	<td>{healing}</td>
 	<td>{tower_damage}</td>
-	<td>{#items}{.}{@sep}, {/sep}{/items}</td>
+	<td>{#items}{@dota_item_icon item=. /}{/items}</td>
   </tr>
 {/team.match_players}
 </tbody>

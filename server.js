@@ -15,6 +15,9 @@ var _ = require('underscore');
 var db = require('db-filters');
 var fl = require('flux-link');
 var db_migrate = require('db-migrate');
+var dotaconstants = require('dotaconstants');
+var dust = require('dustjs-linkedin');
+require('dustjs-helpers');
 
 // Express middleware
 var bodyParser = require('body-parser');
@@ -143,6 +146,24 @@ var ci = new common.init(server, {
 ci.add_pre_hook(fl.mkfn(init_db, 0));
 ci.add_finally_hook(fl.mkfn(cleanup_db, 0));
 ci.add_dust_filters({md : dust_markdown_filter});
+ci.add_dust_helpers({
+	dota_hero_icon : function(chunk, context, bodies, params) {
+		var hero = dust.helpers.tap(params.hero, chunk, context);
+		if (undefined !== dotaconstants.heroes[hero]) {
+			var img = "http://cdn.dota2.com/" + dotaconstants.heroes[hero].img;
+			chunk.write('<img class="ld2l-dota-hero" src="'+img+'" />');
+		}
+		return chunk;
+	},
+	dota_item_icon : function(chunk, context, bodies, params) {
+		var item = dust.helpers.tap(params.item, chunk, context);
+		if (undefined !== dotaconstants.items[dotaconstants.item_ids[item]]) {
+			var img = "http://cdn.dota2.com/" + dotaconstants.items[dotaconstants.item_ids[item]].img;
+			chunk.write('<img class="ld2l-dota-item" src="'+img+'" />');
+		}
+		return chunk;
+	}
+});
 
 // Finally!
 logger.module_init(mod_name, mod_version, 'ld2l online');
