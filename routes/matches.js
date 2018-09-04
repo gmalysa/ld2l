@@ -13,6 +13,206 @@ var teams = require('../lib/teams.js');
 var matches = require('../lib/matches.js');
 
 /**
+ * Remove all of the links between a player and a particular match
+ * @todo: temporary here, make lib and stuff
+ */
+var remove_player = new fl.Chain(
+	function(env, after) {
+		var id = parseInt(env.req.params.matchid);
+		if (isNaN(id)) {
+			env.$throw(new Error('Invalid match ID specified'));
+			return;
+		}
+
+		var playerid = env.req.params.steamid;
+		if (playerid.length != 17) {
+			env.$throw(new Error('Invalid user ID specified'));
+			return;
+		}
+
+		if (!privs.hasPriv(env.user.privs, privs.CREATE_LOBBY)) {
+			env.$throw(new Error('You cannot edit match records.'));
+			return;
+		}
+
+		env.matchid = id;
+		env.filters.match_links.delete({
+			matchid : id,
+			steamid : playerid
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.$redirect('/matches/' + env.matchid);
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Add a full record for a user. This has to be reworked in the future but it's used
+ * for cheap data entry right now with minimal validation. Just delete and re-enter any
+ * rows that are messed up
+ * @todo: temporary, make lib, make robust (generate form dynamically possibly)
+ */
+var add_player = new fl.Chain(
+	function(env, after) {
+		var id = parseInt(env.req.params.matchid);
+		if (isNaN(id)) {
+			env.$throw(new Error('Invalid match ID specified'));
+			return;
+		}
+
+		if (!privs.hasPriv(env.user.privs, privs.CREATE_LOBBY)) {
+			env.$throw(new Error('You cannot edit match records.'));
+			return;
+		}
+
+		env.matchid = id;
+		env.steamid = env.req.body.steamid;
+		if (env.steamid.length != 17) {
+			env.$throw(new Error('Remember to use the 17-digit steam64 ID for the player'));
+			return;
+		}
+
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 1,
+			value : parseInt(env.req.body.level)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 2,
+			value : parseInt(env.req.body.hero)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 3,
+			value : parseInt(env.req.body.kills)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 4,
+			value : parseInt(env.req.body.deaths)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 5,
+			value : parseInt(env.req.body.assists)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 6,
+			value : parseInt(env.req.body.last_hits)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 7,
+			value : parseInt(env.req.body.denies)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 8,
+			value : parseInt(env.req.body.gpm)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 9,
+			value : parseInt(env.req.body.xpm)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 10,
+			value : parseInt(env.req.body.damage)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 11,
+			value : parseInt(env.req.body.healing)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 12,
+			value : parseInt(env.req.body.tower_damage)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 13,
+			value : parseInt(env.req.body.team)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.filters.match_links.insert({
+			matchid : env.matchid,
+			steamid : env.steamid,
+			property : 14,
+			value : parseInt(env.req.body.net_worth)
+		}).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.items = env.req.body.items.split(',');
+		env.idx = 0;
+		after();
+	},
+	new fl.LoopChain(
+		function(env, after) {
+			after(env.idx < env.items.length);
+		},
+		function(env, after) {
+			env.filters.match_links.insert({
+				matchid : env.matchid,
+				steamid : env.steamid,
+				property : 100 + env.idx,
+				value : parseInt(env.items[env.idx])
+			}).exec(after, env.$throw);
+		},
+		function(env, after) {
+			env.idx += 1;
+			after();
+		}
+	),
+	function(env, after) {
+		env.$redirect('/matches/'+env.matchid);
+		after();
+	}
+).use_local_env(true);
+
+/**
  * Show detailed information for the single match specified
  * @param[in] env.req.params.matchid The integer database id of the match to look up
  */
@@ -29,7 +229,10 @@ var match_details = new fl.Chain(
 	},
 	matches.getDetails,
 	function(env, after, match) {
-		env.$output({match : match});
+		env.$output({
+			match : match,
+			canEdit : privs.hasPriv(env.user.privs, privs.CREATE_LOBBY)
+		});
 		env.$template('match');
 		after();
 	}
@@ -173,4 +376,16 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'optional_user'],
 		post : ['default']
 	}, 'get');
+
+	server.add_route('/matches/:matchid/remove_player/:steamid', {
+		fn : remove_player,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/matches/:matchid/add_player', {
+		fn : add_player,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
 };

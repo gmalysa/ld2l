@@ -11,8 +11,8 @@
   {@eq value=5}Double forfeit!{/eq}
 {/select}</p>
 
-{>match_player_table team=match.home /}
+{>match_player_table team=match.home team_value="0" /}
 
-{>match_player_table team=match.away /}
+{>match_player_table team=match.away team_value="1" /}
 
 {>footer /}
