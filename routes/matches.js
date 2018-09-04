@@ -38,7 +38,7 @@ var match_details = new fl.Chain(
 /**
  * Show all matches from the given season
  * @param[in] season id
- * @todo handle weeks, separate into weeks, show results, etc.
+ * @todo create page for series that this can link to, which links to the individual matches
  */
 var show_matches = new fl.Chain(
 	function(env, after) {
@@ -92,6 +92,38 @@ var show_matches = new fl.Chain(
 );
 
 /**
+ * Show the matches for a given season in summary format
+ */
+var show_season_matches = new fl.Chain(
+	function(env, after) {
+		var id = parseInt(env.req.params.seasonid);
+		if (isNaN(id)) {
+			env.$throw(new Error('Invalid season ID specified'));
+			return;
+		}
+
+		env.seasonId = id;
+		env.filters.matches.select({season : id})
+			.order(db.$desc('id'))
+			.exec(after, env.$throw);
+	},
+	matches.addSummaryInfo,
+	function(env, after, matches) {
+		env.matches = matches;
+		after(env.seasonId);
+	},
+	seasons.getSeason,
+	function(env, after, season) {
+		env.$template('season_matches');
+		env.$output({
+			season : season,
+			matches : env.matches
+		});
+		after();
+	}
+);
+
+/**
  * Generate new matchups in swiss format
  */
 var generate_matchups = new fl.Chain(
@@ -132,6 +164,12 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/matches/:matchid', {
 		fn : match_details,
+		pre : ['default', 'optional_user'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/seasons/:seasonid/matches', {
+		fn : show_season_matches,
 		pre : ['default', 'optional_user'],
 		post : ['default']
 	}, 'get');

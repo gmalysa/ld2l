@@ -1,9 +1,45 @@
-{#match.heroes.home}
-  {@dota_hero_icon hero=. /}
-{/match.heroes.home}
+{!
+    Match summary table when given an array of match summary objects
+!}
+<table class="ld2l-table">
+<thead>
+  <tr>
+    <th>Home</th>
+	<th></th>
+	<th>Away</th>
+  </tr>
+</thead>
+<tbody>
+  {#matches}
+	<tr>
+	  <td>
+		{@eq key=result value=1}
+		  <b>{>team_link team=home /}</b>
+		{:else}
+		  {>team_link team=home /}
+		{/eq}
+	  </td>
+	  <td>
+		<a href="/matches/{id}">
+		  {#heroes.home}
+			{@dota_hero_icon hero=. /}
+		  {/heroes.home}
 
-{~n}vs.{~n}
+		  {~n}vs.{~n}
 
-{#match.heroes.away}
-  {@dota_hero_icon hero=. /}
-{/match.heroes.away}
+		  {#heroes.away}
+			{@dota_hero_icon hero=. /}
+		  {/heroes.away}
+		</a>
+	  </td>
+	  <td>
+		{@eq key=result value=2}
+		  <b>{>team_link team=away /}</b>
+		{:else}
+		  {>team_link team=away /}
+		{/eq}
+	  </td>
+	</tr>
+  {/matches}
+</tbody>
+</table>

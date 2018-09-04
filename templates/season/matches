@@ -1,0 +1,7 @@
+{>header /}
+
+<h3>{season.name} Match History</h3>
+
+{>match_summary matches=matches /}
+
+{>footer /}

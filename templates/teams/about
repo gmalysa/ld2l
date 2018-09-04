@@ -42,36 +42,7 @@
 
 <h3>Matches</h3>
 {?history}
-  <table class="ld2l-table">
-  <thead>
-    <tr>
-	  <th>Home</th>
-	  <th></th>
-	  <th>Away</th>
-	</tr>
-  </thead>
-  <tbody>
-{#history}
-  <tr>
-    <td>
-	  {@eq key=result value=1}
-	    <b>{>team_link team=home /}</b>
-	  {:else}
-	    {>team_link team=home /}
-	  {/eq}
-	</td>
-	<td><a href="/matches/{id}">{>match_summary match=. /}</a></td>
-	<td>
-	  {@eq key=result value=2}
-	    <b>{>team_link team=away /}</b>
-	  {:else}
-	    {>team_link team=away /}
-	  {/eq}
-	</td>
-  </tr>
-{/history}
-  </tbody>
-  </table>
+  {>match_summary matches=history /}
 {:else}
   <p>This team has not played any matches yet (or doesn't have any recorded).</p>
 {/history}
