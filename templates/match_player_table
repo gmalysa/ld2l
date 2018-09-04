@@ -53,21 +53,21 @@
 <tr>
   <form action="/matches/{match.id}/add_player" method="post">
 	  <input type="hidden" name="team" value="{team_value}" />
-	  <td><input size="5" type="text" name="level" /></td>
-	  <td><input size="5" type="text" name="hero" /></td>
+	  <td><input size="3" type="text" name="level" /></td>
+	  <td><input size="4" type="text" name="hero" /></td>
 	  <td><input size="15" type="text" name="steamid" /></td>
-	  <td><input size="5" type="text" name="kills" /></td>
-	  <td><input size="5" type="text" name="deaths" /></td>
-	  <td><input size="5" type="text" name="assists" /></td>
+	  <td><input size="3" type="text" name="kills" /></td>
+	  <td><input size="3" type="text" name="deaths" /></td>
+	  <td><input size="3" type="text" name="assists" /></td>
 	  <td><input size="5" type="text" name="net_worth" /></td>
-	  <td><input size="5" type="text" name="last_hits" /></td>
-	  <td><input size="5" type="text" name="denies" /></td>
-	  <td><input size="5" type="text" name="gpm" /></td>
-	  <td><input size="5" type="text" name="xpm" /></td>
+	  <td><input size="4" type="text" name="last_hits" /></td>
+	  <td><input size="3" type="text" name="denies" /></td>
+	  <td><input size="4" type="text" name="gpm" /></td>
+	  <td><input size="4" type="text" name="xpm" /></td>
 	  <td><input size="5" type="text" name="damage" /></td>
 	  <td><input size="5" type="text" name="healing" /></td>
 	  <td><input size="5" type="text" name="tower_damage" /></td>
-	  <td><input size="20" type="text" name="items" /></td>
+	  <td><input size="25" type="text" name="items" /></td>
 	  <td><input type="submit" value="Add" /></td>
   </form>
 </tr>
