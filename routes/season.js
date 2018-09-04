@@ -6,6 +6,8 @@ var fl = require('flux-link');
 var db = require('db-filters');
 var _ = require('underscore');
 var request = require('request');
+var dust = require('dustjs-linkedin');
+require('dustjs-helpers');
 
 var privs = require('../lib/privs.js');
 var users = require('../lib/users.js');
@@ -34,14 +36,17 @@ var edit_season = new fl.Branch(
 			}
 
 			var seasonStatus = parseInt(env.req.body.status);
-			if (!env.req.body.name || !seasons.isValidStatus(seasonStatus)) {
+			var seasonType = parseInt(env.req.body.type);
+			if (!env.req.body.name || !seasons.isValidStatus(seasonStatus)
+				|| !seasons.isValidType(seasonType)) {
 				env.$throw(new Error('Bad season update parameters given'));
 				return;
 			}
 
 			env.filters.seasons.update({
 				name : env.req.body.name,
-				status : seasonStatus
+				status : seasonStatus,
+				type : seasonType,
 			}, {id : id}).exec(after, env.$throw);
 		},
 		function(env, after) {
@@ -99,11 +104,22 @@ var season_info = new fl.Chain(
 			{value : seasons.STATUS_DRAFTING, label : "Drafting"},
 			{value : seasons.STATUS_FINISHED, label : "Finished"}
 		];
+		var typeLabels = [
+			{value : seasons.TYPE_DRAFT, label : "EU/RD2L Draft"},
+			{value : seasons.TYPE_IHL, label : "Inhouse League"},
+		];
 		var isDrafting = (season.status == seasons.STATUS_DRAFTING);
 		var scripts = [];
 
 		statusLabels.forEach(function(v, k) {
 			if (v.value == season.status)
+				v.selected = '1';
+			else
+				v.selected = '0';
+		});
+
+		typeLabels.forEach(function(v, k) {
+			if (v.value == season.type)
 				v.selected = '1';
 			else
 				v.selected = '0';
@@ -123,6 +139,7 @@ var season_info = new fl.Chain(
 			isDrafting : isDrafting,
 			showTeams : false,
 			statuses : statusLabels,
+			types : typeLabels,
 			season : season,
 			scripts : scripts
 		});
@@ -373,7 +390,7 @@ module.exports.init_routes = function(server) {
 		post : ['default']
 	}, 'get');
 
-	server.add_route('/seasons/edit/:seasonid', {
+	server.add_route('/seasons/:seasonid/edit', {
 		fn : edit_season,
 		pre : ['default', 'require_user'],
 		post : ['default']
@@ -384,4 +401,37 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'require_user'],
 		post : ['default']
 	}, 'post');
+
+	server.add_dust_helpers({
+		season_status : function(chunk, context, bodies, params) {
+			var status = parseInt(dust.helpers.tap(params.status, chunk, context));
+
+			if (seasons.STATUS_HIDDEN == status)
+				chunk.write('Hidden');
+			else if (seasons.STATUS_SIGNUPS == status)
+				chunk.write('Accepting signups');
+			else if (seasons.STATUS_PLAYING == status)
+				chunk.write('Playing');
+			else if (seasons.STATUS_FINISHED == status)
+				chunk.write('Ended');
+			else if (seasons.STATUS_DRAFTING == status)
+				chunk.write('Drafting players');
+			else
+				chunk.write('Unrecognized status: '+status);
+
+			return chunk;
+		},
+		season_type : function(chunk, context, bodies, params) {
+			var type = parseInt(dust.helpers.tap(params.type, chunk, context));
+
+			if (seasons.TYPE_DRAFT == type)
+				chunk.write('EU/RD2L Draft');
+			else if (seasons.TYPE_IHL == type)
+				chunk.write('Inhouse League');
+			else
+				chunk.write('Unrecognized type: '+type);
+
+			return chunk;
+		}
+	});
 }

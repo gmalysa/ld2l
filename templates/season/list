@@ -4,14 +4,20 @@
 {?seasons}
   <table class="pure-table pure-table-horizontal pure-table-striped">
   <thead>
-    <tr><th></th><th>Name</th><th>Status</th>
+    <tr>
+	  <th></th>
+	  <th>Name</th>
+	  <th>Status</th>
+	  <th>Type</th>
+	</tr>
   </thead>
   <tbody>
   {#seasons}
     <tr>
       <td>{id}</td>
       <td><a href="/seasons/{id}">{name}</a></td>
-      <td>{status}</td>
+      <td>{@season_status status=status /}</td>
+	  <td>{@season_type type=type /}</td>
     </tr>
   {/seasons}
   </tbody>
