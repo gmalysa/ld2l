@@ -44,7 +44,9 @@
 	<td>{healing}</td>
 	<td>{tower_damage}</td>
 	<td>{#items}{@dota_item_icon item=. /}{/items}</td>
-	<td><a href="/matches/{match.id}/remove_player/{steamid}">[X]</a></td>
+	{?canEdit}
+	  <td><a href="/matches/{match.id}/remove_player/{steamid}">[X]</a></td>
+	{/canEdit}
   </tr>
 {/team.match_players}
 {?canEdit}
