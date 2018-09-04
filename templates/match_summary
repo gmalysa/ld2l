@@ -14,9 +14,9 @@
 	<tr>
 	  <td>
 		{@eq key=result value=1}
-		  <b>{>team_link team=home /}</b>
+		  <b>{>team_link team=home side="Radiant" /}</b>
 		{:else}
-		  {>team_link team=home /}
+		  {>team_link team=home side="Radiant" /}
 		{/eq}
 	  </td>
 	  <td>
@@ -34,9 +34,9 @@
 	  </td>
 	  <td>
 		{@eq key=result value=2}
-		  <b>{>team_link team=away /}</b>
+		  <b>{>team_link team=away side="Dire" /}</b>
 		{:else}
-		  {>team_link team=away /}
+		  {>team_link team=away side="Dire" /}
 		{/eq}
 	  </td>
 	</tr>

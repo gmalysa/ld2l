@@ -8,8 +8,15 @@
 	   steamid
 	 }
    }
-   defined at minimum, as the 'team' parameter or defined in the enclosing context
+   defined at minimum, as the 'team' parameter or defined in the enclosing context.
+
+   If an id is not supplied, it is assumed to be a pickup team (i.e. for inhouse) and
+   the fallback name is used, as the parameter 'side'
 !}
-<a href="/teams/about/{team.id}">{team.name}</a>
-{~n}
-(<a href="/profile/{team.captain.steamid}">{team.captain.display_name}</a>)
+{?team.id}
+  <a href="/teams/about/{team.id}">{team.name}</a>
+  {~n}
+  (<a href="/profile/{team.captain.steamid}">{team.captain.display_name}</a>)
+{:else}
+  {side}
+{/team.id}
