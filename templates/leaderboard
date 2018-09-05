@@ -1,0 +1,23 @@
+{>header /}
+<h3>{season.name} Leaderboard</h3>
+
+<table class="ld2l-table">
+<thead>
+  <tr>
+    <th></th>
+	<th>Player</th>
+	<th>Record</th>
+  </tr>
+</thead>
+<tbody>
+{#leaderboard}
+  <tr>
+    <td>{@counter /}</td>
+	<td><a href="/profile/{user.steamid}">{user.display_name}</a></td>
+	<td>{wins} - {losses}</td>
+  </tr>
+{/leaderboard}
+</tbody>
+</table>
+
+{>footer /}

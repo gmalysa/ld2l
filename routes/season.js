@@ -13,6 +13,7 @@ var privs = require('../lib/privs.js');
 var users = require('../lib/users.js');
 var seasons = require('../lib/seasons.js');
 var teams = require('../lib/teams.js');
+var matches = require('../lib/matches.js');
 
 /**
  * Helper chain that is used to check if someone has the ability to create seasons or not
@@ -339,6 +340,43 @@ var create_team = new fl.Chain(
 	}
 ).use_local_env(true);
 
+/**
+ * Get and display the leaderboard for an inhouse season
+ */
+var show_leaderboard = new fl.Chain(
+	function(env, after) {
+		env.seasonId = parseInt(env.req.params.seasonid);
+		if (isNaN(env.seasonId)) {
+			env.$throw(new Error('Invalid season ID specified'));
+			return;
+		}
+
+		after(env.seasonId);
+	},
+	seasons.getSeason,
+	function(env, after, season) {
+		if (seasons.TYPE_IHL != season.type) {
+			env.$throw(new Error('This season is not an inhouse league and has no leaderboard!'));
+			return;
+		}
+
+		env.season = season;
+		after(season);
+	},
+	matches.getLeaderboards,
+	function(env, after, leaderboard) {
+		env.$template('leaderboard');
+		env.$output({
+			season : env.season,
+			leaderboard : leaderboard
+		});
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Chain used to get season information for display in the sidebar
+ */
 var sidebar_seasons = new fl.Chain(
 	function(env, after) {
 		env.filters.seasons.select({
@@ -401,6 +439,12 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'require_user'],
 		post : ['default']
 	}, 'post');
+
+	server.add_route('/seasons/:seasonid/leaderboard', {
+		fn : show_leaderboard,
+		pre : ['default', 'optional_user'],
+		post : ['default']
+	}, 'get');
 
 	server.add_dust_helpers({
 		season_status : function(chunk, context, bodies, params) {
