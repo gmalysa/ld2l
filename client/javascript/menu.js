@@ -53,4 +53,5 @@ ld2l.addMenuItem = function(text, action) {
 	link.append(text);
 
 	item.append(link);
+	return link;
 }

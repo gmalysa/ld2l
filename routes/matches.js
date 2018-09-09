@@ -229,10 +229,19 @@ var match_details = new fl.Chain(
 	},
 	matches.getDetails,
 	function(env, after, match) {
+		var canEdit = privs.hasPriv(env.user.privs, privs.CREATE_LOBBY) ;
+
 		env.$output({
 			match : match,
-			canEdit : privs.hasPriv(env.user.privs, privs.CREATE_LOBBY)
+			canEdit : canEdit
 		});
+
+		if (canEdit) {
+			env.$output({
+				scripts : ['autocomplete', 'matches']
+			});
+		}
+
 		env.$template('match');
 		after();
 	}

@@ -1,0 +1,3 @@
+<div class="ld2l-player">
+  <img src="{avatar}" /><span>{display_name}</span>
+</div>

@@ -1,0 +1,3 @@
+<div class="ld2l-player">
+  <img src="http://cdn.dota2.com/{img}" /><span>{localized_name}</span>
+</div>

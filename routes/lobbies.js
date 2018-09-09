@@ -16,7 +16,7 @@ var lobby_index = new fl.Chain(
 		env.$output({
 			lobbies : JSON.stringify(lobbies),
 			canCreate : privs.hasPriv(env.user.privs, privs.CREATE_LOBBY),
-			scripts : ['lobbies', 'menu', 'player_autocomplete']
+			scripts : ['lobbies', 'menu', 'autocomplete']
 		});
 
 		after();

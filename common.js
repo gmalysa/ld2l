@@ -50,10 +50,11 @@ function init(server, options) {
 	this.finally_hooks.default = hook;
 
 	// dustjs-linkedin template and routing configuration
+	this.client_templates = [];
 	this.load_dust_templates(this.options.template_dir, this.options.client_prefix);
 	server.get(this.options.client_path, function(req, res) {
 		res.set('Content-Type', 'application/javascript');
-		res.send(that.client_templates);
+		res.send(that.client_templates.join(' '));
 	});
 
 	// Add common/default filters and helpers to dust
@@ -97,7 +98,6 @@ function load_dust_templates(path, prefix, prepend) {
 
 	var files = fs.readdirSync(path);
 	var that = this;
-	this.client_templates = '';
 
 	_.each(files, function(v) {
 		// Skip temporary/swap files (helps for running the server while editing)
@@ -114,7 +114,8 @@ function load_dust_templates(path, prefix, prepend) {
 				// Save client templates specially to serve them
 				if (v.substr(0, prefix_len) == prefix) {
 					logger.info('Loading dust client template '+(prepend+v).cyan+'...', mod_name);
-					that.client_templates += dust.compile(contents, prepend+v.substr(prefix_len, v.length));
+					var template = dust.compile(contents, prepend+v.substr(prefix_len, v.length));
+					that.client_templates.push(template);
 				}
 				else {
 					// Server templates should be put into our dust engine though
