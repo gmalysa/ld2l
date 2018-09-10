@@ -28,6 +28,7 @@ function canVouch(viewPrivs, userPrivs) {
  * @param[in] displayUser The user object being displayed
  * @param[in] userPrivs Privs of user being viewed
  * @param[in] viewPrivs Privs of viewing user
+ * @todo Most of the signup history stuff should be in the lib, not here
  */
 var buildProfile = new fl.Chain(
 	function(env, after) {
@@ -71,9 +72,10 @@ var buildProfile = new fl.Chain(
 				v.team = env.teams[v.teamid];
 			}
 		});
-		after();
+		after(env.displayUser);
 	},
-	function(env, after) {
+	matches.getPlayerHistory,
+	function(env, after, matchHistory) {
 		var viewPrivs = env.viewPrivs;
 		var userPrivs = env.userPrivs;
 		var displayUser = env.displayUser;
@@ -108,6 +110,7 @@ var buildProfile = new fl.Chain(
 			canEdit : canEdit,
 			canLink : canLink,
 			signups : env.signups,
+			matchHistory : matchHistory,
 			scripts : scripts,
 			privs : [
 				{

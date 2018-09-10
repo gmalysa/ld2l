@@ -106,4 +106,14 @@
   <p>No LD2L team history.</p>
 {/signups}
 
+<h2>Match History</h2>
+{?matchHistory}
+  {#matchHistory}
+    <h4>{season.name}</h4>
+	{>match_summary /}
+  {/matchHistory}
+{:else}
+  <p>No LD2L match history.</p>
+{/matchHistory}
+
 {>footer /}
