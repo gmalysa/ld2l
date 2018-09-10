@@ -108,7 +108,7 @@
 
 <h2>Match History</h2>
 {?matchHistory}
-  {#matchHistory}
+  {#matchHistory matchPlayer=profileUser.steamid}
     <h4>{season.name}</h4>
 	{>match_summary /}
   {/matchHistory}

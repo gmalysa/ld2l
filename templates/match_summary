@@ -22,13 +22,25 @@
 	  <td>
 		<a href="/matches/{id}">
 		  {#heroes.home}
-			{@dota_hero_icon hero=. /}
+			{@eq key=matchPlayer value=player}
+			  <span class="ld2l-highlight-player">
+			    {@dota_hero_icon hero=hero /}
+			  </span>
+			{:else}
+			  {@dota_hero_icon hero=hero /}
+			{/eq}
 		  {/heroes.home}
 
 		  {~n}vs.{~n}
 
 		  {#heroes.away}
-			{@dota_hero_icon hero=. /}
+			{@eq key=matchPlayer value=player}
+			  <span class="ld2l-highlight-player">
+			    {@dota_hero_icon hero=hero /}
+			  </span>
+			{:else}
+			  {@dota_hero_icon hero=hero /}
+			{/eq}
 		  {/heroes.away}
 		</a>
 	  </td>

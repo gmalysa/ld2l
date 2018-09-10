@@ -3,8 +3,13 @@
 @accent-1: #99d5c9;
 @accent-2: #6c969d;
 @accent-3: #645e9d;
+@highlight: #0ac;
 @responsive-width: 48em;
 @table-border: #cbcbcb;
+
+body {
+	background: #fff;
+}
 
 a, a:hover, a:visited, a:active {
 	color: @accent-3;
@@ -314,12 +319,19 @@ div.ld2l-lobby-player {
 
 .ld2l-dota-hero {
 	height: 2em;
+	vertical-align: middle;
 }
 .ld2l-dota-item {
 	height: 2em;
+	vertical-align: middle;
 }
 
 .ld2l-result-description {
 	font-weight: bold;
 	font-variant: small-caps;
+}
+
+// Outline player's hero on pages that support it
+.ld2l-highlight-player img {
+	border: 3px solid @highlight;
 }
