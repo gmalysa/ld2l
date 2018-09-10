@@ -332,9 +332,23 @@ div.ld2l-lobby-player {
 }
 
 // Outline player's hero on pages that support it
-.ld2l-highlight-player img {
-	border: 2px solid @highlight;
-	outline: 1px solid #000;
-	margin-left: 1px;
-	margin-right: 1px;
+.ld2l-highlight-player {
+	position: relative;
+
+	img {
+		margin-left: 1px;
+		margin-right: 1px;
+	}
+
+	div {
+		position: absolute;
+		top: 16px;
+		left: 1px;
+		color: #0d0;
+		background: rgba(0,0,0,70%);
+		border: 1px solid #000;
+		width: 55px;
+		text-align: center;
+		font-size: 0.5em;
+	}
 }

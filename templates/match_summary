@@ -25,6 +25,7 @@
 			{@eq key=matchPlayer value=player}
 			  <span class="ld2l-highlight-player">
 			    {@dota_hero_icon hero=hero /}
+				<div class="fa fa-check fa-xs"></div>
 			  </span>
 			{:else}
 			  {@dota_hero_icon hero=hero /}
@@ -37,6 +38,7 @@
 			{@eq key=matchPlayer value=player}
 			  <span class="ld2l-highlight-player">
 			    {@dota_hero_icon hero=hero /}
+				<div class="fa fa-check fa-xs"></div>
 			  </span>
 			{:else}
 			  {@dota_hero_icon hero=hero /}
