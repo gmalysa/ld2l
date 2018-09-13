@@ -6,12 +6,13 @@
 
 // Module information
 var mod_name = 'MySQL';
-var mod_version = '0.3.0';
+var mod_version = '0.4.0';
 
 // Node.js modules
 require('colors');
 var _ = require('underscore');
 var mysql = require('mysql');
+var db = require('db-filters');
 
 // Project modules
 var logger = require('./logger');
@@ -62,7 +63,34 @@ function init() {
 	}
 }
 
+/**
+ * Cleans up the database connection assigned to a specific environment/request
+ */
+function cleanup_db(env, after) {
+	if (env.conn) {
+		env.conn.release();
+		delete env.conn;
+	}
+	after();
+}
+
+/**
+ * Initialize database connection from the mysql pool for a specific environment/request
+ */
+function init_db(env, after) {
+	env.filters = db.clone_filters(db.filters);
+
+	mysql.getValidConnection(env, function() {
+		db.set_conn_all(env.conn, env.filters);
+		after();
+	});
+}
+
 // Public interface for the module and the class
-module.exports.init = init;
-module.exports.cleanup = deinit;
-module.exports.getValidConnection = getValidConnection;
+module.exports = {
+	init : init,
+	cleanup : deinit,
+	getValidConnection : getValidConnection,
+	init_db : init_db,
+	cleanup_db : cleanup_db
+};
