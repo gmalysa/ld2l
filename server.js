@@ -24,6 +24,8 @@ var bodyParser = require('body-parser');
 var expressSession = require('express-session');
 var sessionFileStore = require('session-file-store')(expressSession);
 var passport = require('passport');
+var siosession = require('express-socket.io-session');
+var siopassport = require('passport.socketio');
 
 // local modules
 var logger = require('./logger');
@@ -116,17 +118,22 @@ server.use(function(req, res, next) {
 	next();
 });
 
-// Configure middleware that runs before route handlers
-server.use(config.static_path, express.static(config.static_dir));
-server.use(expressSession({
+var sessionStorage = new sessionFileStore({
+	ttl : 15 * 24 * 60 * 60
+});
+
+var sessionMiddleware = expressSession({
 	secret : config.session_secret,
 	resave : false,
 	saveUninitialized : false,
 	maxAge : 15 * 24 * 60 * 60 * 1000,
-	store : new sessionFileStore({
-		ttl : 15 * 24 * 60 * 60
-	})
-}));
+	store : sessionStorage,
+	rolling : true
+});
+
+// Configure middleware that runs before route handlers
+server.use(config.static_path, express.static(config.static_dir));
+server.use(sessionMiddleware);
 server.use(bodyParser.urlencoded({extended : false}));
 server.use(bodyParser.json());
 server.use(passport.initialize());
@@ -141,6 +148,14 @@ var ci = new common.init(server, {
 	route_dir		: config.route_dir,
 	port			: config.port
 });
+
+// Connect socket.io middleware to interface with express middleware
+ci.io.use(siosession(sessionMiddleware));
+ci.io.use(siopassport.authorize({
+	key : 'connect.sid',
+	secret : config.session_secret,
+	store : sessionStorage
+}));
 
 // Add helpers and hooks
 ci.add_pre_hook(fl.mkfn(init_db, 0));
