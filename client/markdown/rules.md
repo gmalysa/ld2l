@@ -7,7 +7,12 @@ This is a league for Herald 0 - Legend 3 (approximately "Normal Skill" and "High
 
 1. Signups are handled via the league website using your Steam account.
 
-2. In order to be draft-eligible or be added to the Free Agent or Standin lists, players must have a current badge of Legend 3 or below at the time of the draft (except those covered by the Graduation Rule), and their behavior must be vouched by a previous league participant. Vouching most commonly happens via inhouse games during the signup period.
+2. In order to be draft-eligible or be added to the Free Agent or Standin lists, players must:
+	* have a current badge of Legend 3 or below at the time of the draft (except those covered by the Graduation Rule),
+	* have their behavior vouched for by a previous league participant, and
+	* have public matchmaking data exposed on dotabuff/opendota.
+
+	Vouching most commonly happens via inhouse games during the signup period.
 
 3. Draft-eligibility for vouched players will be determined by signup date, on a first-come first-served basis. Remaining signups will compose the Free Agent pool.
 
