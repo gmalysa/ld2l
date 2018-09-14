@@ -11,6 +11,7 @@ var users = require('../lib/users.js');
 var seasons = require('../lib/seasons.js');
 var teams = require('../lib/teams.js');
 var matches = require('../lib/matches.js');
+var audit = require('../lib/audit.js');
 
 /**
  * Remove all of the links between a player and a particular match
@@ -36,9 +37,20 @@ var remove_player = new fl.Chain(
 		}
 
 		env.matchid = id;
-		env.filters.match_links.delete({
+		env.playerid = playerid;
+		env.filters.match_links.select({
 			matchid : id,
 			steamid : playerid
+		}).exec(after, env.$throw);
+	},
+	function(env, after, links) {
+		after(env.user, audit.EVENT_REMOVE_PLAYER, {id : env.matchid}, {links : links});
+	},
+	audit.logMatchEvent,
+	function(env, after) {
+		env.filters.match_links.delete({
+			matchid : env.matchid,
+			steamid : env.playerid
 		}).exec(after, env.$throw);
 	},
 	function(env, after) {
@@ -206,6 +218,10 @@ var add_player = new fl.Chain(
 			after();
 		}
 	),
+	function(env, after) {
+		after(env.user, audit.EVENT_ADD_PLAYER, {id : env.matchid}, env.req.body);
+	},
+	audit.logMatchEvent,
 	function(env, after) {
 		env.$redirect('/matches/'+env.matchid);
 		after();
