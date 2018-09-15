@@ -1,0 +1,26 @@
+<div class="ld2l-config-container">
+  <h3>Inhouse Draft</h3>
+  <div class="ld2l-config-playerlist">
+  Draftable Players:
+   {#players}
+     <div class="ld2l-player"
+	      data-steamid="{steamid}"
+		  onclick="ld2l.inhouseQueue.pickPlayer(this);">
+      <img src="{avatar}" /><span>{display_name}</span>
+	 </div>
+   {/players}
+  </div>
+  {#captains}
+    <div class="ld2l-config-team">
+	  <div class="ld2l-config-team-name">
+	    {team}
+	  </div>
+	  <div class="ld2l-player">
+        <img src="{avatar}" /><span>{display_name}</span>
+	  </div>
+	  <div data-side="{side}">
+	  </div>
+	</div>
+  {/captains}
+  <div id="yourTurn">It is your turn to draft.</div>
+</div>

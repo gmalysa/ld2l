@@ -353,3 +353,72 @@ div.ld2l-lobby-player {
 		font-size: 0.6em;
 	}
 }
+
+// Stuff for match config screen
+// @todo add media queries?
+
+#inhouseConfig {
+	position: fixed;
+	z-index: 1;
+	left: 0;
+	top: 0;
+	display: none;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.4);
+	padding-left: 12em;
+}
+
+.ld2l-config-container {
+	margin-right: auto;
+	margin-bottom: auto;
+	margin-left: 0px;
+	margin-top: 50px;
+	padding: 5px;
+	padding-bottom: 20px;
+	border: 1px solid #000;
+	width: 40em;
+	background-color: #fff;
+}
+
+.ld2l-player-dummy {
+	border: 1px solid #999;
+	color: #999;
+	box-sizing: border-box;
+	height: 36px;
+	text-align: center;
+	padding-top: 10px;
+
+}
+
+.active {
+	border: 1px solid #900;
+	color: #900;
+}
+
+.ld2l-config-team-name {
+	font-weight: bold;
+	text-align: center;
+}
+
+.ld2l-config-playerlist {
+	display: inline-block;
+	width: 13em;
+	vertical-align: top;
+
+	.ld2l-player:hover {
+		background-color: #ddd;
+		cursor: pointer;
+	}
+}
+.ld2l-config-team {
+	display: inline-block;
+	width: 13em;
+}
+
+#yourTurn {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	font-weight: bold;
+	text-align: center;
+}

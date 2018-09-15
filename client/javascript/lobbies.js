@@ -6,6 +6,162 @@ if (undefined === ld2l) {
 	var ld2l = {};
 }
 
+ld2l.inhouseQueue = {
+	socket : null,
+	queue : [],
+	steamid : '',
+	config : null,
+
+	setIdentity : function(id) {
+		this.steamid = id;
+	},
+
+	addPlayer : function(player) {
+		this.queue.push(player);
+		if (this.queue.length == 1) {
+			$('#inhouseQueue').html('');
+		}
+		dust.render('autocomplete', player, function(err, out) {
+			$('#inhouseQueue').append(out);
+		});
+	},
+
+	removePlayer : function(player) {
+		this.queue = _.reject(this.queue, function(v) {
+			return v.steamid == player.steamid;
+		});
+
+		$('#inhouseQueue > div[data-steamid="'+player.steamid+'"]').detach();
+
+		if (this.queue.length == 0) {
+			$('#inhouseQueue').html('Queue is currently empty.');
+		}
+	},
+
+	clearQueue : function() {
+		$('#inhouseQueue > div').detach();
+		$('#inhouseQueue').html('Queue is currently empty.');
+	},
+
+	queueMe : function() {
+		$.ajax({
+			url : '/lobbies/queue',
+			method : 'POST',
+			accepts : 'application/json'
+		}).done(function(data, status, xhr) {
+			if (data.success) {
+				$('#queueMe').css('display', 'none');
+				$('#leaveQueue').css('display', '');
+			}
+		});
+	},
+
+	leaveQueue : function() {
+		$.ajax({
+			url : '/lobbies/leaveQueue',
+			method : 'POST',
+			accepts : 'application/json'
+		}).done(function(data, status, xhr) {
+			if (data.success) {
+				$('#queueMe').css('display', '');
+				$('#leaveQueue').css('display', 'none');
+			}
+		});
+	},
+
+	startMatchConfig : function(data) {
+		var that = this;
+		this.config = io('/queue-config-'+data.id);
+		$('#queueMe').css('display', '');
+		$('#leaveQueue').css('display', 'none');
+
+		dust.render('matchconfig', {
+			players : data.players,
+			captains : data.captains,
+		}, function(err, out) {
+			$('#inhouseConfig').html(out);
+			$('#inhouseConfig').css('display', 'block');
+
+			// Add pick dummies
+			console.log(data);
+			var counter = 0;
+			_.each(data.pickOrder, function(v) {
+				dust.render('pick_dummy', {pick : counter}, function(err, out) {
+					$('div[data-side="'+v+'"]').append(out);
+
+					if (0 == counter) {
+						$('div[data-pick="0"]').addClass('active');
+					}
+				});
+				counter += 1;
+			});
+		});
+
+		this.config.on('pick', function(data) {
+			console.log(data.steamid+' was picked '+data.pick);
+			var playerDiv = $('div[data-steamid="'+data.steamid+'"]');
+			playerDiv.detach();
+
+			var slot = $('div[data-pick="'+data.pick+'"]');
+			slot.removeClass('ld2l-player-dummy active');
+			slot.html(playerDiv);
+
+			var nextSlot = $('div[data-pick="'+(data.pick+1)+'"]');
+			if (nextSlot.length > 0) {
+				nextSlot.addClass('active');
+			}
+		});
+
+		this.config.on('turn', function(data) {
+			console.log('New turn:');
+			console.log(data);
+			console.log(that.steamid);
+			if (data.steamid == that.steamid) {
+				$('#yourTurn').css('display', 'block');
+			}
+			else {
+				$('#yourTurn').css('display', 'none');
+			}
+		});
+	},
+
+	pickPlayer : function(elem) {
+		console.log('Picked '+elem.dataset.steamid);
+		this.config.emit('pick', {
+			steamid : elem.dataset.steamid
+		});
+	}
+
+};
+
+$(window).load(function() {
+	ld2l.inhouseQueue.socket = io('/queue');
+
+	ld2l.inhouseQueue.socket.on('addPlayer', function(data) {
+		console.log('Add a player');
+		console.log(data);
+		ld2l.inhouseQueue.addPlayer(data);
+	});
+
+	ld2l.inhouseQueue.socket.on('removePlayer', function(data) {
+		console.log('Remove a player');
+		console.log(data);
+		ld2l.inhouseQueue.removePlayer(data);
+	});
+
+	ld2l.inhouseQueue.socket.on('identity', function(data) {
+		console.log('Setting id to '+data.steamid);
+		ld2l.inhouseQueue.setIdentity(data.steamid);
+	});
+
+	ld2l.inhouseQueue.socket.on('config_start', function(data) {
+		console.log('Inhouse config start');
+		console.log(data);
+		ld2l.inhouseQueue.clearQueue();
+		ld2l.inhouseQueue.startMatchConfig(data);
+	});
+});
+
 /**
  * Helper function that creates a promise for resolving a player's name to steamid
  * based on the input element and associated data
@@ -44,8 +200,7 @@ ld2l.resolveName = function(v) {
 			});
 		}
 		else {
-//			def.reject();
-			def.resolve('12345768890');
+			def.reject();
 		}
 	}
 
