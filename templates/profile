@@ -33,6 +33,12 @@
 	    <li><b>Not</b> vouched yet</li>
 	  {/canVouch}
 	{/vouched}
+	{?banned}
+	  <li>This player is <b>BANNED</b> from LD2L seasons and inhouses (smurfing, toxicity, etc.).</li>
+	{/banned}
+	{?ineligible}
+	  <li>This player is no longer eligible for LD2L seasons and inhouses (mmr too high).</li>
+	{/ineligible}
     <li><a href="http://steamcommunity.com/profiles/{profileUser.steamid}">
 	    Steam Profile ({profileUser.name})
 	</a></li>

@@ -106,6 +106,8 @@ var buildProfile = new fl.Chain(
 			opendota : 'https://www.opendota.com/players/'+displayUser.id32,
 			showPrivs : showPrivs,
 			vouched : privs.hasPriv(userPrivs, privs.JOIN_SEASON),
+			banned : privs.hasPriv(userPrivs, privs.BANNED),
+			ineligible : privs.hasPriv(userPrivs, privs.INELIGIBLE),
 			canVouch : canVouch(viewPrivs, userPrivs),
 			canEdit : canEdit,
 			canLink : canLink,
