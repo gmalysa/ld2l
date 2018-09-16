@@ -41,4 +41,7 @@
   <li class="pure-menu-item">
     <a class="ld2l-menu-link" href="/seasons/{id}/matches">Match History</a>
   </li>
+  <li class="pure-menu-item">
+    <a class="ld2l-menu-link" href="/lobbies">Queue</a>
+  </li>
 {/eq}
