@@ -92,10 +92,12 @@ function MatchConfig(io, players, id) {
 
 	var that = this;
 	this.ioConfig.on('connect', function(socket) {
-
-		that.ioConfig.emit('turn', {
-			steamid : that.teams[pickOrder[that.pickNumber]].captain
-		});
+		// If we're done stop trying to inform people of the current pick
+		if (pickOrder[that.pickNumber]) {
+			that.ioConfig.emit('turn', {
+				steamid : that.teams[pickOrder[that.pickNumber]].captain
+			});
+		}
 
 		socket.on('pick', function(data) {
 			if (!that.isYourTurn(socket.request.user))
