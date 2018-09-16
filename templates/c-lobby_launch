@@ -1,0 +1,8 @@
+<p>The lobby will be started shortly and you will receve a lobby invite from one of: YuiBot,
+{~n}NanaBot, MashiroBot, SagwaBot, AsukaBot, or CoryBaxterBot.</p>
+<p>If you don't receive an invitation, the lobby details are:</p>
+<ul>
+  <li><b>Lobby Name:</b> {lobbyName}</li>
+  <li><b>Lobby Password:</b> {lobbyPassword}</li>
+</ul>
+{>lobby_config_clear /}

@@ -11,6 +11,7 @@ ld2l.inhouseQueue = {
 	queue : [],
 	steamid : '',
 	config : null,
+	players : [],
 
 	setIdentity : function(id) {
 		this.steamid = id;
@@ -72,8 +73,7 @@ ld2l.inhouseQueue = {
 	startMatchConfig : function(data) {
 		var that = this;
 		this.config = io('/queue-config-'+data.id);
-		$('#queueMe').css('display', '');
-		$('#leaveQueue').css('display', 'none');
+		this.players = data.players;
 
 		dust.render('matchconfig', {
 			players : data.players,
@@ -82,8 +82,12 @@ ld2l.inhouseQueue = {
 			$('#inhouseConfig').html(out);
 			$('#inhouseConfig').css('display', 'block');
 
+			// Show first turn here (turn event always arrives before we can listen)
+			if (data.captains[0].steamid == that.steamid) {
+				$('#yourTurn').css('display', 'block');
+			}
+
 			// Add pick dummies
-			console.log(data);
 			var counter = 0;
 			_.each(data.pickOrder, function(v) {
 				dust.render('pick_dummy', {pick : counter}, function(err, out) {
@@ -114,7 +118,6 @@ ld2l.inhouseQueue = {
 
 		this.config.on('turn', function(data) {
 			console.log('New turn:');
-			console.log(data);
 			console.log(that.steamid);
 			if (data.steamid == that.steamid) {
 				$('#yourTurn').css('display', 'block');
@@ -123,6 +126,12 @@ ld2l.inhouseQueue = {
 				$('#yourTurn').css('display', 'none');
 			}
 		});
+
+		this.config.on('launch', function(data) {
+			dust.render('lobby_launch', data, function(err, out) {
+				$('.ld2l-config-container').append(out);
+			});
+		});
 	},
 
 	pickPlayer : function(elem) {
@@ -130,6 +139,14 @@ ld2l.inhouseQueue = {
 		this.config.emit('pick', {
 			steamid : elem.dataset.steamid
 		});
+	},
+
+	clearConfig : function() {
+		$('#inhouseConfig').html('');
+		$('#inhouseConfig').css('display', 'none');
+		$('#queueMe').css('display', '');
+		$('#leaveQueue').css('display', 'none');
+		this.config = null;
 	}
 
 };

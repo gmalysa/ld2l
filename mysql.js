@@ -80,7 +80,7 @@ function cleanup_db(env, after) {
 function init_db(env, after) {
 	env.filters = db.clone_filters(db.filters);
 
-	mysql.getValidConnection(env, function() {
+	getValidConnection(env, function() {
 		db.set_conn_all(env.conn, env.filters);
 		after();
 	});

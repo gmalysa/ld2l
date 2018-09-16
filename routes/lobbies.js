@@ -2,6 +2,7 @@
 var _ = require('underscore');
 var fl = require('flux-link');
 var db = require('db-filters');
+var randomstring = require('randomstring');
 
 var mysql = require('../mysql');
 
@@ -42,6 +43,8 @@ var matchConfigs = {};
  * @param[in] io socket.io object for communicating with clients
  * @param[in] players Array of ten players that are in this match
  * @param[in] id identifier to use to find this match config in requests
+ * @todo match config history to clients
+ * @todo timeouts
  */
 function MatchConfig(io, players, id) {
 	this.io = io;
@@ -49,6 +52,16 @@ function MatchConfig(io, players, id) {
 	this.id = id;
 	this.ioConfig = io.of('/queue-config-'+id);
 	this.pickNumber = 0;
+
+	// @todo tournament id -> season property instead of hardcoded
+	// this is the KB inhouse league ticket
+	this.settings = {
+		name : 'LD2L Inhouse '+id,
+		password : randomstring.generate(8),
+		tournament : 10287,
+		ident : 'ld2l-inhouse-'+randomstring.generate(8)
+	};
+	console.log(this.settings);
 
 	// First two signups are captain for now
 	this.captains = _.map(this.players.splice(0, 2), function(v, k) {
@@ -61,12 +74,12 @@ function MatchConfig(io, players, id) {
 	// Matches the array format in lobbies.create for teams
 	this.teams = [
 		{
-			captain : this.captains[0],
-			players : []
+			captain : this.captains[0].steamid,
+			players : [this.captains[0].steamid]
 		},
 		{
-			captain : this.captains[1],
-			players : []
+			captain : this.captains[1].steamid,
+			players : [this.captains[1].steamid]
 		}
 	];
 
@@ -81,7 +94,7 @@ function MatchConfig(io, players, id) {
 	this.ioConfig.on('connect', function(socket) {
 
 		that.ioConfig.emit('turn', {
-			steamid : that.teams[pickOrder[that.pickNumber]].captain.steamid
+			steamid : that.teams[pickOrder[that.pickNumber]].captain
 		});
 
 		socket.on('pick', function(data) {
@@ -93,14 +106,14 @@ function MatchConfig(io, players, id) {
 
 			// Add player to team
 			var side = 0;
-			if (that.teams[1].captain.steamid == socket.request.user.steamid)
+			if (that.teams[1].captain == socket.request.user.steamid)
 				side = 1;
 
 			var player = _.find(that.players, function(v) {
 				return v.steamid == data.steamid;
 			});
 
-			that.teams[side].players.push(player);
+			that.teams[side].players.push(player.steamid);
 
 			// Remove picked player from the draft pool
 			that.players = _.reject(that.players, function(v) {
@@ -114,9 +127,19 @@ function MatchConfig(io, players, id) {
 
 			that.pickNumber += 1;
 
-			that.ioConfig.emit('turn', {
-				steamid : that.teams[pickOrder[that.pickNumber]].captain.steamid
-			});
+			if (that.pickNumber < pickOrder.length) {
+				that.ioConfig.emit('turn', {
+					steamid : that.teams[pickOrder[that.pickNumber]].captain
+				});
+			}
+
+			if (that.players.length == 0) {
+				that.ioConfig.emit('launch', {
+					lobbyName : that.settings.name,
+					lobbyPassword : that.settings.password
+				});
+				that.launchGame();
+			}
 		});
 	});
 }
@@ -129,9 +152,9 @@ MatchConfig.prototype = _.extend(MatchConfig.prototype, {
 	 */
 	isYourTurn : function(captain) {
 		var side = -1;
-		if (this.teams[0].captain.steamid == captain.steamid)
+		if (this.teams[0].captain == captain.steamid)
 			side = 0;
-		else if (this.teams[1].captain.steamid == captain.steamid)
+		else if (this.teams[1].captain == captain.steamid)
 			side = 1;
 
 		if (side < 0)
@@ -149,8 +172,32 @@ MatchConfig.prototype = _.extend(MatchConfig.prototype, {
 		return _.any(this.players, function(v) {
 			return v.steamid == steamid;
 		});
+	},
+
+	/**
+	 * Pass lobby information to kaedebot and start the game
+	 */
+	launchGame : function() {
+		var env = new fl.Environment({
+			settings : _.extend({}, this.settings, {teams : this.teams})
+		});
+
+		launchChain.call(null, env, function() {});
 	}
 });
+
+/**
+ * Chain for launching lobbies that includes the normal setup a request would have
+ */
+var launchChain = new fl.Chain(
+	mysql.init_db,
+	// Extract arguments from the environment
+	function(env, after) {
+		after(env.settings);
+	},
+	lobbies.create,
+	mysql.cleanup_db
+);
 
 /**
  * Create an InhouseQueue, which is a singleton object for this module
@@ -166,7 +213,8 @@ function InhouseQueue(io) {
 //		steamid : '76561198062530567',
 //		display_name : 'Clare',
 //		avatar : 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/f5/f540924149a7357629613388ebf52ea095ed5b50.jpg'
-//	}, {
+//	}];
+//	, {
 //		steamid : '76561198048886742',
 //		display_name : 'megaera',
 //		avatar : 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/cd/cd60dfc7a876d04499696965c17b68efc3833eb7.jpg'
@@ -217,13 +265,13 @@ InhouseQueue.prototype = _.extend(InhouseQueue.prototype, {
 		if (!alreadyQueued) {
 			this.queue.push(player);
 			// @todo temporary to be able to test as captain locally
-			//this.queue.unshift(player);
+//			this.queue.unshift(player);
 
 			// Push a stripped user object to the client with only public info
 			this.ioQueue.emit('addPlayer', _clientPlayerInfo(player));
 
 			// At ten queuers start the match
-			if (this.queue.length == 5) {
+			if (this.queue.length == 10) {
 				var setup = new MatchConfig(this.io, this.queue, this.nextId);
 				this.nextId += 1;
 
@@ -287,7 +335,7 @@ var lobby_index = new fl.Chain(
 	lobbies.getAll,
 	function(env, after, lobbies) {
 		// Temporary for testing
-		lobbies = {"lobbies":[{"lobbyName":"LD2L Lobby","timeout":1536182060,"lobby":{"fill_with_bots":false,"series_type":0,"game_name":"LD2L Lobby","bot_difficulty_dire":0,"leader_id":76561198395782380,"dota_tv_delay":1,"members":[{"partner_account_type":0,"meta_xp_awarded":0,"id":"76561198395782380","cameraman":false,"channel":6,"coach_team":5,"slot":0,"favorite_team_packed":0,"team":4,"meta_level":0,"is_plus_subscriber":false,"meta_xp":0,"name":"YuiBot","leaver_status":1,"hero_id":0},{"partner_account_type":0,"meta_xp_awarded":0,"id":"76561198048886742","cameraman":false,"channel":6,"coach_team":5,"slot":3,"favorite_team_packed":563044447930478,"team":1,"meta_level":0,"is_plus_subscriber":true,"meta_xp":0,"name":"megaera","leaver_status":0,"hero_id":0},{"partner_account_type":0,"meta_xp_awarded":0,"id":"76561198007934819","cameraman":false,"channel":6,"coach_team":5,"slot":1,"favorite_team_packed":563044442703987,"team":0,"meta_level":0,"is_plus_subscriber":true,"meta_xp":0,"name":"ButteryGreg","leaver_status":0,"hero_id":0}],"game_version":0,"bot_dire":0,"dire_series_wins":0,"pass_key":"ld2l","lan_host_ping_to_server_region":0,"bot_difficulty_radiant":0,"penalty_level_radiant":0,"cm_pick":1,"allow_cheats":false,"previous_match_override":0,"game_mode":2,"pause_setting":0,"radiant_series_wins":0,"allow_spectating":true,"intro_mode":false,"visibility":0,"selection_priority_rules":0,"state":2,"league_series_id":0,"lobby_type":1,"league_game_id":0,"leagueid":0,"allchat":false,"penalty_level_dire":0,"bot_radiant":0,"server_region":1,"lan":false},"lobbyPassword":"ld2l","tournament":0,"ident":"ld2l-lobby","hook":"http://ld2l.gg/lobbies/results"},{"lobbyName":"LD2L Lobby","timeout":1536182060,"lobby":{"fill_with_bots":false,"series_type":0,"game_name":"LD2L Lobby","bot_difficulty_dire":0,"leader_id":76561198395782380,"dota_tv_delay":1,"members":[{"partner_account_type":0,"meta_xp_awarded":0,"id":"76561198395782380","cameraman":false,"channel":6,"coach_team":5,"slot":0,"favorite_team_packed":0,"team":4,"meta_level":0,"is_plus_subscriber":false,"meta_xp":0,"name":"YuiBot","leaver_status":1,"hero_id":0},{"partner_account_type":0,"meta_xp_awarded":0,"id":"76561198048886742","cameraman":false,"channel":6,"coach_team":5,"slot":3,"favorite_team_packed":563044447930478,"team":1,"meta_level":0,"is_plus_subscriber":true,"meta_xp":0,"name":"megaera","leaver_status":0,"hero_id":0},{"partner_account_type":0,"meta_xp_awarded":0,"id":"76561198007934819","cameraman":false,"channel":6,"coach_team":5,"slot":1,"favorite_team_packed":563044442703987,"team":0,"meta_level":0,"is_plus_subscriber":true,"meta_xp":0,"name":"ButteryGreg","leaver_status":0,"hero_id":0}],"game_version":0,"bot_dire":0,"dire_series_wins":0,"pass_key":"ld2l","lan_host_ping_to_server_region":0,"bot_difficulty_radiant":0,"penalty_level_radiant":0,"cm_pick":1,"allow_cheats":false,"previous_match_override":0,"game_mode":2,"pause_setting":0,"radiant_series_wins":0,"allow_spectating":true,"intro_mode":false,"visibility":0,"selection_priority_rules":0,"state":2,"league_series_id":0,"lobby_type":1,"league_game_id":0,"leagueid":0,"allchat":false,"penalty_level_dire":0,"bot_radiant":0,"server_region":1,"lan":false},"lobbyPassword":"ld2l","tournament":0,"ident":"ld2l-lobby","hook":"http://ld2l.gg/lobbies/results"}]};
+//		lobbies = {"lobbies":[{"lobbyName":"LD2L Lobby","timeout":1536182060,"lobby":{"fill_with_bots":false,"series_type":0,"game_name":"LD2L Lobby","bot_difficulty_dire":0,"leader_id":76561198395782380,"dota_tv_delay":1,"members":[{"partner_account_type":0,"meta_xp_awarded":0,"id":"76561198395782380","cameraman":false,"channel":6,"coach_team":5,"slot":0,"favorite_team_packed":0,"team":4,"meta_level":0,"is_plus_subscriber":false,"meta_xp":0,"name":"YuiBot","leaver_status":1,"hero_id":0},{"partner_account_type":0,"meta_xp_awarded":0,"id":"76561198048886742","cameraman":false,"channel":6,"coach_team":5,"slot":3,"favorite_team_packed":563044447930478,"team":1,"meta_level":0,"is_plus_subscriber":true,"meta_xp":0,"name":"megaera","leaver_status":0,"hero_id":0},{"partner_account_type":0,"meta_xp_awarded":0,"id":"76561198007934819","cameraman":false,"channel":6,"coach_team":5,"slot":1,"favorite_team_packed":563044442703987,"team":0,"meta_level":0,"is_plus_subscriber":true,"meta_xp":0,"name":"ButteryGreg","leaver_status":0,"hero_id":0}],"game_version":0,"bot_dire":0,"dire_series_wins":0,"pass_key":"ld2l","lan_host_ping_to_server_region":0,"bot_difficulty_radiant":0,"penalty_level_radiant":0,"cm_pick":1,"allow_cheats":false,"previous_match_override":0,"game_mode":2,"pause_setting":0,"radiant_series_wins":0,"allow_spectating":true,"intro_mode":false,"visibility":0,"selection_priority_rules":0,"state":2,"league_series_id":0,"lobby_type":1,"league_game_id":0,"leagueid":0,"allchat":false,"penalty_level_dire":0,"bot_radiant":0,"server_region":1,"lan":false},"lobbyPassword":"ld2l","tournament":0,"ident":"ld2l-lobby","hook":"http://ld2l.gg/lobbies/results"},{"lobbyName":"LD2L Lobby","timeout":1536182060,"lobby":{"fill_with_bots":false,"series_type":0,"game_name":"LD2L Lobby","bot_difficulty_dire":0,"leader_id":76561198395782380,"dota_tv_delay":1,"members":[{"partner_account_type":0,"meta_xp_awarded":0,"id":"76561198395782380","cameraman":false,"channel":6,"coach_team":5,"slot":0,"favorite_team_packed":0,"team":4,"meta_level":0,"is_plus_subscriber":false,"meta_xp":0,"name":"YuiBot","leaver_status":1,"hero_id":0},{"partner_account_type":0,"meta_xp_awarded":0,"id":"76561198048886742","cameraman":false,"channel":6,"coach_team":5,"slot":3,"favorite_team_packed":563044447930478,"team":1,"meta_level":0,"is_plus_subscriber":true,"meta_xp":0,"name":"megaera","leaver_status":0,"hero_id":0},{"partner_account_type":0,"meta_xp_awarded":0,"id":"76561198007934819","cameraman":false,"channel":6,"coach_team":5,"slot":1,"favorite_team_packed":563044442703987,"team":0,"meta_level":0,"is_plus_subscriber":true,"meta_xp":0,"name":"ButteryGreg","leaver_status":0,"hero_id":0}],"game_version":0,"bot_dire":0,"dire_series_wins":0,"pass_key":"ld2l","lan_host_ping_to_server_region":0,"bot_difficulty_radiant":0,"penalty_level_radiant":0,"cm_pick":1,"allow_cheats":false,"previous_match_override":0,"game_mode":2,"pause_setting":0,"radiant_series_wins":0,"allow_spectating":true,"intro_mode":false,"visibility":0,"selection_priority_rules":0,"state":2,"league_series_id":0,"lobby_type":1,"league_game_id":0,"leagueid":0,"allchat":false,"penalty_level_dire":0,"bot_radiant":0,"server_region":1,"lan":false},"lobbyPassword":"ld2l","tournament":0,"ident":"ld2l-lobby","hook":"http://ld2l.gg/lobbies/results"}]};
 
 		env.lobbies = lobbies.lobbies;
 		env.players = _.flatten(_.map(env.lobbies, function(v) {
@@ -295,9 +343,14 @@ var lobby_index = new fl.Chain(
 		}));
 		var steamids = _.map(env.players, function(v) { return v.id; });
 
-		env.filters.users.select({
-			steamid : steamids
-		}).exec(after, env.$throw);
+		if (steamids.length > 0) {
+			env.filters.users.select({
+				steamid : steamids
+			}).exec(after, env.$throw);
+		}
+		else {
+			after([]);
+		}
 	},
 	function (env, after, users) {
 		// Remap to steamid index table

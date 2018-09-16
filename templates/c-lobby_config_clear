@@ -1,0 +1,6 @@
+<div style="text-align: center">
+  <input type="button"
+         class="pure-button ld2l-button-primary"
+		 value="Done"
+		 onclick="ld2l.inhouseQueue.clearConfig();" />
+</div>
