@@ -416,10 +416,6 @@ var lobby_results = new fl.Chain(
 module.exports.init_routes = function(server) {
 	inhouseQueue.setup(server.io);
 
-	server.io.on('connect', function(s) {
-		console.log('Client connected to inhouse queue');
-	});
-
 	server.add_route('/lobbies', {
 		pre : ['default', 'require_user'],
 		post : ['default'],

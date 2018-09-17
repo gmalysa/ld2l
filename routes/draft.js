@@ -17,6 +17,8 @@ var teams = require('../lib/teams.js');
 // Dummy function used to terminate chains that don't need further processing
 function term() {}
 
+// @todo use mysql.init_db and mysql.cleanup_db instead
+
 /**
  * Initialize database connection from the mysql pool
  */
@@ -349,10 +351,6 @@ var toggle_draftable = new fl.Chain(
 
 module.exports.init_routes = function(server) {
 	io = server.io;
-
-	io.on('connect', function(s) {
-		console.log('Client connected');
-	});
 
 	server.add_route('/draft/start/:seasonid', {
 		fn : start_draft,
