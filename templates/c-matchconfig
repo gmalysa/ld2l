@@ -4,7 +4,7 @@
   Draftable Players:
    {#players}
      <div class="ld2l-player"
-	      data-steamid="{steamid}"
+	      data-picksteamid="{steamid}"
 		  onclick="ld2l.inhouseQueue.pickPlayer(this);">
       <img src="{avatar}" /><span>{display_name}</span>
 	 </div>

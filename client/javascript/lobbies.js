@@ -129,7 +129,7 @@ ld2l.inhouseQueue = {
 	},
 
 	pickHandler : function(data) {
-		var playerDiv = $('div[data-steamid="'+data.steamid+'"]');
+		var playerDiv = $('div[data-picksteamid="'+data.steamid+'"]');
 		playerDiv.detach();
 
 		var slot = $('div[data-pick="'+data.pick+'"]');
@@ -158,9 +158,9 @@ ld2l.inhouseQueue = {
 	},
 
 	pickPlayer : function(elem) {
-		console.log('Picked '+elem.dataset.steamid);
+		console.log('Picked '+elem.dataset.picksteamid);
 		this.socket.emit('pick', {
-			steamid : elem.dataset.steamid
+			steamid : elem.dataset.picksteamid
 		});
 	},
 
