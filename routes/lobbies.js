@@ -6,6 +6,7 @@ var randomstring = require('randomstring');
 
 var mysql = require('../mysql');
 
+var logger = require('../logger.js');
 var users = require('../lib/users.js');
 var privs = require('../lib/privs.js');
 var lobbies = require('../lib/lobbies.js');
@@ -407,7 +408,7 @@ var create = new fl.Chain(
  */
 var lobby_results = new fl.Chain(
 	function(env, after) {
-		console.log(env.req.body);
+		logger.debug(env.req.body, 'KBaaS');
 		after(JSON.parse(env.req.body));
 	},
 	lobbies.saveResults
