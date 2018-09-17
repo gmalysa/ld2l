@@ -1,0 +1,9 @@
+<div id="readyCheck">
+  <p>One or more players failed to ready up on time. Please queue again.</p>
+  <div style="text-align: center">
+    <input type="button"
+	       class="pure-button ld2l-button-primary"
+		   value="OK"
+		   onclick="ld2l.inhouseQueue.clearPrompt()" />
+  </div>
+</div>

@@ -10,7 +10,6 @@ ld2l.inhouseQueue = {
 	socket : null,
 	queue : [],
 	steamid : '',
-	config : null,
 	players : [],
 
 	setIdentity : function(id) {
@@ -40,8 +39,9 @@ ld2l.inhouseQueue = {
 	},
 
 	clearQueue : function() {
-		$('#inhouseQueue > div').detach();
 		$('#inhouseQueue').html('Queue is currently empty.');
+		$('#queueMe').css('display', '');
+		$('#leaveQueue').css('display', 'none');
 	},
 
 	queueMe : function() {
@@ -70,9 +70,40 @@ ld2l.inhouseQueue = {
 		});
 	},
 
+	doReadyCheck : function(data) {
+		dust.render('readycheck', data, function(err, out) {
+			$('#inhouseConfig').html(out);
+			$('#inhouseConfig').css('display', 'flex');
+
+			var ping = new Audio('https://d1u5p3l4wpay3k.cloudfront.net/dota2_gamepedia/b/b1/Scan.mp3');
+			ping.volume = 0.3;
+			ping.play();
+		});
+	},
+
+	iAmReady : function(elem) {
+		this.socket.emit('ready');
+		$(elem).prop('disabled', true);
+	},
+
+	markReady : function(steamid) {
+		$('div[data-steamid="'+steamid+'"]')
+			.children('.ready')
+			.css('display', 'block');
+	},
+
+	readyCheckFailed : function() {
+		dust.render('readycheck_failed', {}, function(err, out) {
+			$('#inhouseConfig').html(out);
+			$('#inhouseConfig').css('display', 'flex');
+		});
+	},
+
+	clearPrompt : function() {
+		$('#inhouseConfig').css('display', 'none');
+	},
+
 	startMatchConfig : function(data) {
-		var that = this;
-		this.config = io('/queue-config-'+data.id);
 		this.players = data.players;
 
 		dust.render('matchconfig', {
@@ -80,12 +111,7 @@ ld2l.inhouseQueue = {
 			captains : data.captains,
 		}, function(err, out) {
 			$('#inhouseConfig').html(out);
-			$('#inhouseConfig').css('display', 'block');
-
-			// Show first turn here (turn event always arrives before we can listen)
-			if (data.captains[0].steamid == that.steamid) {
-				$('#yourTurn').css('display', 'block');
-			}
+			$('#inhouseConfig').css('display', 'flex');
 
 			// Add pick dummies
 			var counter = 0;
@@ -100,53 +126,46 @@ ld2l.inhouseQueue = {
 				counter += 1;
 			});
 		});
+	},
 
-		this.config.on('pick', function(data) {
-			console.log(data.steamid+' was picked '+data.pick);
-			var playerDiv = $('div[data-steamid="'+data.steamid+'"]');
-			playerDiv.detach();
+	pickHandler : function(data) {
+		var playerDiv = $('div[data-steamid="'+data.steamid+'"]');
+		playerDiv.detach();
 
-			var slot = $('div[data-pick="'+data.pick+'"]');
-			slot.removeClass('ld2l-player-dummy active');
-			slot.html(playerDiv);
+		var slot = $('div[data-pick="'+data.pick+'"]');
+		slot.removeClass('ld2l-player-dummy active');
+		slot.html(playerDiv);
 
-			var nextSlot = $('div[data-pick="'+(data.pick+1)+'"]');
-			if (nextSlot.length > 0) {
-				nextSlot.addClass('active');
-			}
-		});
+		var nextSlot = $('div[data-pick="'+(data.pick+1)+'"]');
+		if (nextSlot.length > 0) {
+			nextSlot.addClass('active');
+		}
+	},
 
-		this.config.on('turn', function(data) {
-			console.log('New turn:');
-			console.log(that.steamid);
-			if (data.steamid == that.steamid) {
-				$('#yourTurn').css('display', 'block');
-			}
-			else {
-				$('#yourTurn').css('display', 'none');
-			}
-		});
+	turn : function(data) {
+		if (data.steamid == this.steamid) {
+			$('#yourTurn').css('display', 'block');
+		}
+		else {
+			$('#yourTurn').css('display', 'none');
+		}
+	},
 
-		this.config.on('launch', function(data) {
-			dust.render('lobby_launch', data, function(err, out) {
-				$('.ld2l-config-container').append(out);
-			});
+	launch : function(data) {
+		dust.render('lobby_launch', data, function(err, out) {
+			$('.ld2l-config-container').append(out);
 		});
 	},
 
 	pickPlayer : function(elem) {
 		console.log('Picked '+elem.dataset.steamid);
-		this.config.emit('pick', {
+		this.socket.emit('pick', {
 			steamid : elem.dataset.steamid
 		});
 	},
 
 	clearConfig : function() {
-		$('#inhouseConfig').html('');
-		$('#inhouseConfig').css('display', 'none');
-		$('#queueMe').css('display', '');
-		$('#leaveQueue').css('display', 'none');
-		this.config = null;
+		this.clearPrompt();
 	}
 
 };
@@ -166,16 +185,50 @@ $(window).load(function() {
 		ld2l.inhouseQueue.removePlayer(data);
 	});
 
+	ld2l.inhouseQueue.socket.on('clearQueue', function() {
+		console.log('Inhouse queue reset');
+		ld2l.inhouseQueue.clearQueue();
+	});
+
 	ld2l.inhouseQueue.socket.on('identity', function(data) {
 		console.log('Setting id to '+data.steamid);
 		ld2l.inhouseQueue.setIdentity(data.steamid);
 	});
 
-	ld2l.inhouseQueue.socket.on('config_start', function(data) {
+	ld2l.inhouseQueue.socket.on('readyCheck', function(data) {
+		console.log('Ready check starting');
+		ld2l.inhouseQueue.doReadyCheck(data);
+	});
+
+	ld2l.inhouseQueue.socket.on('markReady', function(data) {
+		console.log('Player '+data.steamid+' ready');
+		ld2l.inhouseQueue.markReady(data.steamid);
+	});
+
+	ld2l.inhouseQueue.socket.on('readyCheckFailed', function() {
+		console.log('Ready check failed.');
+		ld2l.inhouseQueue.readyCheckFailed();
+	});
+
+	ld2l.inhouseQueue.socket.on('configStart', function(data) {
 		console.log('Inhouse config start');
 		console.log(data);
-		ld2l.inhouseQueue.clearQueue();
 		ld2l.inhouseQueue.startMatchConfig(data);
+	});
+
+	ld2l.inhouseQueue.socket.on('pick', function(data) {
+		console.log(data.steamid+' was picked '+data.pick);
+		ld2l.inhouseQueue.pickHandler(data);
+	});
+
+	ld2l.inhouseQueue.socket.on('turn', function(data) {
+		console.log('New turn: '+data.steamid);
+		ld2l.inhouseQueue.turn(data);
+	});
+
+	ld2l.inhouseQueue.socket.on('launch', function(data) {
+		console.log('Lobby was launched');
+		ld2l.inhouseQueue.launch(data);
 	});
 });
 

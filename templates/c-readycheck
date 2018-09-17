@@ -1,0 +1,16 @@
+<div id="readyCheck">
+<div>
+  {#players}
+    <div style="display:inline-block;" data-steamid="{steamid}">
+      <div class="ready"></div>
+      <img src="{avatar}" />
+    </div>
+  {/players}
+</div>
+<div style="text-align: center">
+  <input class="pure-button ld2l-button-primary"
+         type="button"
+		 value="Ready"
+		 onclick="ld2l.inhouseQueue.iAmReady(this);" />
+</div>
+</div>
