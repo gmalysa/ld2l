@@ -42,6 +42,7 @@ ld2l.inhouseQueue = {
 		$('#inhouseQueue').html('Queue is currently empty.');
 		$('#queueMe').css('display', '');
 		$('#leaveQueue').css('display', 'none');
+		this.queue = [];
 	},
 
 	queueMe : function() {
