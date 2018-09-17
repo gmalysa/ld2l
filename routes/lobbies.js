@@ -46,45 +46,14 @@ function leaveInhouseQueue(env, after) {
 
 /**
  * List lobbies in progress, give admins the option to create a new lobby
+ * @todo separate lobby details from loading the lobbies page
  */
 var lobby_index = new fl.Chain(
 	lobbies.getAll,
 	function(env, after, lobbies) {
-		// Temporary for testing
-
-		env.lobbies = lobbies.lobbies;
-		env.players = _.flatten(_.map(env.lobbies, function(v) {
-			return v.lobby.members;
-		}));
-		var steamids = _.map(env.players, function(v) { return v.id; });
-
-		if (steamids.length > 0) {
-			env.filters.users.select({
-				steamid : steamids
-			}).exec(after, env.$throw);
-		}
-		else {
-			after([]);
-		}
-	},
-	function (env, after, users) {
-		// Remap to steamid index table
-		var players = {};
-		_.each(users, function(u) {
-			players[u.steamid] = u;
-		});
-
-		// Attach user objects instead of steamids to lobby members
-		_.each(env.lobbies, function(lobby) {
-			_.each(lobby.lobby.members, function(m) {
-				if (undefined !== players[m.id])
-					m.player = players[m.id];
-			});
-		});
-
 		env.$template('lobbies');
 		env.$output({
-			lobbies : env.lobbies,
+			lobbies : lobbies,
 			canCreate : privs.hasPriv(env.user.privs, privs.CREATE_LOBBY),
 			canInvite : false,
 			canQueueInhouses : canQueueInhouses(env.user),
