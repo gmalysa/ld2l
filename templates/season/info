@@ -42,6 +42,18 @@
 	{/types}
   </select>
 </div>
+<div class="pure-control-group">
+  <label for="ticket">Ticket ID</label>
+  <input type="text" name="ticket" value="{season.ticket}" />
+</div>
+<div class="pure-control-group">
+  <label for="linearization">Linearization</label>
+  <select name="linearization">
+    {#linearizations}
+	  <option value="{value}" {@eq key=selected value="1"}selected{/eq}>{label}</option>
+	{/linearizations}
+  </select>
+</div>
 <div class="pure-controls">
   <input class="pure-button ld2l-button-primary" type="submit" value="Update" />
 </div>

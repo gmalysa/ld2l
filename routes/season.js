@@ -37,8 +37,11 @@ var edit_season = new fl.Branch(
 
 			var seasonStatus = parseInt(env.req.body.status);
 			var seasonType = parseInt(env.req.body.type);
+			var seasonLinear = parseInt(env.req.body.linearization);
+			var seasonTicket = parseInt(env.req.body.ticket);
 			if (!env.req.body.name || !seasons.isValidStatus(seasonStatus)
-				|| !seasons.isValidType(seasonType)) {
+				|| !seasons.isValidType(seasonType)
+				|| !seasons.isValidLinearization(seasonLinear)) {
 				env.$throw(new Error('Bad season update parameters given'));
 				return;
 			}
@@ -47,6 +50,8 @@ var edit_season = new fl.Branch(
 				name : env.req.body.name,
 				status : seasonStatus,
 				type : seasonType,
+				ticket : seasonTicket,
+				linearization : seasonLinear,
 			}, {id : id}).exec(after, env.$throw);
 		},
 		function(env, after) {
@@ -108,21 +113,29 @@ var season_info = new fl.Chain(
 			{value : seasons.TYPE_DRAFT, label : "EU/RD2L Draft"},
 			{value : seasons.TYPE_IHL, label : "Inhouse League"},
 		];
+		var linearLabels = [
+			{value : seasons.LINEARIZATION_2018S1, label : "2018 Season 1"},
+			{value : seasons.LINEARIZATION_2018S2, label : "2018 Season 2"},
+		];
 		var isDrafting = (season.status == seasons.STATUS_DRAFTING);
 		var scripts = ['sort'];
 
 		statusLabels.forEach(function(v, k) {
+			v.selected = '0';
 			if (v.value == season.status)
 				v.selected = '1';
-			else
-				v.selected = '0';
 		});
 
 		typeLabels.forEach(function(v, k) {
+			v.selected = '0';
 			if (v.value == season.type)
 				v.selected = '1';
-			else
-				v.selected = '0';
+		});
+
+		linearLabels.forEach(function(v, k) {
+			v.selected = '0';
+			if (v.value == season.linearization)
+				v.selected = '1';
 		});
 
 		if (isDrafting || canEdit) {
@@ -139,6 +152,7 @@ var season_info = new fl.Chain(
 			showTeams : false,
 			statuses : statusLabels,
 			types : typeLabels,
+			linearizations : linearLabels,
 			season : season,
 			scripts : scripts
 		});
@@ -472,6 +486,18 @@ module.exports.init_routes = function(server) {
 				chunk.write('Inhouse League');
 			else
 				chunk.write('Unrecognized type: '+type);
+
+			return chunk;
+		},
+		season_linearization : function(chunk, context, bodies, params) {
+			var linear = parseInt(dust.helpers.tap(params.linear, chunk, context));
+
+			if (seasons.LINEARIZATION_2018S1 == linear)
+				chunk.write('2018 January-July');
+			else if (seasons.LINEARIZATION_2018S2 == linear)
+				chunk.write('2018 August-December');
+			else
+				chunk.write('Unrecognized linearization: '+linear);
 
 			return chunk;
 		}

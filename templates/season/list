@@ -9,6 +9,8 @@
 	  <th>Name</th>
 	  <th>Status</th>
 	  <th>Type</th>
+	  <th>Ticket</th>
+	  <th>Linearization</th>
 	</tr>
   </thead>
   <tbody>
@@ -18,6 +20,8 @@
       <td><a href="/seasons/{id}">{name}</a></td>
       <td>{@season_status status=status /}</td>
 	  <td>{@season_type type=type /}</td>
+	  <td>{ticket}</td>
+	  <td>{@season_linearization linear=linearization /}</td>
     </tr>
   {/seasons}
   </tbody>
