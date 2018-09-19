@@ -2,6 +2,7 @@
 var _ = require('underscore');
 var fl = require('flux-link');
 var db = require('db-filters');
+var request = require('request');
 
 var logger = require('../logger.js');
 var users = require('../lib/users.js');
@@ -89,9 +90,32 @@ var create = new fl.Chain(
  */
 var lobby_results = new fl.Chain(
 	function(env, after) {
-		after(env.req.body);
+		// @todo verify api key here
+		after(env.req.body, lobbies.RESULTS_FORMAT_KAEDEBOT);
 	},
-	lobbies.saveResults
+	lobbies.parseResults
+);
+
+/**
+ * Look up a match on opendota and save the results
+ */
+var opendota_parse = new fl.Chain(
+	function(env, after) {
+		if (!privs.hasPriv(env.user.privs, privs.CREATE_LOBBY)) {
+			env.$throw(new Error('You cannot request importing match details.'));
+			return;
+		}
+
+		request('https://api.opendota.com/api/matches/'+env.req.params.match,
+		        function(error, response, body) {
+					after(JSON.parse(body), lobbies.RESULTS_FORMAT_OPENDOTA);
+				});
+	},
+	lobbies.parseResults,
+	function(env, after, match) {
+		env.$redirect('/matches/'+match);
+		after();
+	}
 );
 
 module.exports.init_routes = function(server) {
@@ -126,4 +150,17 @@ module.exports.init_routes = function(server) {
 		post : ['default'],
 		fn : leaveInhouseQueue
 	}, 'post');
+
+	server.add_route('/lobbies/parse', {
+		pre : ['default', 'require_user'],
+		post : ['default'],
+		fn : null
+	}, 'get');
+
+	// @todo Make this a post that responds to the parse endpoint submitting a form
+	server.add_route('/lobbies/parse/:match', {
+		pre : ['default', 'require_user'],
+		post : ['default'],
+		fn : opendota_parse
+	}, 'get');
 };
