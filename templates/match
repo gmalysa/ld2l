@@ -9,7 +9,12 @@
   {@eq value=3}{match.home.name} Forfeit ({match.away.name} Victory)!{/eq}
   {@eq value=4}{match.away.name} Forfeit ({match.home.name} Victory)!{/eq}
   {@eq value=5}Double forfeit!{/eq}
-{/select}</p>
+{/select}
+{?match.dotaid}
+{~n}
+[<a href="https://www.dotabuff.com/matches/{match.dotaid}">DB</a>]
+[<a href="https://www.opendota.com/matches/{match.dotaid}">OD</a>]
+{/match.dotaid}</p>
 
 {>match_player_table team=match.home team_value="0" /}
 
