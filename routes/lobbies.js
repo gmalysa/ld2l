@@ -89,8 +89,7 @@ var create = new fl.Chain(
  */
 var lobby_results = new fl.Chain(
 	function(env, after) {
-		logger.debug(env.req.body, 'KBaaS');
-		after(JSON.parse(env.req.body));
+		after(env.req.body);
 	},
 	lobbies.saveResults
 );
