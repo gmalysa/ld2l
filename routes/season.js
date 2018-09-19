@@ -109,7 +109,7 @@ var season_info = new fl.Chain(
 			{value : seasons.TYPE_IHL, label : "Inhouse League"},
 		];
 		var isDrafting = (season.status == seasons.STATUS_DRAFTING);
-		var scripts = [];
+		var scripts = ['sort'];
 
 		statusLabels.forEach(function(v, k) {
 			if (v.value == season.status)
@@ -127,7 +127,6 @@ var season_info = new fl.Chain(
 
 		if (isDrafting || canEdit) {
 			scripts.push('draft');
-			scripts.push('sort');
 		}
 
 		env.season = season;
