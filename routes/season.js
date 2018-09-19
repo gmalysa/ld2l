@@ -5,7 +5,6 @@
 var fl = require('flux-link');
 var db = require('db-filters');
 var _ = require('underscore');
-var request = require('request');
 var dust = require('dustjs-linkedin');
 require('dustjs-helpers');
 
