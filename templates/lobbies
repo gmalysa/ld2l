@@ -26,13 +26,13 @@
   <div class="ld2l-lobby-side" id="radiant">
   <span class="ld2l-lobby-team radiant">Radiant</span>
     {#lobby.members}
-	  {>lobby_player team_match=0 /}
+	  {>lobby_player team_match="DOTA_GC_TEAM_GOOD_GUYS" /}
 	{/lobby.members}
   </div>
   <div class="ld2l-lobby-side id="dire" style="width: 15em;">
   <span class="ld2l-lobby-team dire">Dire</span>
     {#lobby.members}
-	  {>lobby_player team_match=1 /}
+	  {>lobby_player team_match="DOTA_GC_TEAM_BAD_GUYS" /}
 	{/lobby.members}
   </div>
   {?canInvite}
