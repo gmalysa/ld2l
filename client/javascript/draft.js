@@ -9,7 +9,6 @@ $(window).load(function() {
 	var draftTable= $('table#draft-list')[0];
 	draft.season = draftTable.dataset.season;
 	draft.admin = draftTable.dataset.edit;
-	console.log(draft.admin);
 	draft.socket = io('/draft-'+draft.season);
 
 	draft.socket.on('log', function(data) {
@@ -166,6 +165,10 @@ function setStandin(steamid, free) {
 	});
 }
 
+function editSignup(steamid) {
+	window.location.href = '/seasons/signup/'+draft.season+'/'+steamid;
+}
+
 /**
  * Called by ld2l.showMenu when a context menu should be generated, populate it with
  * draft-page-related options
@@ -190,6 +193,11 @@ function showMenu(elem, event) {
 //				    '<a href="#"' +
 //				    '    onclick="removePlayer(\''+elem.dataset.steamid+'\', \''+elem.dataset.team+'\');"' +
 //				    '    class="ld2l-menu-link">Remove from team</a></li>');
+	}
+
+	if (draft.admin) {
+		ld2l.addMenuItem('Edit Signup',
+		                 editSignup.bind(null, elem.dataset.steamid));
 	}
 
 	if (draft.admin && "0" == elem.dataset.draftable) {
