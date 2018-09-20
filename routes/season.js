@@ -9,6 +9,7 @@ var dust = require('dustjs-linkedin');
 require('dustjs-helpers');
 
 var privs = require('../lib/privs.js');
+var audit = require('../lib/audit.js');
 var users = require('../lib/users.js');
 var seasons = require('../lib/seasons.js');
 var teams = require('../lib/teams.js');
@@ -211,44 +212,85 @@ var show_signup_form = new fl.Chain(
 			return;
 		}
 
-		env.filters.seasons.select({id : id}).exec(after, env.$throw);
+		// Find the correct steamid of the signup to edit
+		var steamid = env.req.params.steamid;
+		env.steamid = steamid;
+		env.mySignup = true;
+		if (undefined !== steamid && steamid != env.user.steamid) {
+			env.mySignup = false;
+			if (!privs.hasPriv(env.user.privs, privs.MODIFY_ACCOUNT)) {
+				env.$throw(new Error('You do not have the ability to change signups'));
+				return;
+			}
+		}
+		else {
+			env.steamid = env.user.steamid;
+		}
+
+		after(id);
 	},
+	seasons.getSeasonBasic,
 	function(env, after, seasonInfo) {
-		if (seasons.STATUS_SIGNUPS != seasonInfo[0].status) {
+		if (seasons.STATUS_SIGNUPS != seasonInfo.status) {
 			env.$throw(new Error('This season is not currently accepting signups'));
 			return;
 		}
 
 		env.$output({
-			season_name : seasonInfo[0].name,
-			season_id : seasonInfo[0].id
+			season : seasonInfo,
+			steamid : env.steamid
 		});
 
 		env.filters.signups.select({
-			steamid : env.user.steamid,
-			season : seasonInfo[0].id
-		}).exec(after, env.$throw);
+			steamid : env.steamid,
+			season : seasonInfo.id
+		})
+			.left_join(env.filters.users, 'u')
+			.on(['steamid', 'steamid'])
+			.fields(1, 'display_name')
+			.exec(after, env.$throw);
 	},
 	function(env, after, signup) {
 		if (signup.length > 0) {
 			// dust uses === comparison and requires strings, so convert numbers we have
 			env.$output({
+				display_name : signup[0].display_name,
 				statement : signup[0].statement,
 				captain : signup[0].captain+'',
 				standin : signup[0].standin+'',
-				editSignup : true
+				medal : signup[0].medal,
+				editSignup : true,
+				fixedMedal : env.mySignup
+			});
+		}
+		else {
+			env.$output({
+				display_name : env.user.display_name
 			});
 		}
 
 		env.$template('season_signup');
-		after(env.user.id32);
-	},
-	users.getMedal,
-	function(env, after, medal) {
-		env.$output({medal : medal});
 		after();
-	}
-);
+	},
+	new fl.Branch(
+		function(env, after) {
+			after(env.mySignup);
+		},
+		new fl.Chain(
+			function(env, after) {
+				after(env.user.id32);
+			},
+			users.getMedal,
+			function(env, after, medal) {
+				env.$output({medal : medal});
+				after();
+			}
+		),
+		function(env, after) {
+			after();
+		}
+	)
+).use_local_env(true);
 
 /**
  * Handle a signup form and send them back if it was incomplete
@@ -261,43 +303,75 @@ var handle_signup_form = new fl.Chain(
 			return;
 		}
 
-		env.filters.seasons.select({id : id}).exec(after, env.$throw);
+		var steamid = env.req.params.steamid;
+		env.steamid = steamid;
+		env.mySignup = true;
+		if (undefined !== steamid && steamid != env.user.steamid) {
+			env.mySignup = false;
+			if (!privs.hasPriv(env.user.privs, privs.MODIFY_ACCOUNT)) {
+				env.$throw(new Error('You do not have the ability to change signups'));
+				return;
+			}
+		}
+		else {
+			env.steamid = env.user.steamid;
+		}
+
+		after(id);
 	},
+	seasons.getSeasonBasic,
 	function(env, after, seasonInfo) {
-		if (seasons.STATUS_SIGNUPS !== seasonInfo[0].status) {
+		if (seasons.STATUS_SIGNUPS !== seasonInfo.status) {
 			env.$throw(new Error('This season is not currently accepting signups'));
 			return;
 		}
 
-		env.handle_signup$season = seasonInfo[0];
-		after(env.user.id32);
+		env.season = seasonInfo;
+		after();
 	},
-	users.getMedal,
-	function(env, after, medal) {
-		env.handle_signup$medal = medal;
+	new fl.Branch(
+		function(env, after) {
+			after(env.mySignup);
+		},
+		new fl.Chain(
+			function(env, after) {
+				after(env.user.id32);
+			},
+			users.getMedal,
+			function(env, after, medal) {
+				env.medal = medal;
+				after();
+			},
+		),
+		function(env, after) {
+			env.medal = parseInt(env.req.body.medal);
+			after();
+		}
+	),
+	function(env, after) {
 		env.filters.signups.select({
-			steamid : env.user.steamid,
-			season : env.handle_signup$season.id
+			steamid : env.steamid,
+			season : env.season.id
 		}).exec(after, env.$throw);
 	},
 	function(env, after, signup) {
 		if (signup.length > 0) {
 			env.filters.signups.update({
-				medal : env.handle_signup$medal,
+				medal : env.medal,
 				statement : env.req.body.statement,
 				captain : parseInt(env.req.body.captain),
 				standin : parseInt(env.req.body.standin)
 			}, {
-				steamid : env.user.steamid,
-				season : env.handle_signup$season.id
+				steamid : env.steamid,
+				season : env.season.id
 			}).exec(after, env.$throw);
 		}
 		else {
 			env.filters.signups.insert({
 				time : db.$now(),
-				steamid : env.user.steamid,
-				season : env.handle_signup$season.id,
-				medal : env.handle_signup$medal,
+				steamid : env.steamid,
+				season : env.season.id,
+				medal : env.medal,
 				statement : env.req.body.statement,
 				captain : parseInt(env.req.body.captain),
 				standin : parseInt(env.req.body.standin)
@@ -305,7 +379,21 @@ var handle_signup_form = new fl.Chain(
 		}
 	},
 	function(env, after) {
-		env.$redirect('/seasons/'+env.handle_signup$season.id);
+		// Trim statement to match db field size
+		after(env.user, audit.EVENT_EDIT, {
+			steamid : env.steamid
+		}, {
+			time : new Date(),
+			season : env.season.id,
+			medal : env.medal,
+			statement : env.req.body.statement.substring(0, 255),
+			captain : parseInt(env.req.body.captain),
+			standin : parseInt(env.req.body.standin)
+		});
+	},
+	audit.logUserEvent,
+	function(env, after) {
+		env.$redirect('/seasons/'+env.season.id);
 		after();
 	}
 );
@@ -429,6 +517,18 @@ module.exports.init_routes = function(server) {
 	}, 'get');
 
 	server.add_route('/seasons/signup/:seasonid', {
+		fn : handle_signup_form,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/seasons/signup/:seasonid/:steamid', {
+		fn : show_signup_form,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/seasons/signup/:seasonid/:steamid', {
 		fn : handle_signup_form,
 		pre : ['default', 'require_user'],
 		post : ['default']

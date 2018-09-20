@@ -1,15 +1,16 @@
 {>header /}
 
-<h2>Signup for <a href="/seasons/{season_id}">{season_name}</a></h2>
-<form class="pure-form pure-form-aligned" action="/seasons/signup/{season_id}" method="post">
+<h2>Signup for <a href="/seasons/{season.id}">{season.name}</a></h2>
+<form class="pure-form pure-form-aligned"
+      action="/seasons/signup/{season.id}/{steamid}" method="post">
 <fieldset>
   <div class="pure-control-group">
     <label for="username">Name</label>
-    <input type="text" name="username" value="{user.display_name}" readonly />
+    <input type="text" name="username" value="{display_name}" readonly />
   </div>
   <div class="pure-control-group">
     <label for="medal">Medal</label>
-    <input type="text" name="medal" value="{medal}" readonly />
+    <input type="text" name="medal" value="{medal}" {?fixedMedal}readonly{/fixedMedal}/>
   </div>
   <div class="pure-control-group">
     <label for="captain">Would you like to captain?</label>
