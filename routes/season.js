@@ -341,7 +341,7 @@ var handle_signup_form = new fl.Chain(
 			function(env, after, medal) {
 				env.medal = medal;
 				after();
-			},
+			}
 		),
 		function(env, after) {
 			env.medal = parseInt(env.req.body.medal);
