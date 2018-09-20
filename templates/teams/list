@@ -12,6 +12,7 @@
 		<th>Captain</th>
 		<th>Record</th>
 		<th>Tie</th>
+		<th>Medal</th>
 	  </tr>
     </thead>
     <tbody>
@@ -30,6 +31,7 @@
           <td><a href="/profile/{captain.steamid}">{captain.display_name}</a></td>
 		  <td>{wins} - {losses}</td>
 		  <td>{tiebreaker}</td>
+		  <td>{medal}</td>
          </tr>
       {/teams}
     </tbody>

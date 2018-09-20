@@ -29,28 +29,15 @@ var team_info = new fl.Chain(
 	},
 	matches.getTeamHistory,
 	function(env, after, history) {
-		env.history = history;
-		env.filters.seasons.select({id : env.team.seasonid})
-			.exec(after, env.$throw);
-	},
-	function(env, after, season) {
 		var isCaptain = teams.isCaptain(env.team, env.user);
 		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
 		var canEditName = isCaptain || isAdmin;
 
-		env.team.players.forEach(function(v) {
-			v.linear_medal = users.adjustMedal(v.medal);
-		});
-
-		if (env.team.captain) {
-			env.team.captain.linear_medal = users.adjustMedal(env.team.captain.medal);
-		}
-
 		env.$template('teams_about');
 		env.$output({
 			team : env.team,
-			season : season[0],
-			history : env.history,
+			season : env.team.season,
+			history : history,
 			canEditName : canEditName,
 			canEditTeam : isAdmin,
 			scripts : ['name']
@@ -69,18 +56,12 @@ var team_index = new fl.Chain(
 			env.$throw(new Error('A season ID must be given.'));
 			return;
 		}
-		env.filters.seasons.select({
-			id : env.seasonId
-		}).exec(after, env.$throw);
-	},
-	function(env, after, results) {
-		// @todo hide team listings for hidden seasons to non-admins
-		if (0 == results.length) {
-			env.$throw(new Error('No season matching that ID was found'));
-			return;
-		}
 
-		env.seasonInfo = results[0];
+		after(env.seasonId);
+	},
+	seasons.getSeasonBasic,
+	function(env, after, season) {
+		env.seasonInfo = season;
 		after(env.seasonId);
 	},
 	teams.getAllTeams,
