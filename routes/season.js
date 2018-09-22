@@ -153,23 +153,25 @@ var signups = new fl.Chain(
 var standins = new fl.Chain(
 	season_preamble,
 	function(env, after) {
-		after(env.seasonId, {valid_standin : 1});
+		after(env.season, {valid_standin : 1});
 	},
 	seasons.getSignups,
 	function(env, after, signups) {
-		console.log(signups);
 		env.signups = signups;
-		after(env.seasonId, {standin : 1});
+		after(env.season, {standin : 1});
 	},
 	seasons.getSignups,
 	function(env, after, signups) {
-		console.log(signups);
+		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
+
 		signups = _.uniq(env.signups.concat(signups), function(v) {
 			return v.steamid;
 		});
+
 		env.$template('season_signups');
 		env.$output({
 			title : 'Standins',
+			isAdmin : isAdmin,
 			standins : true,
 			signups : signups,
 			scripts : ['sort', 'season']
