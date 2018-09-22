@@ -1,11 +1,20 @@
 {>header /}
 
-{>season_header title="Signups" /}
+{>season_header title=title /}
 
 {>season_signup_button /}
 
+{?standins}
+  <p>Remember that standins and free agents must still meet the requirements on the
+  {~n}rules page. Please confirm that a free agent will be available for the entire
+  {~n}season before asking them to join your team permanently.</p>
+{/standins}
+
 {?signups}
-<table class="ld2l-table" data-season="{season.id}" id="draft-list">
+<table class="ld2l-table"
+       data-season="{season.id}"
+	   data-admin="{isAdmin}"
+	   id="draft-list">
   <thead>
   <tr>
     <th></th>
@@ -18,15 +27,18 @@
   <tbody>
   {#signups}
     <tr data-steamid="{steamid}"
+	    data-linear="{linear_medal}"
 	    data-team="{teamid}"
 		data-captain="{captain}"
 		data-draftable="{draftable}"
 		data-validstandin="{valid_standin}"
 		data-vouched="{vouched}"
 		data-standin="{standin}"
+		class="clickable 
 		{@gt key=teamid value="0"}
-		  class="drafted"
+		  drafted
 		{/gt}
+		"
 		onclick="ld2l.signupExpand(this, event);">
       <td>{@counter/}</td>
       <td>{>medal medal=medal /}</td>

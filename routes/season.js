@@ -125,6 +125,7 @@ var signups = new fl.Chain(
 	},
 	seasons.getSignups,
 	function(env, after, signups) {
+		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
 		var canSignUp = (seasons.STATUS_SIGNUPS == env.season.status);
 		var signedUp = _.reduce(signups, function(memo, v, k) {
 			return memo || (v.steamid == env.user.steamid);
@@ -134,6 +135,8 @@ var signups = new fl.Chain(
 
 		env.$template('season_signups');
 		env.$output({
+			title : 'Signups',
+			isAdmin : isAdmin,
 			canSignUp : canSignUp && !signedUp,
 			signedUp : signedUp,
 			signups : signups,
@@ -150,12 +153,24 @@ var signups = new fl.Chain(
 var standins = new fl.Chain(
 	season_preamble,
 	function(env, after) {
-		after(env.seasonId, {valid_standin : 1, standin : 0});
+		after(env.seasonId, {valid_standin : 1});
 	},
 	seasons.getSignups,
 	function(env, after, signups) {
-		env.$template('season_standins');
+		console.log(signups);
+		env.signups = signups;
+		after(env.seasonId, {standin : 1});
+	},
+	seasons.getSignups,
+	function(env, after, signups) {
+		console.log(signups);
+		signups = _.uniq(env.signups.concat(signups), function(v) {
+			return v.steamid;
+		});
+		env.$template('season_signups');
 		env.$output({
+			title : 'Standins',
+			standins : true,
 			signups : signups,
 			scripts : ['sort', 'season']
 		});

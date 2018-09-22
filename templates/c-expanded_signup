@@ -1,0 +1,59 @@
+<tr id="expanded_signup">
+  <td colspan="5">
+	<div style="display:inline-block; width: 20em;">
+<ul>
+  <li>Linear medal: {linear}</li>
+  <li>Team: {team}</li>
+  <li>Captain: {captain}</li>
+  <li>Draftable: {?draftable}Y{:else}N{/draftable}</li>
+</ul>
+	</div>
+	<div class="ld2l-signup-options">
+{?admin}
+  {?vouched}
+  {:else}
+    <input type="button"
+           class="pure-button ld2l-button-primary"
+           onclick="vouch('{steamid}');"
+		   value="Vouch" />
+  {/vouched}
+
+  {?draftable}
+    <input type="button"
+           class="pure-button ld2l-button-primary"
+           onclick="setDraftable('{steamid}', false);"
+		   value="Make Undraftable" />
+  {:else}
+    <input type="button"
+           class="pure-button ld2l-button-primary"
+           onclick="setDraftable('{steamid}', true);"
+		   value="Make Draftable" />
+  {/draftable}
+
+  {?standin}
+    <input type="button"
+           class="pure-button ld2l-button-primary"
+           onclick="setStandin('{steamid}', false);"
+		   value="Remove Standin" />
+  {:else}
+    <input type="button"
+           class="pure-button ld2l-button-primary"
+           onclick="setStandin('{steamid}', true);"
+		   value="Make Standin" />
+  {/standin}
+
+  {?createTeam}
+    <input type="button"
+           class="pure-button ld2l-button-primary"
+           onclick="createTeam('{steamid}');"
+		   value="Create Team" />
+  {/createTeam}
+
+  <input type="button"
+         class="pure-button ld2l-button-primary"
+         onclick="editSignup('{steamid}');"
+		 value="Edit Signup" />
+{/admin}
+	</div>
+  </td>
+</tr>
