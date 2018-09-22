@@ -10,7 +10,8 @@ ld2l.expandedSignup = null;
 
 ld2l.season = {
 	id : 0,
-	admin : false
+	admin : false,
+	current_row : ''
 };
 
 $(window).load(function() {
@@ -25,7 +26,15 @@ $(window).load(function() {
 ld2l.signupExpand = function(row) {
 	if (ld2l.expandedSignup) {
 		ld2l.expandedSignup.remove();
+
+		// Second click on the same row collapses
+		if (row.dataset.steamid == ld2l.season.current_row) {
+			ld2l.season.current_row = '';
+			return;
+		}
 	}
+
+	ld2l.season.current_row = row.dataset.steamid;
 
 	var data = {
 		admin : ld2l.season.admin,
