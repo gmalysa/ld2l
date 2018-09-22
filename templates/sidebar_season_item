@@ -7,13 +7,13 @@
   {! signups !}
   {@eq key=status value=1}
   <li class="pure-menu-item">
-	  <a class="ld2l-menu-link" href="/seasons/{id}">Signups</a>
+	  <a class="ld2l-menu-link" href="/seasons/{id}/signups">Signups</a>
   </li>
   {/eq}
   {! drafting !}
   {@eq key=status value=4}
   <li class="pure-menu-item">
-	<a class="ld2l-menu-link" href="/seasons/{id}">Draft</a>
+	<a class="ld2l-menu-link" href="/seasons/{id}/draft">Draft</a>
   </li>
   <li class="pure-menu-item">
 	<a class="ld2l-menu-link" href="/teams/{id}">Teams</a>

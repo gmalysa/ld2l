@@ -1,0 +1,23 @@
+<div id="ld2l-season-header">
+  <h2>{season.name} {title}</h2>
+  <div class="ld2l-season-nav">
+{! regular draft season type !}
+{@eq key=season.type value=0}
+  <a href="/seasons/{season.id}/signups">Signups</a> |
+  {~n}<a href="/seasons/{season.id}/standins">Standins</a> |
+  {~n}<a href="/seasons/{season.id}/draft">Draft</a> |
+  {~n}<a href="/teams/{season.id}">Teams</a> |
+  {~n}<a href="/schedule/{season.id}">Schedule</a> |
+  {~n}<a href="/seasons/{season.id}/matches">Matches</a>
+{/eq}
+
+{! inhouse league type !}
+{@eq key=season.type value=1}
+  <a href="/seasons/{season.id}/leaderboard">Leaderboard</a> |
+  {~n}<a href="/seasons/{season.id}/matches">Match History</a> |
+  {~n}<a href="/lobbies">Queue</a>
+{/eq}
+  </div>
+</div>
+
+<div class="ld2l-season-body">

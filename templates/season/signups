@@ -1,32 +1,22 @@
-{?season.signups}
-{?isDrafting}
-  <div class="ld2l-g">
-    <div class="ld2l-block">
-	  <h3>Current Players</h3>
-{/isDrafting}
-<table class="ld2l-table"
-       data-season="{season.id}"
-	   data-edit="{canEditSeason}"
-       id="draft-list">
+{>header /}
+
+{>season_header title="Signups" /}
+
+{>season_signup_button /}
+
+{?signups}
+<table class="ld2l-table" data-season="{season.id}" id="draft-list">
   <thead>
   <tr>
     <th></th>
+	<th></th>
 	<th>Name</th>
 	<th></th>
-	<th>M</th>
-	<th>L</th>
-	<th>S?</th>
-	<th>V?</th>
-	{?isDrafting}
-	{:else}
-	  <th>C?</th>
-	{/isDrafting}
-	<th>T</th>
 	<th>Statement</th>
   </tr>
   </thead>
   <tbody>
-  {#season.signups}
+  {#signups}
     <tr data-steamid="{steamid}"
 	    data-team="{teamid}"
 		data-captain="{captain}"
@@ -37,72 +27,24 @@
 		{@gt key=teamid value="0"}
 		  class="drafted"
 		{/gt}
-		onclick="ld2l.showMenu(this, event);">
+		onclick="ld2l.signupExpand(this, event);">
       <td>{@counter/}</td>
+      <td>{>medal medal=medal /}</td>
       <td><a href="/profile/{steamid}">{display_name}</a></td>
 	  <td>
 	    <a href="https://www.dotabuff.com/players/{id32}">DB</a><br />
         <a href="https://www.opendota.com/players/{id32}">OD</a>
       </td>
-      <td>{medal}</td>
-	  <td>{linear_medal}</td>
-      <td>{standin}</td>
-      <td>{vouched}</td>
-	  {?isDrafting}
-	  {:else}
-        <td>{captain}</td>
-	  {/isDrafting}
-	  <td id="team">{teamid}</td>
       <td>{statement}</td>
     </tr>
-  {/season.signups}
+  {/signups}
   </tbody>
 </table>
 {:else}
   <p>Nobody has signed up yet.</p>
-{/season.signups}
+{/signups}
 
-{?isDrafting}
-  </div>
-  <div class="ld2l-block">
-	<div id="draft-teams">
-	  <h3>Current Teams</h3>
-<table class="ld2l-table">
-  <thead>
-    <tr>
-	  <th></th>
-	  <th>Name</th>
-	  <th>Captain</th>
-	  <th>Players</th>
-	  <th>Avg.</th>
-	</tr>
-  </thead>
-  <tbody>
-    {#teams}
-      <tr>
-	    <td>{id}</td>
-	    <td><a href="/teams/about/{id}">{name}</a></td>
-		<td>{captain.display_name}</td>
-		<td id="team-{id}-count">{players.length}</td>
-		<td id="team-{id}-medal">{medal}</td>
-	  </tr>
-    {/teams}
-  </tbody>
-</table>
-	</div>
+{>season_signup_button /}
 
-    <div>
-	  <h3>Draft Order - <span id="draft-round">Not Started</span></h3>
-	  <ul id="draft-order">
-	  </ul>
-	</div>
-
-    <div class="ld2l-draft-log">
-	  <h3>Draft Log</h3>
-        <ul id="draft-log">
-        </ul>
-	</div>
-  </div>
-</div>
-
-{/isDrafting}
+{>season_footer /}
+{>footer /}

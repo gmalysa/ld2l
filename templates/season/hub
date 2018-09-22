@@ -1,0 +1,16 @@
+{>header /}
+
+{>season_header title="Hub" /}
+
+<p>{season.name} quick info:
+  <ul>
+    <li><b>Status:</b> {@season_status status=season.status /}</li>
+    <li><b>Type:</b> {@season_type type=season.type /}</li>
+	<li><b>Ticket ID:</b> {season.ticket}</li>
+	<li><b>Medal System:</b> {@season_linearization linear=season.linearization /}</li>
+  </ul>
+</p>
+
+{>season_footer /}
+
+{>footer /}

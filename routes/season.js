@@ -16,12 +16,34 @@ var teams = require('../lib/teams.js');
 var matches = require('../lib/matches.js');
 
 /**
- * Helper chain that is used to check if someone has the ability to create seasons or not
+ * Helper used to check if someone has the ability to create seasons or not
  * @return true if they can modify seasons, false otherwise
  */
 function checkSeasonPrivs(env, after) {
 	after(privs.hasPriv(env.user.privs, privs.MODIFY_SEASON));
 }
+
+/**
+ * Preamble for all seasons, this sets up the season info that is needed on each page
+ */
+var season_preamble = new fl.Chain(
+	function(env, after) {
+		var id = parseInt(env.req.params.seasonid, 10);
+		if (isNaN(id)) {
+			env.$throw(new Error('Season not found'));
+			return;
+		}
+
+		env.seasonId = id;
+		after(id);
+	},
+	seasons.getSeasonBasic,
+	function(env, after, season) {
+		env.season = season;
+		env.$output({season : season});
+		after();
+	}
+);
 
 /**
  * Handler to rename a season
@@ -80,6 +102,66 @@ var season_index = new fl.Chain(
 		after();
 	}
 );
+
+/**
+ * Generate the main season hub page, which is just the details for a single season
+ */
+var season_hub = new fl.Chain(
+	season_preamble,
+	function(env, after) {
+		env.$template('season_hub');
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Show the list of signups for the season, with filtering for ineligible/banned
+ * players and standins (standins have their own page)
+ */
+var signups = new fl.Chain(
+	season_preamble,
+	function(env, after) {
+		after(env.season, {valid_standin : 0, standin : 0});
+	},
+	seasons.getSignups,
+	function(env, after, signups) {
+		var canSignUp = (seasons.STATUS_SIGNUPS == env.season.status);
+		var signedUp = _.reduce(signups, function(memo, v, k) {
+			return memo || (v.steamid == env.user.steamid);
+		}, false);
+
+		var scripts = ['sort', 'season'];
+
+		env.$template('season_signups');
+		env.$output({
+			canSignUp : canSignUp && !signedUp,
+			signedUp : signedUp,
+			signups : signups,
+			scripts : scripts
+		});
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Show the list of dedicated standins, which covers people who requested to be such
+ * and people we moved to the standin list
+ */
+var standins = new fl.Chain(
+	season_preamble,
+	function(env, after) {
+		after(env.seasonId, {valid_standin : 1, standin : 0});
+	},
+	seasons.getSignups,
+	function(env, after, signups) {
+		env.$template('season_standins');
+		env.$output({
+			signups : signups,
+			scripts : ['sort', 'season']
+		});
+		after();
+	}
+).use_local_env(true);
 
 /**
  * Show season details which is a list of players that signed up
@@ -393,7 +475,7 @@ var handle_signup_form = new fl.Chain(
 	},
 	audit.logUserEvent,
 	function(env, after) {
-		env.$redirect('/seasons/'+env.season.id);
+		env.$redirect('/seasons/'+env.season.id+'/signups');
 		after();
 	}
 );
@@ -505,7 +587,19 @@ module.exports.init_routes = function(server) {
 	}, 'get');
 
 	server.add_route('/seasons/:seasonid', {
-		fn : season_info,
+		fn : season_hub,
+		pre : ['default', 'optional_user'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/seasons/:seasonid/signups', {
+		fn : signups,
+		pre : ['default', 'optional_user'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/seasons/:seasonid/standins', {
+		fn : standins,
 		pre : ['default', 'optional_user'],
 		post : ['default']
 	}, 'get');

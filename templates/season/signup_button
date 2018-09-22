@@ -1,0 +1,11 @@
+{?canSignUp}
+  <p><a href="/seasons/signup/{season.id}">
+    <input type="button" class="pure-button ld2l-button-primary" value="Sign up" />
+  </a></p>
+{/canSignUp}
+
+{?signedUp}
+  <p><a href="/seasons/signup/{season.id}">
+    <input type="button" class="pure-button ld2l-button-primary" value="Edit signup" />
+  </a></p>
+{/signedUp}
