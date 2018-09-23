@@ -1,7 +1,48 @@
 {>header /}
-
 {>season_header title="Hub" /}
 
+{?isAdmin}
+
+<form class="pure-form pure-form-aligned" action="/seasons/{season.id}/edit" method="post">
+<fieldset>
+<div class="pure-control-group">
+  <label for="name">Season name</label><input type="text" name="name" value="{season.name}" />
+</div>
+<div class="pure-control-group">
+  <label for="status">Season status</label>
+  <select name="status">
+    {#statuses}
+      <option value="{value}" {@eq key=selected value="1"}selected{/eq}>{label}</option>
+    {/statuses}
+  </select>
+</div>
+<div class="pure-control-group">
+  <label for="type">Season type</label>
+  <select name="type">
+    {#types}
+	  <option value="{value}" {@eq key=selected value="1"}selected{/eq}>{label}</option>
+	{/types}
+  </select>
+</div>
+<div class="pure-control-group">
+  <label for="ticket">Ticket ID</label>
+  <input type="text" name="ticket" value="{season.ticket}" />
+</div>
+<div class="pure-control-group">
+  <label for="linearization">Linearization</label>
+  <select name="linearization">
+    {#linearizations}
+	  <option value="{value}" {@eq key=selected value="1"}selected{/eq}>{label}</option>
+	{/linearizations}
+  </select>
+</div>
+<div class="pure-controls">
+  <input class="pure-button ld2l-button-primary" type="submit" value="Update" />
+</div>
+</fieldset>
+</form>
+
+{:else}
 <p>{season.name} quick info:
   <ul>
     <li><b>Status:</b> {@season_status status=season.status /}</li>
@@ -10,7 +51,7 @@
 	<li><b>Medal System:</b> {@season_linearization linear=season.linearization /}</li>
   </ul>
 </p>
+{/isAdmin}
 
 {>season_footer /}
-
 {>footer /}

@@ -39,8 +39,13 @@ var season_preamble = new fl.Chain(
 	},
 	seasons.getSeasonBasic,
 	function(env, after, season) {
+		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
+
 		env.season = season;
-		env.$output({season : season});
+		env.$output({
+			season : season,
+			isAdmin : isAdmin
+		});
 		after();
 	}
 );
@@ -108,7 +113,46 @@ var season_index = new fl.Chain(
  */
 var season_hub = new fl.Chain(
 	function(env, after) {
+		var statusLabels = [
+			{value : seasons.STATUS_HIDDEN, label : "Hidden"},
+			{value : seasons.STATUS_SIGNUPS, label : "Signups"},
+			{value : seasons.STATUS_PLAYING, label : "Playing"},
+			{value : seasons.STATUS_DRAFTING, label : "Drafting"},
+			{value : seasons.STATUS_FINISHED, label : "Finished"}
+		];
+		var typeLabels = [
+			{value : seasons.TYPE_DRAFT, label : "EU/RD2L Draft"},
+			{value : seasons.TYPE_IHL, label : "Inhouse League"},
+		];
+		var linearLabels = [
+			{value : seasons.LINEARIZATION_2018S1, label : "2018 Season 1"},
+			{value : seasons.LINEARIZATION_2018S2, label : "2018 Season 2"},
+		];
+
+		statusLabels.forEach(function(v) {
+			v.selected = '0';
+			if (v.value == env.season.status)
+				v.selected = '1';
+		});
+
+		typeLabels.forEach(function(v) {
+			v.selected = '0';
+			if (v.value == env.season.type)
+				v.selected = '1';
+		});
+
+		linearLabels.forEach(function(v) {
+			v.selected = '0';
+			if (v.value == env.season.linearization)
+				v.selected = '1';
+		});
+
 		env.$template('season_hub');
+		env.$output({
+			statuses : statusLabels,
+			types : typeLabels,
+			linearizations : linearLabels,
+		});
 		after();
 	}
 ).use_local_env(true);
@@ -123,7 +167,6 @@ var signups = new fl.Chain(
 	},
 	seasons.getSignups,
 	function(env, after, signups) {
-		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
 		var canSignUp = (seasons.STATUS_SIGNUPS == env.season.status);
 		var signedUp = _.reduce(signups, function(memo, v, k) {
 			return memo || (v.steamid == env.user.steamid);
@@ -134,7 +177,6 @@ var signups = new fl.Chain(
 		env.$template('season_signups');
 		env.$output({
 			title : 'Signups',
-			isAdmin : isAdmin,
 			canSignUp : canSignUp && !signedUp,
 			signedUp : signedUp,
 			signups : signups,
@@ -159,8 +201,6 @@ var standins = new fl.Chain(
 	},
 	seasons.getSignups,
 	function(env, after, signups) {
-		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
-
 		signups = _.uniq(env.signups.concat(signups), function(v) {
 			return v.steamid;
 		});
@@ -168,7 +208,6 @@ var standins = new fl.Chain(
 		env.$template('season_signups');
 		env.$output({
 			title : 'Standins',
-			isAdmin : isAdmin,
 			standins : true,
 			signups : signups,
 			scripts : ['sort', 'season']
@@ -194,115 +233,14 @@ var draft = new fl.Chain(
 	},
 	teams.getAllTeams,
 	function(env, after, teams) {
-		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
-
 		env.$template('season_draft');
 		env.$output({
 			title : 'Draft',
-			isAdmin : isAdmin,
 			scripts : ['sort', 'draft'],
 			teams : teams
 		});
 		after();
 	}
-).use_local_env(true);
-
-/**
- * Show season details which is a list of players that signed up
- */
-var season_info = new fl.Chain(
-	// Show signup list
-	function(env, after) {
-		var id = parseInt(env.req.params.seasonid, 10);
-		if (isNaN(id)) {
-			env.$throw(new Error('Season not found'));
-			return;
-		}
-
-		env.seasonId = id;
-		after(id);
-	},
-	seasons.getSeason,
-	function (env, after, season) {
-		var canEdit = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
-		var canSignUp = true;
-		var signedUp = _.reduce(season.signups, function(memo, v, k) {
-			return memo || (v.steamid == env.user.steamid);
-		}, false);
-		var statusLabels = [
-			{value : seasons.STATUS_HIDDEN, label : "Hidden"},
-			{value : seasons.STATUS_SIGNUPS, label : "Signups"},
-			{value : seasons.STATUS_PLAYING, label : "Playing"},
-			{value : seasons.STATUS_DRAFTING, label : "Drafting"},
-			{value : seasons.STATUS_FINISHED, label : "Finished"}
-		];
-		var typeLabels = [
-			{value : seasons.TYPE_DRAFT, label : "EU/RD2L Draft"},
-			{value : seasons.TYPE_IHL, label : "Inhouse League"},
-		];
-		var linearLabels = [
-			{value : seasons.LINEARIZATION_2018S1, label : "2018 Season 1"},
-			{value : seasons.LINEARIZATION_2018S2, label : "2018 Season 2"},
-		];
-		var isDrafting = (season.status == seasons.STATUS_DRAFTING);
-		var scripts = ['sort'];
-
-		statusLabels.forEach(function(v, k) {
-			v.selected = '0';
-			if (v.value == season.status)
-				v.selected = '1';
-		});
-
-		typeLabels.forEach(function(v, k) {
-			v.selected = '0';
-			if (v.value == season.type)
-				v.selected = '1';
-		});
-
-		linearLabels.forEach(function(v, k) {
-			v.selected = '0';
-			if (v.value == season.linearization)
-				v.selected = '1';
-		});
-
-		if (isDrafting || canEdit) {
-			scripts.push('draft');
-		}
-
-		env.season = season;
-		env.$template('season_info');
-		env.$output({
-			canSignUp : canSignUp && !signedUp && !isDrafting,
-			signedUp : signedUp && !isDrafting,
-			canEditSeason : canEdit,
-			isDrafting : isDrafting,
-			showTeams : false,
-			statuses : statusLabels,
-			types : typeLabels,
-			linearizations : linearLabels,
-			season : season,
-			scripts : scripts
-		});
-		after();
-	},
-	new fl.Branch(
-		function(env, after) {
-			after(env.season.status == seasons.STATUS_DRAFTING);
-		},
-		new fl.Chain(
-			function(env, after) {
-				after(env.season.id);
-			},
-			teams.getAllTeams,
-			function(env, after, teams) {
-				env.$output({teams : teams});
-				after();
-			}
-		),
-		function(env, after) {
-			after();
-		}
-	)
 ).use_local_env(true);
 
 /**
