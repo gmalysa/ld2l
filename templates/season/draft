@@ -68,6 +68,7 @@
 </div>
 
 {?isAdmin}
+<div style="margin-top:1em; margin-bottom: 1em;">
 <a href="/draft/start/{season.id}">
   <input class="pure-button ld2l-button-primary" type="button" value="Start Draft" />
 </a>
@@ -75,6 +76,7 @@
 <a href="/draft/next/{season.id}">
   <input class="pure-button ld2l-button-primary" type="button" value="Next Round" />
 </a>
+</div>
 {/isAdmin}
 
 {>season_footer /}
