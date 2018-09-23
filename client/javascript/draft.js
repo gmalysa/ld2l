@@ -92,6 +92,7 @@ function draftTeamInfo(id) {
 }
 
 function draftLog(messages) {
+	$('.ld2l-draft-log').css('display', '');
 	var logList = $('#draft-log');
 	messages.forEach(function(v, k) {
 		logList.append('<li>'+v+'</li>');

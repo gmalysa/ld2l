@@ -59,7 +59,7 @@
 	<div id="draft-teams">
 	</div>
 
-    <div class="ld2l-draft-log">
+    <div class="ld2l-draft-log" style="display: none">
 	  <h3>Draft Log</h3>
         <ul id="draft-log">
         </ul>
