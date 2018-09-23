@@ -1,6 +1,14 @@
 {>header /}
 {>season_header title="Schedule" /}
 
+{?isAdmin}
+<a href="/schedule/{season.id}/next">
+  <input type="button"
+         class="pure-button ld2l-button-primary"
+		 value="Generate Next Week" />
+</a>
+{/isAdmin}
+
 {>matchups matchups=matchups /}
 
 {?past_matchups}
