@@ -1,0 +1,12 @@
+<tr id="expandedTeamInfo">
+  <td colspan="3">
+{#players}
+  <div class="ld2l-player">
+    <img src="{avatar}" />
+	<span>{display_name}</span>
+  </div>
+{:else}
+  Nobody drafted yet.
+{/players}
+  </td>
+</tr>

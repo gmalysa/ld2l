@@ -4,6 +4,9 @@ var draft = {
 	season : 0,
 	options : {},
 	steamid : '',
+	teams : [],
+	infoTeamId : 0,
+	infoTeamRow : null
 };
 
 $(window).load(function() {
@@ -18,70 +21,81 @@ $(window).load(function() {
 		draftLog(data);
 	});
 
-	draft.socket.on('clearDrafters', function() {
-		console.log('Cleared drafters');
-		$('#draft-order').html('');
-	});
-
-	draft.socket.on('drafter', function(data) {
-		console.log('Added drafter '+data.name);
-		addDrafter(data);
-	});
-
 	draft.socket.on('round', function(data) {
-		console.log('Set round to '+data);
-		$('#draft-round').html('Round '+data);
-	});
-
-	draft.socket.on('team', function(data) {
-		console.log('Received team update:');
 		console.log(data);
-		updateTeam(data);
+		draft.teams = data.teams;
+		dust.render('draftTeams', data, function(err, out) {
+			$('#draft-teams').html(out);
+		});
 	});
 
 	draft.socket.on('drafted', function(data) {
-		$('#drafter-'+data.steamid).wrap('<s></s>');
-		$('tr[data-steamid="'+data.drafted+'"]')[0].dataset.team = data.team;
-		$('tr[data-steamid="'+data.drafted+'"]').addClass('drafted');
+		$('tr[data-steamid="'+data.steamid+'"]')[0].dataset.team = data.team;
+		$('tr[data-steamid="'+data.steamid+'"]').addClass('drafted');
+		$('tr[data-teamid="'+data.team+'"]').addClass('ld2l-draft-team-drafted');
+		$('tr[data-teamid="'+data.team+'"]').removeClass('ld2l-draft-team-next');
+	});
+
+	draft.socket.on('team', function(data) {
+		draft.teams.forEach(function(v) {
+			if (v.id == data.id) {
+				v.players = data.players,
+				v.medal = data.medal;
+			}
+			var row = $('tr[data-teamid="'+data.id+'"]');
+			var td = row.children()[2];
+			$(td).html(data.medal);
+		});
 	});
 
 	draft.socket.on('next', function(data) {
 		console.log('next: '+data.steamid);
+		$('tr[data-teamid="'+data.team+'"]').addClass('ld2l-draft-team-next');
 		if (data.steamid == draft.steamid) {
 			$('input[name="draftButton"]').each(function(k, v) {
 				var row =$(v).parent().parent()[0];
 				if (row.dataset.team == "0") {
-					console.log('Enabling draft for '+row.dataset.steamid);
 					$(v).prop('disabled', false);
-				}
-				else {
-					console.log('Disable draft for '+row.dataset.steamid);
 				}
 			});
 		}
 	});
 });
 
+/**
+ * Show team info in the row under a team
+ */
+function draftTeamInfo(id) {
+	if (draft.infoTeamRow) {
+		draft.infoTeamRow.remove();
+		draft.infoTeamRow = null;
+
+		// Click a second time to close
+		if (id == draft.infoTeamId) {
+			draft.infoTeamId = -1;
+			return;
+		}
+	}
+
+	var teamIdx = 0;
+	draft.teams.forEach(function(v, k) {
+		if (v.id == id) {
+			teamIdx = k;
+		}
+	});
+
+	draft.infoTeamId = id;
+	dust.render('expandedDraftTeam', draft.teams[teamIdx], function(err, out) {
+		$('tr[data-teamid="'+id+'"]').after(out);
+		draft.infoTeamRow = $('#expandedTeamInfo');
+	});
+}
+
 function draftLog(messages) {
 	var logList = $('#draft-log');
 	messages.forEach(function(v, k) {
 		logList.append('<li>'+v+'</li>');
 	});
-}
-
-function addDrafter(user) {
-	var draftOrder = $('#draft-order');
-	if (user.drafted) {
-		draftOrder.append('<li id="drafter-'+user.steamid+'"><s>'+user.name+'</s></li>');
-	}
-	else {
-		draftOrder.append('<li id="drafter-'+user.steamid+'">'+user.name+'</li>');
-	}
-}
-
-function updateTeam(data) {
-	$('#team-'+data.id+'-count').html(data.players);
-	$('#team-'+data.id+'-medal').html(data.medal);
 }
 
 function draftPlayer(steamid) {

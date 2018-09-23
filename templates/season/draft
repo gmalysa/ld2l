@@ -57,35 +57,6 @@
 
   <div class="ld2l-block">
 	<div id="draft-teams">
-	  <h3>Current Teams</h3>
-<table class="ld2l-table">
-  <thead>
-    <tr>
-	  <th></th>
-	  <th>Name</th>
-	  <th>Captain</th>
-	  <th>Players</th>
-	  <th class="clickable">Avg.</th>
-	</tr>
-  </thead>
-  <tbody>
-    {#teams}
-      <tr>
-	    <td>{id}</td>
-	    <td><a href="/teams/about/{id}">{name}</a></td>
-		<td>{captain.display_name}</td>
-		<td id="team-{id}-count">{players.length}</td>
-		<td id="team-{id}-medal">{medal}</td>
-	  </tr>
-    {/teams}
-  </tbody>
-</table>
-	</div>
-
-    <div>
-	  <h3>Draft Order - <span id="draft-round">Not Started</span></h3>
-	  <ul id="draft-order">
-	  </ul>
 	</div>
 
     <div class="ld2l-draft-log">

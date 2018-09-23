@@ -1,0 +1,30 @@
+<h3>Current Teams</h3>
+<table class="ld2l-table">
+  <thead>
+    <tr>
+	  <th>Name</th>
+	  <th>Captain</th>
+	  <th>Avg.</th>
+	</tr>
+  </thead>
+  <tbody>
+    {#teams}
+      <tr data-teamid="{id}"
+	      class="clickable 
+	      {?drafted}
+		    ld2l-draft-team-drafted
+		  {/drafted}
+		  "
+		  onclick="draftTeamInfo({id})"
+		  >
+	    <td><a href="/teams/about/{id}">{name}</a></td>
+		<td><div class="ld2l-player">
+		<img src="{captain.avatar}" />
+		<span>{captain.display_name}</span>
+		</div></td>
+		<td>{medal}</td>
+	  </tr>
+    {/teams}
+  </tbody>
+</table>
+<p>Round {round}</p>

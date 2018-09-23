@@ -39,7 +39,6 @@ var io = null;
 function Draft(season) {
 	this.log = [];
 	this.teams = [];
-	this.drafters = [];
 	this.season = season;
 	this.round = 0;
 	this.room = io.of('/draft-'+season.id);
@@ -80,6 +79,33 @@ Draft.prototype.start = function() {
 }
 
 /**
+ * This converts the proper server side teams array into a client-friendly version
+ * that doesn't expose as much random data
+ */
+Draft.prototype.clientTeams = function() {
+	return _.map(this.teams, function(v) {
+		return {
+			id : v.id,
+			name : v.name,
+			captain : {
+				avatar : v.captain.avatar,
+				display_name : v.captain.display_name,
+				steamid : v.captain.steamid
+			},
+			medal : v.medal,
+			players : _.map(v.players, function(v) {
+				return {
+					avatar : v.avatar,
+					display_name : v.display_name,
+					steamid : v.steamid
+				};
+			}),
+			drafted : v.drafted
+		};
+	});
+}
+
+/**
  * Start a new round, sorting teams by average mmr and determining draft order
  */
 Draft.prototype.startRound = function(round) {
@@ -87,10 +113,8 @@ Draft.prototype.startRound = function(round) {
 		return a.medal - b.medal;
 	});
 
-	var that = this;
-	this.drafters = [];
 	this.teams.forEach(function(v, k) {
-		that.addDrafter(v.captain);
+		v.drafted = false;
 	});
 
 	this.round = round;
@@ -99,36 +123,18 @@ Draft.prototype.startRound = function(round) {
 }
 
 /**
- * Add someone to the list of people to do drafting, which also pushes the information
- * to the UI
- */
-Draft.prototype.addDrafter = function(captain) {
-	console.log('Adding drafter ' + captain.display_name + '['+captain.steamid+']');
-	this.drafters.push({
-		captain : captain,
-		drafted : false
-	});
-}
-
-/**
  * Send all drafter status information to all clients
  * @param[in] socket The socket to send to (either a room or a person)
  */
 Draft.prototype.sendDrafters = function(socket) {
 	socket = socket || this.room;
-	socket.emit('clearDrafters');
 
-	var that = this;
-	this.drafters.forEach(function(v) {
-		socket.emit('drafter', {
-			name : v.captain.display_name,
-			steamid : v.captain.steamid,
-			drafted : v.drafted
-		});
+	socket.emit('round', {
+		round : this.round,
+		teams : this.clientTeams()
 	});
 
 	this.sendNext(socket);
-	socket.emit('round', this.round);
 };
 
 /**
@@ -138,15 +144,16 @@ Draft.prototype.sendDrafters = function(socket) {
 Draft.prototype.sendNext = function(socket) {
 	socket = socket || this.room;
 
-	if (this.drafters.length > 0) {
-		var captain = _.find(this.drafters, function(v) {
+	if (this.teams.length > 0) {
+		var captain = _.find(this.teams, function(v) {
 			return !v.drafted;
 		});
 
 		// Nobody is undrafted at the end of a round
 		if (captain) {
 			socket.emit('next', {
-				steamid : captain.captain.steamid
+				steamid : captain.captain.steamid,
+				team : captain.id
 			});
 		}
 	}
@@ -174,7 +181,7 @@ Draft.prototype.findTeam = function(captain) {
 Draft.prototype.updateTeam = function(team) {
 	this.room.emit('team', {
 		id : team.id,
-		players : team.players.length,
+		players : team.players,
 		medal : team.medal
 	});
 }
@@ -186,18 +193,24 @@ Draft.prototype.updateTeam = function(team) {
  * @param[in] team The team they were drafted to
  */
 Draft.prototype.markDrafted = function(user, drafted, team) {
-	for (var d = 0; d < this.drafters.length; ++d) {
-		if (this.drafters[d].captain.steamid == user.steamid) {
+	var teamIdx = 0;
+	for (var d = 0; d < this.teams.length; ++d) {
+		if (this.teams[d].captain.steamid == user.steamid) {
 			console.log('Matched drafter '+user.steamid);
-			this.drafters[d].drafted = true;
+			this.teams[d].drafted = true;
+			teamIdx = d;
 		}
 	}
 
-	this.room.emit('drafted', {
-		steamid : user.steamid,
-		drafted : drafted.steamid,
+	var player = {
+		steamid : drafted.steamid,
+		avatar : drafted.avatar,
+		display_name : drafted.display_name,
 		team : team.id
-	});
+	};
+
+	// Player is added to the team elsewhere
+	this.room.emit('drafted', player);
 	this.sendNext(this.room);
 	this.logEvent(user.display_name+' drafted '+drafted.display_name);
 }
@@ -209,9 +222,9 @@ Draft.prototype.markDrafted = function(user, drafted, team) {
  */
 Draft.prototype.isDrafting = function(user) {
 	// First person who has not drafted needs to match the given user
-	for (var d = 0; d < this.drafters.length; ++d) {
-		var other = this.drafters[d].captain;
-		if (!this.drafters[d].drafted) {
+	for (var d = 0; d < this.teams.length; ++d) {
+		var other = this.teams[d].captain;
+		if (!this.teams[d].drafted) {
 			return other.steamid == user.steamid;
 		}
 	}
