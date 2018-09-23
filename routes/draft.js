@@ -14,36 +14,8 @@ var seasons = require('../lib/seasons.js');
 var teams = require('../lib/teams.js');
 //var drafts = require('../lib/drafts.js');
 
-// Dummy function used to terminate chains that don't need further processing
-function term() {}
-
-// @todo use mysql.init_db and mysql.cleanup_db instead
-
-/**
- * Initialize database connection from the mysql pool
- */
-function init_db(env, after) {
-	env.filters = db.clone_filters(db.filters);
-
-	mysql.getValidConnection(env, function() {
-		db.set_conn_all(env.conn, env.filters);
-		after();
-	});
-}
-
-/**
- * Cleans up the database connection
- */
-function cleanup_db(env, after) {
-	if (env.conn) {
-		env.conn.release();
-		delete env.conn;
-	}
-	after();
-}
-
 var getTeams = new fl.Chain(
-	init_db,
+	mysql.init_db,
 	function(env, after) {
 		after(env.draftInfo.season.id);
 	},
@@ -52,7 +24,7 @@ var getTeams = new fl.Chain(
 		env.teams = teams;
 		after();
 	},
-	cleanup_db,
+	mysql.cleanup_db,
 	function(env, after) {
 		after(env.teams);
 	}
