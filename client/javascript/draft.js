@@ -2,13 +2,14 @@
 var draft = {
 	socket : null,
 	season : 0,
-	options : {}
+	options : {},
+	steamid : '',
 };
 
 $(window).load(function() {
 	var draftTable= $('table#draft-list')[0];
 	draft.season = draftTable.dataset.season;
-	draft.admin = draftTable.dataset.edit;
+	draft.steamid = draftTable.dataset.steamid;
 	draft.socket = io('/draft-'+draft.season);
 
 	draft.socket.on('log', function(data) {
@@ -41,8 +42,23 @@ $(window).load(function() {
 	draft.socket.on('drafted', function(data) {
 		$('#drafter-'+data.steamid).wrap('<s></s>');
 		$('tr[data-steamid="'+data.drafted+'"]')[0].dataset.team = data.team;
-		$('tr[data-steamid="'+data.drafted+'"] > #team').html(data.team);
 		$('tr[data-steamid="'+data.drafted+'"]').addClass('drafted');
+	});
+
+	draft.socket.on('next', function(data) {
+		console.log('next: '+data.steamid);
+		if (data.steamid == draft.steamid) {
+			$('input[name="draftButton"]').each(function(k, v) {
+				var row =$(v).parent().parent()[0];
+				if (row.dataset.team == "0") {
+					console.log('Enabling draft for '+row.dataset.steamid);
+					$(v).prop('disabled', false);
+				}
+				else {
+					console.log('Disable draft for '+row.dataset.steamid);
+				}
+			});
+		}
 	});
 });
 
@@ -70,6 +86,7 @@ function updateTeam(data) {
 
 function draftPlayer(steamid) {
 	console.log('Drafting player '+steamid+' to your team');
+	$('input[name="draftButton"]').prop('disabled', true);
 	$.ajax({
 		url : '/draft/choose/'+draft.season,
 		data : {
@@ -81,26 +98,3 @@ function draftPlayer(steamid) {
 
 	});
 }
-
-/**
- * Called by ld2l.showMenu when a context menu should be generated, populate it with
- * draft-page-related options
- */
-function showMenu(elem, event) {
-	if ("0" == elem.dataset.team) {
-		if ("1" == elem.dataset.draftable) {
-			ld2l.addMenuItem('Draft', draftPlayer.bind(null, elem.dataset.steamid));
-		}
-	}
-	else {
-//		Can't remove people yet
-//		menu.append('<li class="pure-menu-item">' +
-//				    '<a href="#"' +
-//				    '    onclick="removePlayer(\''+elem.dataset.steamid+'\', \''+elem.dataset.team+'\');"' +
-//				    '    class="ld2l-menu-link">Remove from team</a></li>');
-	}
-}
-
-$(document).ready(function() {
-	ld2l.registerMenuHandler(showMenu);
-});

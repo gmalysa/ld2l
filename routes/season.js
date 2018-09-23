@@ -181,6 +181,34 @@ var standins = new fl.Chain(
 ).use_local_env(true);
 
 /**
+ * Show the list of draftable players as well as teams for draft interface
+ */
+var draft = new fl.Chain(
+	season_preamble,
+	function(env, after) {
+		after(env.season, {draftable : 1, standin : 0, valid_standin : 0});
+	},
+	seasons.getSignups,
+	function(env, after, signups) {
+		env.$output({signups : signups});
+		after(env.season.id);
+	},
+	teams.getAllTeams,
+	function(env, after, teams) {
+		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
+
+		env.$template('season_draft');
+		env.$output({
+			title : 'Draft',
+			isAdmin : isAdmin,
+			scripts : ['sort', 'draft'],
+			teams : teams
+		});
+		after();
+	}
+).use_local_env(true);
+
+/**
  * Show season details which is a list of players that signed up
  */
 var season_info = new fl.Chain(
@@ -617,6 +645,12 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/seasons/:seasonid/standins', {
 		fn : standins,
+		pre : ['default', 'optional_user'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/seasons/:seasonid/draft', {
+		fn : draft,
 		pre : ['default', 'optional_user'],
 		post : ['default']
 	}, 'get');

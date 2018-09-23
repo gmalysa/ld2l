@@ -75,16 +75,7 @@ function Draft(season) {
 	var that = this;
 	this.room.on('connect', function(socket) {
 		socket.emit('log', that.log);
-		socket.emit('round', that.round);
-		socket.emit('clearDrafters');
-
-		that.drafters.forEach(function(v) {
-			socket.emit('drafter', {
-				name : v.captain.name,
-				steamid : v.captain.steamid,
-				drafted : v.drafted
-			});
-		});
+		that.sendDrafters(socket);
 	});
 
 	this.start();
@@ -129,11 +120,10 @@ Draft.prototype.startRound = function(round) {
 	this.teams.forEach(function(v, k) {
 		that.addDrafter(v.captain);
 	});
-	this.sendDrafters();
 
 	this.round = round;
 	this.logEvent('<b>Round '+round+'</b> started!');
-	this.room.emit('round', round);
+	this.sendDrafters(this.room);
 }
 
 /**
@@ -141,7 +131,7 @@ Draft.prototype.startRound = function(round) {
  * to the UI
  */
 Draft.prototype.addDrafter = function(captain) {
-	console.log('Adding drafter ' + captain.name + '['+captain.steamid+']');
+	console.log('Adding drafter ' + captain.display_name + '['+captain.steamid+']');
 	this.drafters.push({
 		captain : captain,
 		drafted : false
@@ -150,19 +140,45 @@ Draft.prototype.addDrafter = function(captain) {
 
 /**
  * Send all drafter status information to all clients
+ * @param[in] socket The socket to send to (either a room or a person)
  */
-Draft.prototype.sendDrafters = function() {
-	var that = this;
-	this.room.emit('clearDrafters');
+Draft.prototype.sendDrafters = function(socket) {
+	socket = socket || this.room;
+	socket.emit('clearDrafters');
 
+	var that = this;
 	this.drafters.forEach(function(v) {
-		that.room.emit('drafter', {
-			name : v.captain.name,
+		socket.emit('drafter', {
+			name : v.captain.display_name,
 			steamid : v.captain.steamid,
 			drafted : v.drafted
 		});
 	});
-}
+
+	this.sendNext(socket);
+	socket.emit('round', this.round);
+};
+
+/**
+ * Send the next drafter to the given socket, to highlight whose turn it is
+ * @param[in] socket Send drafter information here
+ */
+Draft.prototype.sendNext = function(socket) {
+	socket = socket || this.room;
+
+	if (this.drafters.length > 0) {
+		var captain = _.find(this.drafters, function(v) {
+			return !v.drafted;
+		});
+
+		// Nobody is undrafted at the end of a round
+		if (captain) {
+			socket.emit('next', {
+				steamid : captain.captain.steamid
+			});
+		}
+	}
+};
 
 /**
  * Get the team matching the given captain (synchronously by searching)
@@ -210,7 +226,8 @@ Draft.prototype.markDrafted = function(user, drafted, team) {
 		drafted : drafted.steamid,
 		team : team.id
 	});
-	this.logEvent(user.name+' drafted '+drafted.name);
+	this.sendNext(this.room);
+	this.logEvent(user.display_name+' drafted '+drafted.display_name);
 }
 
 /**
@@ -250,7 +267,7 @@ var start_draft = new fl.Chain(
 	seasons.getSeason,
 	function(env, after, season) {
 		draftInfos[env.seasonId] = new Draft(season);
-		env.$redirect('/seasons/'+season.id);
+		env.$redirect('/seasons/'+season.id+'/draft');
 		after();
 	}
 );
@@ -270,7 +287,7 @@ var next_round = new fl.Chain(
 
 		env.seasonId = id;
 		draftInfos[env.seasonId].startRound(draftInfos[env.seasonId].round + 1);
-		env.$redirect('/seasons/'+id);
+		env.$redirect('/seasons/'+id+'/draft');
 		after();
 	}
 );
@@ -299,7 +316,6 @@ var draft_player = new fl.Chain(
 			.exec(after, env.$throw);
 	},
 	function(env, after, user) {
-		// @todo check that they are draftable
 		if (user.length == 0) {
 			env.$throw(new Error('Matching steamid not found!'));
 			return;
@@ -311,7 +327,7 @@ var draft_player = new fl.Chain(
 			return;
 		}
 
-		console.log('Received draft request for '+user.name+' from '+env.user.name);
+		console.log('Received draft request for '+user.display_name+' from '+env.user.display_name);
 		env.team = draftInfos[env.seasonId].findTeam(env.user);
 		env.drafted = user;
 		after(env.drafted, env.team);

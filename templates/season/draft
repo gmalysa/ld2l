@@ -1,0 +1,110 @@
+{>header /}
+{>season_header title="Draft" /}
+
+<div class="ld2l-g">
+  <div class="ld2l-block">
+    <h3>Current Players</h3>
+<table class="ld2l-table"
+       data-season="{season.id}"
+	   data-admin="{isAdmin}"
+	   data-steamid="{user.steamid}"
+	   id="draft-list">
+  <thead>
+  <tr>
+    <th></th>
+	<th></th>
+	<th></th>
+	<th>Name</th>
+	<th></th>
+	<th>Statement</th>
+  </tr>
+  </thead>
+  <tbody>
+  {#signups}
+    <tr data-steamid="{steamid}"
+	    data-linear="{linear_medal}"
+	    data-team="{teamid}"
+		data-captain="{captain}"
+		data-draftable="{draftable}"
+		data-validstandin="{valid_standin}"
+		data-vouched="{vouched}"
+		data-standin="{standin}"
+		{@gt key=teamid value="0"}
+		  class="drafted"
+		{/gt}
+		>
+      <td>{@counter/}</td>
+	  <td>
+	    <input name="draftButton"
+		       value="Draft"
+			   style="width: 5em;"
+			   class="pure-button ld2l-button-primary"
+			   onclick="draftPlayer('{steamid}');"
+			   disabled />
+	  </td>
+      <td>{>medal medal=medal /}</td>
+      <td><a href="/profile/{steamid}">{display_name}</a></td>
+	  <td>
+	    <a href="https://www.dotabuff.com/players/{id32}">DB</a><br />
+        <a href="https://www.opendota.com/players/{id32}">OD</a>
+      </td>
+      <td>{statement}</td>
+    </tr>
+  {/signups}
+  </tbody>
+</table>
+  </div>
+
+  <div class="ld2l-block">
+	<div id="draft-teams">
+	  <h3>Current Teams</h3>
+<table class="ld2l-table">
+  <thead>
+    <tr>
+	  <th></th>
+	  <th>Name</th>
+	  <th>Captain</th>
+	  <th>Players</th>
+	  <th class="clickable">Avg.</th>
+	</tr>
+  </thead>
+  <tbody>
+    {#teams}
+      <tr>
+	    <td>{id}</td>
+	    <td><a href="/teams/about/{id}">{name}</a></td>
+		<td>{captain.display_name}</td>
+		<td id="team-{id}-count">{players.length}</td>
+		<td id="team-{id}-medal">{medal}</td>
+	  </tr>
+    {/teams}
+  </tbody>
+</table>
+	</div>
+
+    <div>
+	  <h3>Draft Order - <span id="draft-round">Not Started</span></h3>
+	  <ul id="draft-order">
+	  </ul>
+	</div>
+
+    <div class="ld2l-draft-log">
+	  <h3>Draft Log</h3>
+        <ul id="draft-log">
+        </ul>
+	</div>
+  </div>
+</div>
+
+{?isAdmin}
+<a href="/draft/start/{season.id}">
+  <input class="pure-button ld2l-button-primary" type="button" value="Start Draft" />
+</a>
+{~n}
+<a href="/draft/next/{season.id}">
+  <input class="pure-button ld2l-button-primary" type="button" value="Next Round" />
+</a>
+{/isAdmin}
+
+{>season_footer /}
+{>footer /}
