@@ -154,7 +154,7 @@ var undisband = new fl.Chain(
 module.exports.init_routes = function(server) {
 	server.add_route('/teams/:seasonid', {
 		fn : team_index,
-		pre : ['default', 'optional_user'],
+		pre : ['default', 'optional_user', 'season'],
 		post : ['default']
 	}, 'get');
 

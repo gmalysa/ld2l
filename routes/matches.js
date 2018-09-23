@@ -270,19 +270,7 @@ var match_details = new fl.Chain(
  */
 var show_matches = new fl.Chain(
 	function(env, after) {
-		var id = parseInt(env.req.params.seasonid);
-		if (isNaN(id)) {
-			env.$throw(new Error('Invalid season ID specified'));
-			return;
-		}
-
-		env.seasonId = id;
-		after(id);
-	},
-	seasons.getSeason,
-	function(env, after, season) {
-		env.season = season;
-		after(env.seasonId);
+		after(env.season.id);
 	},
 	matches.getAllSeries,
 	function(env, after, series) {
@@ -310,7 +298,6 @@ var show_matches = new fl.Chain(
 
 		env.$template('schedule');
 		env.$output({
-			season : env.season,
 			week : week,
 			matchups : current,
 			past_matchups : past
@@ -324,28 +311,16 @@ var show_matches = new fl.Chain(
  */
 var show_season_matches = new fl.Chain(
 	function(env, after) {
-		var id = parseInt(env.req.params.seasonid);
-		if (isNaN(id)) {
-			env.$throw(new Error('Invalid season ID specified'));
-			return;
-		}
-
-		env.seasonId = id;
-		env.filters.matches.select({season : id})
+		env.filters.matches.select({season : env.season.id})
 			.order(db.$desc('id'))
 			.exec(after, env.$throw);
 	},
 	matches.addSummaryInfo,
 	function(env, after, matches) {
 		env.matches = matches;
-		after(env.seasonId);
-	},
-	seasons.getSeason,
-	function(env, after, season) {
 		env.$template('season_matches');
 		env.$output({
-			season : season,
-			matches : env.matches
+			matches : matches
 		});
 		after();
 	}
@@ -356,23 +331,16 @@ var show_season_matches = new fl.Chain(
  */
 var generate_matchups = new fl.Chain(
 	function(env, after) {
-		var id = parseInt(env.req.params.seasonid);
-		if (isNaN(id)) {
-			env.$throw(new Error('Invalid season ID specified'));
-			return;
-		}
-
 		if (!privs.hasPriv(env.user.privs, privs.MODIFY_SEASON)) {
 			env.$throw(new Error('You do not have the ability to generate matchups'));
 			return;
 		}
 
-		env.seasonId = id;
-		after(id);
+		after(env.season.id);
 	},
 	matches.generateMatchups,
 	function(env, after) {
-		env.$redirect('/schedule/'+env.seasonId);
+		env.$redirect('/schedule/'+env.season.id);
 		after();
 	}
 );
@@ -380,13 +348,13 @@ var generate_matchups = new fl.Chain(
 module.exports.init_routes = function(server) {
 	server.add_route('/schedule/:seasonid', {
 		fn : show_matches,
-		pre : ['default', 'optional_user'],
+		pre : ['default', 'optional_user', 'season'],
 		post : ['default']
 	}, 'get');
 
 	server.add_route('/schedule/:seasonid/next', {
 		fn : generate_matchups,
-		pre : ['default', 'require_user'],
+		pre : ['default', 'require_user', 'season'],
 		post : ['default']
 	}, 'get');
 
@@ -398,7 +366,7 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/seasons/:seasonid/matches', {
 		fn : show_season_matches,
-		pre : ['default', 'optional_user'],
+		pre : ['default', 'optional_user', 'season'],
 		post : ['default']
 	}, 'get');
 

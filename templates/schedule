@@ -1,6 +1,5 @@
 {>header /}
-
-<h2>{season.name} Schedule</h2>
+{>season_header title="Schedule" /}
 
 {>matchups matchups=matchups /}
 
@@ -10,4 +9,5 @@
   {/past_matchups}
 {/past_matchups}
 
+{>season_footer /}
 {>footer /}

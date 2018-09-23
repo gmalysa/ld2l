@@ -107,7 +107,6 @@ var season_index = new fl.Chain(
  * Generate the main season hub page, which is just the details for a single season
  */
 var season_hub = new fl.Chain(
-	season_preamble,
 	function(env, after) {
 		env.$template('season_hub');
 		after();
@@ -119,7 +118,6 @@ var season_hub = new fl.Chain(
  * players and standins (standins have their own page)
  */
 var signups = new fl.Chain(
-	season_preamble,
 	function(env, after) {
 		after(env.season, {valid_standin : 0, standin : 0});
 	},
@@ -151,7 +149,6 @@ var signups = new fl.Chain(
  * and people we moved to the standin list
  */
 var standins = new fl.Chain(
-	season_preamble,
 	function(env, after) {
 		after(env.season, {valid_standin : 1});
 	},
@@ -184,7 +181,6 @@ var standins = new fl.Chain(
  * Show the list of draftable players as well as teams for draft interface
  */
 var draft = new fl.Chain(
-	season_preamble,
 	function(env, after) {
 		after(env.season, {draftable : 1, standin : 0, valid_standin : 0});
 	},
@@ -627,6 +623,7 @@ var sidebar_seasons = new fl.Chain(
 
 module.exports.init_routes = function(server) {
 	server.add_pre_hook(sidebar_seasons, 'default');
+	server.add_pre_hook(season_preamble, 'season');
 
 	server.add_route('/seasons', {
 		fn : season_index,
@@ -636,31 +633,31 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/seasons/:seasonid', {
 		fn : season_hub,
-		pre : ['default', 'optional_user'],
+		pre : ['default', 'optional_user', 'season'],
 		post : ['default']
 	}, 'get');
 
 	server.add_route('/seasons/:seasonid/signups', {
 		fn : signups,
-		pre : ['default', 'optional_user'],
+		pre : ['default', 'optional_user', 'season'],
 		post : ['default']
 	}, 'get');
 
 	server.add_route('/seasons/:seasonid/standins', {
 		fn : standins,
-		pre : ['default', 'optional_user'],
+		pre : ['default', 'optional_user', 'season'],
 		post : ['default']
 	}, 'get');
 
 	server.add_route('/seasons/:seasonid/draft', {
 		fn : draft,
-		pre : ['default', 'optional_user'],
+		pre : ['default', 'optional_user', 'season'],
 		post : ['default']
 	}, 'get');
 
 	server.add_route('/seasons/signup/:seasonid', {
 		fn : show_signup_form,
-		pre : ['default', 'require_user'],
+		pre : ['default', 'require_user', 'season'],
 		post : ['default']
 	}, 'get');
 
@@ -672,7 +669,7 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/seasons/signup/:seasonid/:steamid', {
 		fn : show_signup_form,
-		pre : ['default', 'require_user'],
+		pre : ['default', 'require_user', 'season'],
 		post : ['default']
 	}, 'get');
 
@@ -702,7 +699,7 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/seasons/:seasonid/leaderboard', {
 		fn : show_leaderboard,
-		pre : ['default', 'optional_user'],
+		pre : ['default', 'optional_user', 'season'],
 		post : ['default']
 	}, 'get');
 

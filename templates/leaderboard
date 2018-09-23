@@ -1,5 +1,5 @@
 {>header /}
-<h3>{season.name} Leaderboard</h3>
+{>season_header title="Leaderboard" /}
 
 <table class="ld2l-table">
 <thead>
@@ -20,4 +20,5 @@
 </tbody>
 </table>
 
+{>season_footer /}
 {>footer /}

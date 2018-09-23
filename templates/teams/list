@@ -1,6 +1,6 @@
 {>header /}
+{>season_header title="Teams" /}
 
-<h2>{season.name} Teams</h2>
 {?teams}
   <table class="pure-table pure-table-horizontal pure-table-striped">
     <thead>
@@ -40,4 +40,5 @@
   <p>No teams have been created yet.</p>
 {/teams}
 
+{>season_footer /}
 {>footer /}
