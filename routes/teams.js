@@ -51,29 +51,18 @@ var team_info = new fl.Chain(
  */
 var team_index = new fl.Chain(
 	function(env, after) {
-		env.seasonId = parseInt(env.req.params.seasonid);
-		if (isNaN(env.seasonId)) {
-			env.$throw(new Error('A season ID must be given.'));
-			return;
-		}
-
-		after(env.seasonId);
-	},
-	seasons.getSeasonBasic,
-	function(env, after, season) {
-		env.seasonInfo = season;
-		after(env.seasonId);
+		after(env.season.id);
 	},
 	teams.getAllTeams,
 	function(env, after, teams) {
-		after(teams, env.seasonId);
+		after(teams, env.season.id);
 	},
 	matches.addStandings,
 	function(env, after, teams) {
 		env.$template('teams_list');
 		env.$output({
-			season : env.seasonInfo,
-			teams : teams
+			teams : teams,
+			scripts : ['sort']
 		});
 		after();
 	}
