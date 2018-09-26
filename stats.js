@@ -13,7 +13,7 @@ var matches = require('./lib/matches.js');
 
 const DEFAULT_MMR = 25;
 const LAMBDA = 10;
-const ITERATIONS = 100;
+const ITERATIONS = 300;
 
 mysql.init();
 
@@ -217,13 +217,14 @@ var preprocess = new fl.Chain(
 		});
 
 		_.each(env.teams, function(t) {
+			t.captain.mmr = env.players[t.captain.steamid].mmr;
 			_.each(t.players, function(p) {
 				p.mmr = env.players[p.steamid].mmr;
 			});
 
 			t.mmr = _.reduce(t.players, function(memo, p) {
 				return memo + p.mmr;
-			}, 0);
+			}, t.captain.mmr);
 		});
 
 		env.teams = _.sortBy(env.teams, function(t) {
