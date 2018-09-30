@@ -20,7 +20,7 @@ This is a league for Herald 0 - Legend 3 (approximately "Normal Skill" and "High
 
 7. Draft order will be determined for each round by the average badge of the partially-drafted teams, lowest to highest.
 
-8. For the purposes of the draft, all Heralds and Guardians will count toward draft order as if they were Crusader 0. 
+8. For the purposes of the draft, all Heralds and Guardians will count toward draft order as if they were Crusader 1. 
 
 9. Players who sign up and are vouched mid-season may be added to the Free Agent and Standin lists. Players may not join the Free Agent or Standin list during a season in which they were drafted. 
 
@@ -35,9 +35,9 @@ This is a league for Herald 0 - Legend 3 (approximately "Normal Skill" and "High
 
 4. Rescheduled matches may be completed earlier in the week of a scheduled match, or no later than 24 hours after the default time.
 
-5. Regular season schedule will be posted via the website and Discord on the Monday following the Draft.
+5. Regular season schedule will be updated on the website each week after all matches are completed.
 
-6. Each won game in a match is worth a point toward playoff seeding. Wins by forfeit count as wins for playoff qualifying purposes. Byes count for no points.
+6. Each won game in a match is worth a point toward playoff seeding. Wins by forfeit or bye count as wins for playoff qualifying purposes.
 
 
 
@@ -55,7 +55,7 @@ This is a league for Herald 0 - Legend 3 (approximately "Normal Skill" and "High
 
 ## Match Rules
 
-1. Matches are expected to start on time. If a team does not have enough players at start time, they should request a standin from the available pool of the same badge tier or lower than the unavailable player. Players from other teams may not stand in.
+1. Matches are expected to start on time. If a team does not have enough players at start time, they should request a standin from the available pool.
 
 2. Teams who opt to wait for a late player or who do not have their standin arranged on time will be given increasing draft penalties for the delayed game:
   | Delay         | Draft Penalty |
@@ -89,10 +89,18 @@ This is a league for Herald 0 - Legend 3 (approximately "Normal Skill" and "High
 
 13. If a player disconnects before first blood and cannot reconnect, the game can be remade with a fresh draft replacing the disconnected player. Suspected abuse of this rule will be dealt with on a case-by-case basis.
 
-14. Match results must be reported on Discord in the \#results channel, including a screenshot of the score screen for each game in a series unless a forfeit was recorded. Results should be confirmed by both team captains.
-
 15. Results, standings, and other administrative information will be maintained on Discord and the website.
 
+
+## Standin Rules
+
+1. Player and standin badge value is determined by their badge at the time they signed up for the league.
+
+1. Standins must have a linear badge value no more than 2 points higher than the player they are replacing. (e.g. the replacement for an Archon 4 player must be Legend 1 or lower; replacements for players below the Crusader 1 linear badge floor may be replaced by players up to Crusader 3).
+
+1. Teams are limited to 7 total games with a standin during the regular season. If a team plays more than half of its games with a standin they will be ineligible for the playoffs.
+
+1. Players are limited to two no-shows during the regular season (not playing in either of the team's games). If a player no-shows a third time they will be replaced by a Free Agent of an appropriate badge to stand in for them.
 
 
 ## Broadcast and Spectating
