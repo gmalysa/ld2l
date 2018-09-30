@@ -192,19 +192,10 @@ var signups = new fl.Chain(
  */
 var standins = new fl.Chain(
 	function(env, after) {
-		after(env.season, {valid_standin : 1});
+		after(env.season);
 	},
-	seasons.getSignups,
+	seasons.getStandins,
 	function(env, after, signups) {
-		env.signups = signups;
-		after(env.season, {standin : 1});
-	},
-	seasons.getSignups,
-	function(env, after, signups) {
-		signups = _.uniq(env.signups.concat(signups), function(v) {
-			return v.steamid;
-		});
-
 		env.$template('season_signups');
 		env.$output({
 			title : 'Standins',
