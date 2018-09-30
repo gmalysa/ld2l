@@ -28,7 +28,7 @@
 	  <a class="ld2l-menu-link" href="/schedule/{id}">Schedule</a>
   </li>
   <li class="pure-menu-item">
-	  <a class="ld2l-menu-link" href="/standins/{id}">Standins</a>
+	  <a class="ld2l-menu-link" href="/seasons/{id}/standins">Standins</a>
   </li>
   {/eq}
 {/eq}
