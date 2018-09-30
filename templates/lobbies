@@ -100,6 +100,11 @@
   </div>
 </div>
 
+<div class="pure-control-group">
+  <label for="tournament">Tournament ID</label>
+  <input type="text" id="tournament" name="tournament" />
+</div>
+
 <div style="width: 36.5em; text-align:center;">
   <input class="pure-button ld2l-button-primary" type="button" value="Create" onclick="ld2l.createLobby();" />
 </div>

@@ -310,18 +310,24 @@ ld2l.createLobby = function() {
 
 		console.log('Radiant captain: '+radiantCaptain);
 		console.log('Dire captain: '+direCaptain);
+		var lobby = JSON.stringify({
+			teams : [{
+				players : radiant,
+				captain : radiantCaptain
+			}, {
+				players : dire,
+				captain : direCaptain
+			}],
+			config : {
+				selection_priority_rules : 1
+			},
+			tournament : parseInt($('#tournament').val())
+		});
+		console.log(lobby);
 
 		$.ajax({
 			url : '/lobbies/create',
-			data : {lobby : JSON.stringify({
-				teams : [{
-					players : radiant,
-					captain : radiantCaptain
-				}, {
-					players : dire,
-					captain : direCaptain
-				}]
-			})},
+			data : {lobby : lobby},
 			method : 'POST',
 			dataType : 'json',
 			accepts : 'application/json'
