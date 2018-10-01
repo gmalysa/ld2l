@@ -20,4 +20,21 @@
 
 {>match_player_table team=match.away team_value="1" /}
 
+{?canEdit}
+<h3>Load Match Results</h3>
+<form action="/matches/{match.id}/parse"
+      method="post"
+      class="pure-form pure-form-aligned">
+<fieldset>
+  <div class="pure-control-group">
+    <label for="dotaid">Match ID</label>
+	<input type="text" id="dotaid" name="dotaid" />
+  </div>
+  <div class="pure-controls">
+    <input class="pure-button ld2l-button-primary" type="submit" value="Parse" />
+  </div>
+</fieldset>
+</form>
+{/canEdit}
+
 {>footer /}

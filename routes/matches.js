@@ -5,6 +5,7 @@
 var fl = require('flux-link');
 var db = require('db-filters');
 var _ = require('underscore');
+var request = require('request');
 
 var privs = require('../lib/privs.js');
 var users = require('../lib/users.js');
@@ -12,6 +13,7 @@ var seasons = require('../lib/seasons.js');
 var teams = require('../lib/teams.js');
 var matches = require('../lib/matches.js');
 var audit = require('../lib/audit.js');
+var lobbies = require('../lib/lobbies.js');
 
 /**
  * Remove all of the links between a player and a particular match
@@ -264,6 +266,43 @@ var match_details = new fl.Chain(
 ).use_local_env(true);
 
 /**
+ * Parse a dota ID onto the specified match
+ */
+var parse = new fl.Chain(
+	function(env, after) {
+		if (!privs.hasPriv(env.user.privs, privs.MODIFY_SEASON)) {
+			env.$throw(new Error('You do not have the ability to report results'));
+			return;
+		}
+
+		var id = parseInt(env.req.params.matchid);
+		if (isNaN(id)) {
+			env.$throw(new Error('Invalid match ID specified'));
+			return;
+		}
+
+		var dotaid = parseInt(env.req.body.dotaid);
+		if (isNaN(dotaid)) {
+			env.$throw(new Error('Invalid dota match ID specified'));
+			return;
+		}
+
+		env.matchid = id;
+		env.dotaid = dotaid;
+		request('https://api.opendota.com/api/matches/'+dotaid,
+		        env.$check(after));
+	},
+	function(env, after, response, body) {
+		after(JSON.parse(body), lobbies.RESULTS_FORMAT_OPENDOTA, env.matchid);
+	},
+	lobbies.parseResults,
+	function(env, after) {
+		env.$redirect('/matches/'+env.matchid);
+		after();
+	}
+).use_local_env(true);
+
+/**
  * Show all matches from the given season
  * @param[in] season id
  * @todo create page for series that this can link to, which links to the individual matches
@@ -378,6 +417,12 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/matches/:matchid/add_player', {
 		fn : add_player,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/matches/:matchid/parse', {
+		fn : parse,
 		pre : ['default', 'require_user'],
 		post : ['default']
 	}, 'post');
