@@ -15,6 +15,9 @@ var matches = require('../lib/matches.js');
 var audit = require('../lib/audit.js');
 var lobbies = require('../lib/lobbies.js');
 
+// Store rosters for pre-game config in memory only
+var prelobbies = {};
+
 /**
  * Remove all of the links between a player and a particular match
  * @todo: temporary here, make lib and stuff
@@ -231,10 +234,9 @@ var add_player = new fl.Chain(
 ).use_local_env(true);
 
 /**
- * Show detailed information for the single match specified
- * @param[in] env.req.params.matchid The integer database id of the match to look up
+ * Get match information for a matchid that is part of the url
  */
-var match_details = new fl.Chain(
+var match_preamble = new fl.Chain(
 	function(env, after) {
 		var id = parseInt(env.req.params.matchid);
 		if (isNaN(id)) {
@@ -247,20 +249,180 @@ var match_details = new fl.Chain(
 	},
 	matches.getDetails,
 	function(env, after, match) {
-		var canEdit = privs.hasPriv(env.user.privs, privs.CREATE_LOBBY) ;
+		env.match = match;
 
-		env.$output({
-			match : match,
-			canEdit : canEdit
+		var captain = -1;
+		if (match.home.captain.steamid == env.user.steamid)
+			captain = 0;
+		else if (match.away.captain.steamid == env.user.steamid)
+			captain = 1;
+
+		env.teamCaptain = captain;
+		after();
+	}
+);
+
+/**
+ * Synchronous helper to add selected player info to the match object
+ * @param[inout] team The team object to update
+ * @param[in] lobbyTeam The lobby definition's team object
+ */
+function addLobbyDetails(team, lobbyTeam) {
+	_.each(lobbyTeam.players, function(lobbyPlayer) {
+		var found = false;
+		_.each(team.players, function(player) {
+			if (player.steamid == lobbyPlayer) {
+				player.inGameRoster = true;
+				found = true;
+			}
 		});
 
-		if (canEdit) {
-			env.$output({
-				scripts : ['autocomplete', 'matches']
-			});
+		// Standin isn't on the normal roster
+		if (!found) {
+			team.standin = lobbyPlayer;
+		}
+	});
+}
+
+/**
+ * Show detailed information for the single match specified
+ * @param[in] env.req.params.matchid The integer database id of the match to look up
+ */
+var match_details = new fl.Chain(
+	function(env, after) {
+		var canEdit = privs.hasPriv(env.user.privs, privs.CREATE_LOBBY);
+		var showStartButton = false;
+
+		if (undefined !== prelobbies[env.match.id]) {
+			var lobby = prelobbies[env.match.id];
+			addLobbyDetails(match.home, lobby.teams[0]);
+			addLobbyDetails(match.away, lobby.teams[1]);
+
+			if (lobby.teams[0].players.length == 5
+				&& lobby.teams[1].players.length == 5) {
+
+				showStartButton = true;
+			}
 		}
 
+		env.$output({
+			match : env.match,
+			canEdit : canEdit,
+			captainSide : env.teamCaptain,
+			anyCaptain : (env.teamCaptain >= 0),
+			showStartButton : showStartButton,
+			scripts : ['autocomplete', 'matches'],
+		});
+
 		env.$template('match');
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Captains submit roster information which will be used to create the lobby
+ */
+var submit_roster = new fl.Chain(
+	function(env, after) {
+		if (env.teamCaptain < 0) {
+			env.$throw(new Error('You must be a team captain to submit a roster'));
+			return;
+		}
+
+		var players = [];
+		var standin = {
+			use : false
+		};
+
+		_.each(env.req.body, function(v, k) {
+			// For selected checkboxes, their presence implies selection
+			if (k.substring(0, 5) == 'check') {
+				var steamid = k.substring(6);
+				players.push(steamid);
+			}
+
+			if (k == 'standin') {
+				standin.steamid = v;
+			}
+
+			if (k == 'use-standin') {
+				standin.use = true;
+			}
+		});
+
+		// Check that it's a valid steamid by length
+		if (standin.use && standin.steamid.length == 17)
+			players.push(standin.steamid);
+
+		if (players.length > 5) {
+			env.$throw(new Error('You may not select more than five players'));
+			return;
+		}
+
+		// Update prelobby object for this match
+		if (undefined === prelobbies[env.match.id]) {
+			prelobbies[env.match.id] = {
+				teams : [{
+					players : [],
+					captain : null,
+				}, {
+					players : [],
+					captain : null,
+				}],
+				started : false
+			};
+		}
+
+		// Replace player list with the newly submitted one
+		prelobbies[env.match.id].teams[env.teamCaptain].players = players;
+
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Used by captains or admin to launch a lobby
+ */
+var start_match = new fl.Chain(
+	function(env, after) {
+		after(env.match.season);
+	},
+	seasons.getSeasonBasic,
+	function(env, after, season) {
+		if (!(env.teamCaptain >= 0
+			  || privs.hasPriv(env.user.privs, privs.CREATE_LOBBY))) {
+			env.$throw(new Error('You are not allowed to start this lobby'));
+			return;
+		}
+
+		var lobby = prelobbies[env.match.id];
+		if (undefined === lobby) {
+			env.$throw(new Error('This lobby is not ready to start'));
+			return;
+		}
+
+		// Prevent people from trying to start the lobby twice
+		if (lobby.started) {
+			env.$throw(new Error('This lobby has already started'));
+			return;
+		}
+		lobby.started = true;
+
+		// Set the captain to an arbitrary player for KBaaS
+		lobby.teams[0].captain = lobby.teams[0].players[0];
+		lobby.teams[1].captain = lobby.teams[1].players[0];
+
+		after({
+			ident : 'ld2l-match-'+env.match.id,
+			teams : lobby,
+			tournament : season.ticket,
+			config : {
+				selection_priority_rules : 1
+			}
+		});
+	},
+	lobbies.create,
+	function(env, after, response) {
 		after();
 	}
 ).use_local_env(true);
@@ -386,6 +548,9 @@ var generate_matchups = new fl.Chain(
 );
 
 module.exports.init_routes = function(server) {
+	server.add_pre_hook(match_preamble, 'match');
+
+	// @todo add match hook to all routes with :matchid
 	server.add_route('/schedule/:seasonid', {
 		fn : show_matches,
 		pre : ['default', 'optional_user', 'season'],
@@ -400,7 +565,7 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/matches/:matchid', {
 		fn : match_details,
-		pre : ['default', 'optional_user'],
+		pre : ['default', 'optional_user', 'match'],
 		post : ['default']
 	}, 'get');
 
@@ -425,6 +590,18 @@ module.exports.init_routes = function(server) {
 	server.add_route('/matches/:matchid/parse', {
 		fn : parse,
 		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/matches/:matchid/roster', {
+		fn : submit_roster,
+		pre : ['default', 'require_user', 'match'],
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/matches/:matchid/start', {
+		fn : start_match,
+		pre : ['default', 'require_user', 'match'],
 		post : ['default']
 	}, 'post');
 };

@@ -6,7 +6,10 @@ if (undefined === ld2l) {
 	var ld2l = {};
 }
 
-// Everything about this makes me hate jquery
+/**
+ * Process results for match details submission
+ * Everything about this makes me hate jquery
+ */
 $(document).ready(function() {
 	$('form').each(function(k, form) {
 		var hero = $('input[name="hero"]');
@@ -36,4 +39,20 @@ $(document).ready(function() {
 			});
 		});
 	});
+});
+
+/**
+ * Process form for submitting roster
+ */
+ld2l.submitRoster = function(e) {
+	var standin = $('#standin');
+	console.log(standin);
+	console.log(standin.data());
+	if (standin.data('steamid')) {
+		standin.val(standin.data('steamid'));
+	}
+};
+
+$(document).ready(function() {
+	$('#rosterForm').submit(ld2l.submitRoster);
 });

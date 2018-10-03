@@ -30,12 +30,16 @@
 
 <h3>Captain</h3>
 {#team.captain}
-  {>roster_card /}
+  <div>
+    {>roster_card /}
+  </div>
 {/team.captain}
 
 <h3>Roster</h3>
 {#team.players}
-  {>roster_card /}
+  <div>
+    {>roster_card /}
+  </div>
 {:else}
   <p>Nobody has been drafted to this team yet.</p>
 {/team.players}

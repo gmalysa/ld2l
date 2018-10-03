@@ -1,4 +1,4 @@
-<div class="ld2l-player">
+<div class="ld2l-player inline">
   {>medal medal=medal /}
   <img src="{avatar}" />
   <a href="/profile/{steamid}">{display_name}</a>

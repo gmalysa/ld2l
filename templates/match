@@ -16,9 +16,41 @@
 [<a href="https://www.opendota.com/matches/{match.dotaid}">OD</a>]
 {/match.dotaid}</p>
 
+{! @todo hide player tables for unplayed once we have no more manual entry !}
 {>match_player_table team=match.home team_value="0" /}
 
 {>match_player_table team=match.away team_value="1" /}
+
+{@eq key=match.result value=0}
+<h3>Pre-Lobby</h3>
+<form class="pure-form pure-form-aligned"
+      method="post"
+	  id="rosterForm"
+	  action="/matches/{match.id}/roster">
+<fieldset>
+
+{>match_roster_select side="radiant" team=match.home captainCheck=0 /}
+
+{>match_roster_select side="dire" team=match.away captainCheck=1 /}
+
+{?anyCaptain}
+  <div style="width: 36.5em; text-align:center;">
+    <input class="pure-button ld2l-button-primary"
+	       type="submit"
+		   value="Submit Roster" />
+  </div>
+{/anyCaptain}
+{?showStartButton}
+  <div style="width: 36.5em; text-align:center;">
+    <input class="pure-button ld2l-button-primary"
+           type="button"
+   	       value="Start Lobby" />
+  </div>
+{/showStartButton}
+
+</fieldset>
+</form>
+{/eq}
 
 {?canEdit}
 <h3>Load Match Results</h3>

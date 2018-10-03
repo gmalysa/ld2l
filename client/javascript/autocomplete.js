@@ -20,9 +20,6 @@ ld2l.autocomplete = function(elem, params) {
 		if (jElem.val().length <= 2)
 			return;
 
-		console.log(ld2l.autocompleteResults.length);
-		console.log(evt.keyCode);
-
 		// If we have results and we're tabbing, select that result
 		if (evt.keyCode == 9) {
 			if (ld2l.autocompleteResults.length) {
