@@ -1,5 +1,5 @@
-<p>
-  <img src="{avatar}" class="ld2l-steam-avatar" />
-  <a href="/profile/{steamid}">{display_name}</a><br />
-  Medal {linear_medal} ({medal})
-</p>
+<div class="ld2l-player">
+  {>medal medal=medal /}
+  <img src="{avatar}" />
+  <a href="/profile/{steamid}">{display_name}</a>
+</div>
