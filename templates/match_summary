@@ -20,31 +20,7 @@
 		{/eq}
 	  </td>
 	  <td>
-		<a href="/matches/{id}">
-		  {#heroes.home}
-			{@eq key=matchPlayer value=player}
-			  <span class="ld2l-highlight-player">
-			    {@dota_hero_icon hero=hero /}
-				<div class="fa fa-check fa-xs"></div>
-			  </span>
-			{:else}
-			  {@dota_hero_icon hero=hero /}
-			{/eq}
-		  {/heroes.home}
-
-		  {~n}vs.{~n}
-
-		  {#heroes.away}
-			{@eq key=matchPlayer value=player}
-			  <span class="ld2l-highlight-player">
-			    {@dota_hero_icon hero=hero /}
-				<div class="fa fa-check fa-xs"></div>
-			  </span>
-			{:else}
-			  {@dota_hero_icon hero=hero /}
-			{/eq}
-		  {/heroes.away}
-		</a>
+	    {>match_hero_list matchid=id heroes=heroes /}
 	  </td>
 	  <td>
 		{@eq key=result value=2}

@@ -1,5 +1,5 @@
 <h3>Week {week}</h3>
-<table class="ld2l-table">
+<table class="ld2l-table" style="width: 42em;">
   <thead>
     <tr>
 	  <th>Home</th>
@@ -9,10 +9,37 @@
   </thead>
   <tbody>
     {#matchups}
-	  <tr>
+	  <tr class="clickable" onclick="ld2l.expandSeries('{key}');">
 	    <td>{>team_link team=home.team /}</td>
 		<td>{home.points} - {away.points}</td>
 	    <td>{>team_link team=away.team /}</td>
+	  </tr>
+      <tr data-series="{key}" style="display: none;">
+	    <td colspan="3">
+	      {#games}
+<div style="margin-bottom: 2px;">
+  <div style="display: inline-block; width: 1em; padding-right: 0.5em;">
+    {@eq key=result value=1 type="number"}
+	  <span class="fa fa-check"></span>
+	{/eq}
+  </div>
+
+  <div style="display: inline-block">
+{@eq key=result value=0 type="number"}
+  Game {@counter /} not yet played
+{:else}
+  {>match_hero_list matchid=id heroes=heroes /}
+{/eq}
+  </div>
+
+  <div style="display: inline-block; width: 1em; padding-left: 0.5em;">
+    {@eq key=result value=2 type="number"}
+	  <span class="fa fa-check"></span>
+	{/eq}
+  </div>
+</div>
+	      {/games}
+		</td>
 	  </tr>
     {/matchups}
   </tbody>

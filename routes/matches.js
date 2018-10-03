@@ -306,7 +306,6 @@ var parse = new fl.Chain(
 /**
  * Show all matches from the given season
  * @param[in] season id
- * @todo create page for series that this can link to, which links to the individual matches
  */
 var show_matches = new fl.Chain(
 	function(env, after) {
@@ -340,7 +339,8 @@ var show_matches = new fl.Chain(
 		env.$output({
 			week : week,
 			matchups : current,
-			past_matchups : past
+			past_matchups : past,
+			scripts : ['schedule'],
 		});
 		after();
 	}
