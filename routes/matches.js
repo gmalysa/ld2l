@@ -295,10 +295,14 @@ var match_details = new fl.Chain(
 		var canEdit = privs.hasPriv(env.user.privs, privs.CREATE_LOBBY);
 		var showStartButton = false;
 
+		// Add captain to player list
+		env.match.home.players.push(env.match.home.captain);
+		env.match.away.players.push(env.match.away.captain);
+
 		if (undefined !== prelobbies[env.match.id]) {
 			var lobby = prelobbies[env.match.id];
-			addLobbyDetails(match.home, lobby.teams[0]);
-			addLobbyDetails(match.away, lobby.teams[1]);
+			addLobbyDetails(env.match.home, lobby.teams[0]);
+			addLobbyDetails(env.match.away, lobby.teams[1]);
 
 			if (lobby.teams[0].players.length == 5
 				&& lobby.teams[1].players.length == 5) {
@@ -378,6 +382,7 @@ var submit_roster = new fl.Chain(
 		// Replace player list with the newly submitted one
 		prelobbies[env.match.id].teams[env.teamCaptain].players = players;
 
+		env.$redirect('/matches/'+env.match.id);
 		after();
 	}
 ).use_local_env(true);
