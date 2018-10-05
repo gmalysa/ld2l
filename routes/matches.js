@@ -295,9 +295,12 @@ var match_details = new fl.Chain(
 		var canEdit = privs.hasPriv(env.user.privs, privs.CREATE_LOBBY);
 		var showStartButton = false;
 
-		// Add captain to player list
-		env.match.home.players.push(env.match.home.captain);
-		env.match.away.players.push(env.match.away.captain);
+		// Add captain to player list if we have real teams
+		if (env.match.home.id > 0)
+			env.match.home.players.push(env.match.home.captain);
+
+		if (env.match.away.id > 0)
+			env.match.away.players.push(env.match.away.captain);
 
 		if (undefined !== prelobbies[env.match.id]) {
 			var lobby = prelobbies[env.match.id];
