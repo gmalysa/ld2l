@@ -451,13 +451,18 @@ var start_match = new fl.Chain(
 		}
 		lobby.started = true;
 
-		// Set the captain to an arbitrary player for KBaaS
-		lobby.teams[0].captain = lobby.teams[0].players[0];
-		lobby.teams[1].captain = lobby.teams[1].players[0];
+		// Remap objects to be flat arrays with only steamids
+		var teams = [{
+			captain : lobby.teams[0].players[0].steamid,
+			players : _.map(lobby.teams[0].players, function(v) { return v.steamid; }),
+		}, {
+			captain : lobby.teams[1].players[1].steamid,
+			players : _.map(lobby.teams[1].players, function(v) { return v.steamid; }),
+		}];
 
 		after({
 			ident : 'ld2l-match-'+env.match.id,
-			teams : lobby,
+			teams : teams,
 			tournament : season.ticket,
 			config : {
 				selection_priority_rules : 1
