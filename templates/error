@@ -1,0 +1,5 @@
+{>header /}
+<p>
+  <span class="fa fa-exclamation-triangle"></span> {message}
+</p>
+{>footer /}

@@ -507,7 +507,7 @@ function send_error(env) {
 	logger.var_dump(env._cmeta.error, {src : modname});
 
 	// Render the dust template for the user
-	var content = _.extend({}, env._page, env._cmeta.error);
+	var content = _.extend({}, env._page, env._cmeta.error, {message : msg});
 	dust.render('error', content, function(err, out) {
 		if (err) {
 			logger.error('Unable to render debug template.', modname);
