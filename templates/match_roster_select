@@ -2,25 +2,44 @@
   <span class="ld2l-lobby-team {side}">{team.name}</span>
   {#team.players}
     <div class="ld2l-lobby-player pure-control-group">
-	  {@eq key=captainSide value=captainCheck}
-        <input type="checkbox"
-			   {?inGameRoster} checked {/inGameRoster}
-		       name="check-{steamid}" />
-      {:else}
-	    {?inGameRoster}<span class="fa fa-check"></span>{/inGameRoster}
-	  {/eq}
+	  <div style="width: 1em;" class="inline">
+	    {@eq key=captainSide value=captainCheck}
+          <input type="checkbox"
+	      	     {?inGameRoster} checked {/inGameRoster}
+	             name="check-{steamid}" />
+        {:else}
+	      {?inGameRoster}<span class="fa fa-check"></span>{/inGameRoster}
+	    {/eq}
+	  </div>
   	  {>roster_card /}
     </div>
   {/team.players}
   <div class="ld2l-lobby-player pure-control-group">
 	{@eq key=captainSide value=captainCheck}
-      <input type="checkbox" name="use-standin" />{~n}
+	  <div style="width: 1em;" class="inline">
+        <input type="checkbox"
+	           name="use-standin"
+	  		   {?team.standin}
+	  		   checked
+	  		   {/team.standin}
+	  		   />
+	  </div>
 	  <input type="text"
 	         name="standin"
 			 id="standin"
-			 value="{team.standin}"
+			 {?team.standin}
+			   value="{team.standin.display_name}"
+			   data-steamid="{team.standin.steamid}"
+			 {/team.standin}
 	  	     placeholder="Standin"
 	         class="ld2l-name-autocomplete" />
+	{:else}
+	  {#team.standin}
+	    <div style="width: 1em;" class="inline">
+	      <span class="fa fa-check"></span>
+		</div>
+		{>roster_card /} <b>[Standin]</b>
+	  {/team.standin}
 	{/eq}
   </div>
 </div>

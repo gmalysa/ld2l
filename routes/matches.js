@@ -273,7 +273,7 @@ function addLobbyDetails(team, lobbyTeam) {
 	_.each(lobbyTeam.players, function(lobbyPlayer) {
 		var found = false;
 		_.each(team.players, function(player) {
-			if (player.steamid == lobbyPlayer) {
+			if (player.steamid == lobbyPlayer.steamid) {
 				player.inGameRoster = true;
 				found = true;
 			}
@@ -347,7 +347,7 @@ var submit_roster = new fl.Chain(
 			// For selected checkboxes, their presence implies selection
 			if (k.substring(0, 5) == 'check') {
 				var steamid = k.substring(6);
-				players.push(steamid);
+				players.push({steamid : steamid});
 			}
 
 			if (k == 'standin') {
@@ -361,13 +361,46 @@ var submit_roster = new fl.Chain(
 
 		// Check that it's a valid steamid by length
 		if (standin.use && standin.steamid.length == 17)
-			players.push(standin.steamid);
+			players.push(standin);
 
 		if (players.length > 5) {
 			env.$throw(new Error('You may not select more than five players'));
 			return;
 		}
 
+		env.players = players;
+		env.standin = standin;
+		after();
+	},
+
+	// Get standin details if one is on the list
+	new fl.Branch(
+		function(env, after) {
+			after(env.standin.use);
+		},
+		new fl.Chain(
+			function(env, after) {
+				after(env.standin.steamid);
+			},
+			users.getUser,
+			function(env, after, user) {
+				env.standin.avatar = user.avatar;
+				env.standin.display_name = user.display_name;
+				env.filters.signups.select({
+					steamid : env.standin.steamid,
+					season : env.match.season.id
+				}).exec(after, env.$throw);
+			},
+			function(env, after, signup) {
+				env.standin.medal = signup[0].medal;
+				after();
+			}
+		),
+		function(env, after) {
+			after();
+		}
+	),
+	function(env, after) {
 		// Update prelobby object for this match
 		if (undefined === prelobbies[env.match.id]) {
 			prelobbies[env.match.id] = {
@@ -383,7 +416,7 @@ var submit_roster = new fl.Chain(
 		}
 
 		// Replace player list with the newly submitted one
-		prelobbies[env.match.id].teams[env.teamCaptain].players = players;
+		prelobbies[env.match.id].teams[env.teamCaptain].players = env.players;
 
 		env.$redirect('/matches/'+env.match.id);
 		after();
