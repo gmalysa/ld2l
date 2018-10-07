@@ -49,8 +49,8 @@
 		       value="Remove"
 			   class="pure-button ld2l-button-primary" />
 	  </a>
-    {>roster_card /}
 	{/canEditTeam}
+    {>roster_card /}
   </div>
 {:else}
   <p>Nobody has been drafted to this team yet.</p>
