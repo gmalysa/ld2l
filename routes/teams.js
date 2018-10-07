@@ -30,7 +30,7 @@ var team_preamble = new fl.Chain(
 			return;
 		}
 		after();
-	},
+	}
 );
 
 /**
