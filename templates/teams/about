@@ -38,7 +38,19 @@
 <h3>Roster</h3>
 {#team.players}
   <div>
+	{?canEditTeam}
+	  <a href="/teams/about/{team.id}/set_captain/{steamid}">
+	    <input type="button"
+		       value="Captain"
+			   class="pure-button ld2l-button-primary" />
+	  </a>{~n}
+	  <a href="/teams/about/{team.id}/remove/{steamid}">
+	    <input type="button"
+		       value="Remove"
+			   class="pure-button ld2l-button-primary" />
+	  </a>
     {>roster_card /}
+	{/canEditTeam}
   </div>
 {:else}
   <p>Nobody has been drafted to this team yet.</p>

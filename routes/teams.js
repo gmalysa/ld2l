@@ -123,6 +123,69 @@ var undisband = new fl.Chain(
 	}
 );
 
+/**
+ * Change the captain for a team
+ */
+var set_captain = new fl.Chain(
+	function(env, after) {
+		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
+		if (!isAdmin) {
+			env.$throw(new Error('You cannot change this team\'s captain'));
+			return;
+		}
+
+		after(env.req.params.captainid);
+	},
+	users.getUser,
+	function(env, after, user) {
+		if (null == user) {
+			env.$throw(new Error('Couldn\'t find that steamid'));
+			return;
+		}
+
+		after(user, env.team);
+	},
+	teams.setCaptain,
+	function(env, after) {
+		env.$redirect('/teams/about/'+env.teamId);
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Remove a player from a team
+ */
+var remove_player = new fl.Chain(
+	function(env, after) {
+		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
+		if (!isAdmin) {
+			env.$throw(new Error('You cannot change this team\'s roster'));
+			return;
+		}
+
+		after(env.req.params.playerid);
+	},
+	users.getUser,
+	function(env, after, user) {
+		if (null == user) {
+			env.$throw(new Error('Couldn\'t find that steamid'));
+			return;
+		}
+
+		if (!teams.isOnTeam(env.team, user)) {
+			env.$throw(new Error('This player is not on this team'));
+			return;
+		}
+
+		after(user, env.team);
+	},
+	teams.removePlayer,
+	function(env, after) {
+		env.$redirect('/teams/about/'+env.teamId);
+		after();
+	}
+).use_local_env(true);
+
 module.exports.init_routes = function(server) {
 	server.add_pre_hook(team_preamble, 'team');
 
@@ -155,4 +218,16 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'require_user', 'team'],
 		post : ['default']
 	}, 'post');
+
+	server.add_route('/teams/about/:teamid/set_captain/:captainid', {
+		fn : set_captain,
+		pre : ['default', 'require_user', 'team'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/teams/about/:teamid/remove/:playerid', {
+		fn : remove_player,
+		pre : ['default', 'require_user', 'team'],
+		post : ['default']
+	}, 'get');
 }
