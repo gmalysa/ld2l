@@ -428,10 +428,6 @@ var submit_roster = new fl.Chain(
  */
 var start_match = new fl.Chain(
 	function(env, after) {
-		after(env.match.season);
-	},
-	seasons.getSeasonBasic,
-	function(env, after, season) {
 		if (!(env.teamCaptain >= 0
 			  || privs.hasPriv(env.user.privs, privs.CREATE_LOBBY))) {
 			env.$throw(new Error('You are not allowed to start this lobby'));
@@ -464,7 +460,7 @@ var start_match = new fl.Chain(
 			name : 'LD2L - '+env.match.home.name+' vs '+env.match.away.name,
 			ident : 'ld2l-match-'+env.match.id,
 			teams : teams,
-			tournament : season.ticket,
+			tournament : match.season.ticket,
 			config : {
 				selection_priority_rules : 1
 			}
