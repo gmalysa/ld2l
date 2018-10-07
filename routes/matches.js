@@ -651,5 +651,5 @@ module.exports.init_routes = function(server) {
 		fn : start_match,
 		pre : ['default', 'require_user', 'match'],
 		post : ['default']
-	}, 'post');
+	}, 'get');
 };

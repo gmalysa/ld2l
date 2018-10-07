@@ -42,9 +42,11 @@
 {/anyCaptain}
 {?showStartButton}
   <div style="width: 36.5em; text-align:center;">
+	<a href="/matches/{match.id}/start">
     <input class="pure-button ld2l-button-primary"
            type="button"
    	       value="Start Lobby" />
+    </a>
   </div>
 {/showStartButton}
 
