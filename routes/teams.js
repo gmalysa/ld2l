@@ -10,9 +10,9 @@ var teams = require('../lib/teams.js');
 var matches = require('../lib/matches.js');
 
 /**
- * Get info about a specific team
+ * Consistent team preamble, looks for :teamid
  */
-var team_info = new fl.Chain(
+var team_preamble = new fl.Chain(
 	function(env, after) {
 		env.teamId = parseInt(env.req.params.teamid);
 		if (isNaN(env.teamId)) {
@@ -25,6 +25,19 @@ var team_info = new fl.Chain(
 	teams.get,
 	function(env, after, team) {
 		env.team = team;
+		if (null == team) {
+			env.$throw(new Error('No team matching id '+env.teamId));
+			return;
+		}
+		after();
+	},
+);
+
+/**
+ * Get info about a specific team
+ */
+var team_info = new fl.Chain(
+	function(env, after) {
 		after(env.team);
 	},
 	matches.getTeamHistory,
@@ -73,21 +86,7 @@ var team_index = new fl.Chain(
  */
 var rename = new fl.Chain(
 	function(env, after) {
-		var teamID = parseInt(env.req.params.teamid);
-		if (isNaN(teamID)) {
-			env.$throw(new Error('Invalid team ID given.'));
-			return;
-		}
-
-		after(teamID);
-	},
-	teams.get,
-	function(env, after, team) {
-		if(null === team) {
-			env.$throw(new Error('Team not found'));
-			return;
-		}
-		after(env.user, team, env.req.body.name);
+		after(env.user, env.team, env.req.body.name);
 	},
 	teams.rename,
 	function(env, after) {
@@ -101,19 +100,11 @@ var rename = new fl.Chain(
  */
 var disband = new fl.Chain(
 	function(env, after) {
-		env.teamID = parseInt(env.req.params.teamid);
-		if (isNaN(env.teamID)) {
-			env.$throw(new Error('Invalid team ID given.'));
-			return;
-		}
-
-		env.$push(env.user);
-		after(env.teamID);
+		after(env.user, env.team);
 	},
-	teams.get,
 	teams.disband,
 	function(env, after) {
-		env.$redirect('/teams/about/'+env.teamID);
+		env.$redirect('/teams/about/'+env.teamId);
 		after();
 	}
 );
@@ -123,24 +114,18 @@ var disband = new fl.Chain(
  */
 var undisband = new fl.Chain(
 	function(env, after) {
-		env.teamID = parseInt(env.req.params.teamid);
-		if (isNaN(env.teamID)) {
-			env.$throw(new Error('Invalid team ID given.'));
-			return;
-		}
-
-		env.$push(env.user);
-		after(env.teamID);
+		after(env.user, env.team);
 	},
-	teams.get,
 	teams.undisband,
 	function(env, after) {
-		env.$redirect('/teams/about/'+env.teamID);
+		env.$redirect('/teams/about/'+env.teamId);
 		after();
 	}
 );
 
 module.exports.init_routes = function(server) {
+	server.add_pre_hook(team_preamble, 'team');
+
 	server.add_route('/teams/:seasonid', {
 		fn : team_index,
 		pre : ['default', 'optional_user', 'season'],
@@ -149,25 +134,25 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/teams/about/:teamid', {
 		fn : team_info,
-		pre : ['default', 'optional_user'],
+		pre : ['default', 'optional_user', 'team'],
 		post : ['default']
 	}, 'get');
 
 	server.add_route('/teams/about/:teamid/disband', {
 		fn : disband,
-		pre : ['default', 'require_user'],
+		pre : ['default', 'require_user', 'team'],
 		post : ['default']
 	}, 'get');
 
 	server.add_route('/teams/about/:teamid/undisband', {
 		fn : undisband,
-		pre : ['default', 'require_user'],
+		pre : ['default', 'require_user', 'team'],
 		post : ['default']
 	}, 'get');
 
 	server.add_route('/teams/about/:teamid/rename', {
 		fn : rename,
-		pre : ['default', 'require_user'],
+		pre : ['default', 'require_user', 'team'],
 		post : ['default']
 	}, 'post');
 }
