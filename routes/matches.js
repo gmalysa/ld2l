@@ -461,6 +461,7 @@ var start_match = new fl.Chain(
 		}];
 
 		after({
+			name : 'LD2L - '+env.match.home.name+' vs '+env.match.away.name,
 			ident : 'ld2l-match-'+env.match.id,
 			teams : teams,
 			tournament : season.ticket,
