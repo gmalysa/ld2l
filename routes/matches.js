@@ -460,7 +460,7 @@ var start_match = new fl.Chain(
 			name : 'LD2L - '+env.match.home.name+' vs '+env.match.away.name,
 			ident : 'ld2l-match-'+env.match.id,
 			teams : teams,
-			tournament : match.season.ticket,
+			tournament : env.match.season.ticket,
 			config : {
 				selection_priority_rules : 1
 			}
