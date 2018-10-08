@@ -253,10 +253,14 @@ var match_preamble = new fl.Chain(
 
 		var captain = -1;
 		if (env.user.steamid) {
-			if (match.home.captain.steamid == env.user.steamid)
+			if (match.home.captain
+				&& match.home.captain.steamid == env.user.steamid) {
 				captain = 0;
-			else if (match.away.captain.steamid == env.user.steamid)
+			}
+			else if (match.away.captain
+				&& match.away.captain.steamid == env.user.steamid) {
 				captain = 1;
+			}
 		}
 
 		env.teamCaptain = captain;
