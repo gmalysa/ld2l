@@ -49,6 +49,19 @@
     </a>
   </div>
 {/showStartButton}
+{?started}
+  <div style="width: 36.5em; text-align: center;">
+    <input class="pure-button ld2l-button-primary"
+	       type="button"
+		   disabled
+		   value="Lobby Started" />
+    {~n}<a href="/matches{match.id}/cancel">
+	  <input class="pure-button ld2l-button-primary"
+	         type="button"
+			 value="Cancel Lobby" />
+	</a>
+  </div>
+{/started}
 
 </fieldset>
 </form>

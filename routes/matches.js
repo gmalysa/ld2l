@@ -298,6 +298,7 @@ var match_details = new fl.Chain(
 	function(env, after) {
 		var canEdit = privs.hasPriv(env.user.privs, privs.CREATE_LOBBY);
 		var showStartButton = false;
+		var started = false;
 
 		// Add captain to player list if we have real teams
 		if (env.match.home.id > 0)
@@ -314,7 +315,10 @@ var match_details = new fl.Chain(
 			if (lobby.teams[0].players.length == 5
 				&& lobby.teams[1].players.length == 5) {
 
-				showStartButton = true;
+				if (lobby.started)
+					started = true;
+				else
+					showStartButton = true;
 			}
 		}
 
@@ -324,6 +328,7 @@ var match_details = new fl.Chain(
 			captainSide : env.teamCaptain,
 			anyCaptain : (env.teamCaptain >= 0),
 			showStartButton : showStartButton,
+			started : started,
 			scripts : ['autocomplete', 'matches'],
 		});
 
@@ -472,6 +477,33 @@ var start_match = new fl.Chain(
 	},
 	lobbies.create,
 	function(env, after, response) {
+		env.$redirect('/matches/'+env.match.id);
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Used to cancel a lobby that has been started but not launched
+ */
+var cancel_match = new fl.Chain(
+	function(env, after) {
+		if (!(env.teamCaptain >= 0
+			  || privs.hasPriv(env.user.privs, privs.CREATE_LOBBY))) {
+			env.$throw(new Error('You are not allowed to cancel this lobby'));
+			return;
+		}
+
+		if (!prelobbies[env.match.id].started) {
+			env.$throw(new Error('This lobby has not yet started.'));
+			return;
+		}
+
+		after('ld2l-match-'+env.match.id);
+	},
+	lobbies.remove,
+	function(env, after, response) {
+		prelobbies[env.match.id].started = false;
+		env.$redirect('/matches/'+env.match.id);
 		after();
 	}
 ).use_local_env(true);
@@ -650,6 +682,12 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/matches/:matchid/start', {
 		fn : start_match,
+		pre : ['default', 'require_user', 'match'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/matches/:matchid/cancel', {
+		fn : cancel_match,
 		pre : ['default', 'require_user', 'match'],
 		post : ['default']
 	}, 'get');
