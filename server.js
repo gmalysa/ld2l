@@ -119,14 +119,16 @@ server.use(function(req, res, next) {
 });
 
 var sessionStorage = new sessionFileStore({
-	ttl : 15 * 24 * 60 * 60
+	ttl : 25 * 24 * 60 * 60
 });
 
 var sessionMiddleware = expressSession({
 	secret : config.session_secret,
 	resave : false,
-	saveUninitialized : false,
-	maxAge : 15 * 24 * 60 * 60 * 1000,
+	saveUninitialized : true,
+	cookie : {
+		maxAge : 25 * 24 * 60 * 60 * 1000,
+	},
 	store : sessionStorage,
 	rolling : true
 });

@@ -193,6 +193,13 @@ module.exports.init_routes = function(common) {
 		passport.authenticate('steam', { failureRedirect : '/' }),
 		function(req, res) { res.redirect('/'); }
 	);
+	common.server.get(
+		'/auth/logout',
+		function(req, res) {
+			req.logout();
+			res.redirect('/');
+		}
+	);
 
 	common.server.get(
 		'/auth/discord',
