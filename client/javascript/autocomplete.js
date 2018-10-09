@@ -50,16 +50,8 @@ ld2l.autocomplete = function(elem, params) {
 				ld2l.inAutocomplete = false;
 
 				var results = data.search;
-				var position = jElem.position();
-
-				// Reset the menu based on this input box
-				ld2l.showMenu(null, {
-					clientX : position.left,
-					clientY : position.top + jElem.outerHeight(),
-					stopPropagation : function() {}
-				});
-
 				ld2l.autocompleteResults = results;
+				ld2l.showMenu(elem);
 
 				// All all partial matches, using dust to render each one
 				results.forEach(function(v, k) {

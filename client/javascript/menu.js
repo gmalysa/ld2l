@@ -11,47 +11,61 @@ if (undefined === ld2l) {
 	var ld2l = {};
 }
 
-ld2l._menuChecks = [];
+document.addEventListener('DOMContentLoaded', function() {
+	ld2l.popupMenu = {
+		_menuChecks : [],
+		popper : null,
+		menuWrapper : document.getElementById('float-menu'),
+		menuList : null
+	};
+});
 
 ld2l.clearMenu = function() {
-	$('#float-menu').css({display : 'none'});
-	$('body').off('click');
+	document.body.removeEventListener('click', ld2l.clearMenu);
+	ld2l.popupMenu.menuWrapper.style.display = 'none';
+	ld2l.popupMenu.popper.destroy();
+	ld2l.popupMenu.popper = null;
 };
 
-ld2l.showMenu = function(elem, event) {
-	var menu = $('#float-menu');
-	menu.html('');
-
-	ld2l._menuChecks.forEach(function(v) {
-		v(elem, event);
+ld2l.showMenu = function(elem) {
+	ld2l.popupMenu._menuChecks.forEach(function(v) {
+		v(elem);
 	});
 
-	menu.wrap('<ul class="pure-menu-list"></ul>');
-	menu.css({
-		top : event.clientY,
-		left : event.clientX,
-		display : 'block'
-	});
+	ld2l.popupMenu.menuList = document.createElement('ul');
+	ld2l.popupMenu.menuList.setAttribute('id', 'float-menu-list');
+	$(ld2l.popupMenu.menuList).addClass('pure-menu-list');
 
-	$('body').on('click', ld2l.clearMenu);
-	event.stopPropagation();
+	ld2l.popupMenu.menuWrapper.style.display = 'block';
+	ld2l.popupMenu.menuWrapper.innerHTML = '';
+	ld2l.popupMenu.menuWrapper.appendChild(ld2l.popupMenu.menuList);
+
+	if (ld2l.popupMenu.popper)
+		ld2l.popupMenu.popper.destroy();
+
+	ld2l.popupMenu.popper = new Popper(
+		elem,
+		ld2l.popupMenu.menuWrapper,
+		{placement : 'bottom-start'}
+	);
+
+	document.body.addEventListener('click', ld2l.clearMenu);
 };
 
 ld2l.registerMenuHandler = function(fn) {
-	ld2l._menuChecks.push(fn);
+	ld2l.popupMenu._menuChecks.push(fn);
 };
 
 ld2l.addMenuItem = function(text, action) {
-	var menu = $('#float-menu');
-	var item = $(document.createElement('li'));
-	item.addClass('pure-menu-item');
-	menu.append(item);
+	var item = document.createElement('li');
+	$(item).addClass('pure-menu-item');
+	ld2l.popupMenu.menuList.appendChild(item);
 
-	var link = $(document.createElement('a'));
-	link.addClass('ld2l-menu-link');
-	link.click(action);
-	link.append(text);
+	var link = document.createElement('a');
+	$(link).addClass('ld2l-menu-link');
+	link.addEventListener('click', action);
+	link.innerHTML = text;
 
-	item.append(link);
-	return link;
+	item.appendChild(link);
+	return $(link);
 }
