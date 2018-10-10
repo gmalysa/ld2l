@@ -53,7 +53,7 @@ var team_info = new fl.Chain(
 			history : history,
 			canEditName : canEditName,
 			canEditTeam : isAdmin,
-			scripts : ['name', 'autocomplete', 'teams']
+			scripts : ['name', 'menu', 'autocomplete', 'teams']
 		});
 		after();
 	}

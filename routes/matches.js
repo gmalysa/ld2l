@@ -329,7 +329,7 @@ var match_details = new fl.Chain(
 			anyCaptain : (env.teamCaptain >= 0),
 			showStartButton : showStartButton,
 			started : started,
-			scripts : ['autocomplete', 'matches'],
+			scripts : ['menu', 'autocomplete', 'matches'],
 		});
 
 		env.$template('match');

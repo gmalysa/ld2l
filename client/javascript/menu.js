@@ -1,11 +1,6 @@
 /**
- * Handle expanding/minimizing the sidebar menu for mobile/small layouts
+ * Popup menu functionality
  */
-$(document).ready(function() {
-	$('#menu-link').click(function() {
-		$('#ld2l-layout').toggleClass('active');
-	});
-});
 
 if (undefined === ld2l) {
 	var ld2l = {};
