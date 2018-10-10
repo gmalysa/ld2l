@@ -38,15 +38,9 @@ ld2l.autocomplete = function(elem, params) {
 
 		if (!ld2l.inAutocomplete) {
 			ld2l.inAutocomplete = true;
-			$.ajax({
-				url : params.url,
-				data : {
-					key : pieces[pieces.length-1]
-				},
-				method : 'POST',
-				dataType : 'json',
-				accepts : 'application/json'
-			}).done(function(data, status, xhr) {
+			ld2l.$.ajax(params.url, {key : pieces[pieces.length-1]})
+			.then(function(data) {
+				console.log(data);
 				ld2l.inAutocomplete = false;
 
 				var results = data.search;
@@ -73,10 +67,9 @@ ld2l.autocomplete = function(elem, params) {
 	});
 }
 
-// Initialize everything of the "ld2l-name-autocomplete" class on load for names
-$(document).ready(function() {
-	// Why does jQuery continue to have each's arguments backwards relative to js spec
-	$('.ld2l-name-autocomplete').each(function(k, v) {
+// Initialize autocomplete functionality by class
+ld2l.$.onReady(function() {
+	document.querySelectorAll('.ld2l-name-autocomplete').forEach(function(v) {
 		ld2l.autocomplete(v, {
 			url : '/search',
 			template : 'autocomplete',
@@ -84,11 +77,8 @@ $(document).ready(function() {
 			data_key : 'steamid'
 		})
 	});
-});
 
-// Same but with heroes
-$(document).ready(function() {
-	$('.ld2l-hero-autocomplete').each(function(k, v) {
+	document.querySelectorAll('.ld2l-hero-autocomplete').forEach(function(v) {
 		ld2l.autocomplete(v, {
 			url : '/autocomplete/heroes',
 			template : 'herocomplete',
@@ -96,11 +86,8 @@ $(document).ready(function() {
 			data_key : 'id'
 		});
 	});
-});
 
-// Same but with items
-$(document).ready(function() {
-	$('.ld2l-item-autocomplete').each(function(k, v) {
+	document.querySelectorAll('.ld2l-item-autocomplete').forEach(function(v) {
 		ld2l.autocomplete(v, {
 			url : '/autocomplete/items',
 			template : 'itemcomplete',
@@ -108,10 +95,7 @@ $(document).ready(function() {
 			data_key : 'id',
 		});
 	});
-});
 
-// Same but with standins
-ld2l.$.onReady(function() {
 	document.querySelectorAll('.ld2l-standin-autocomplete').forEach(function(v) {
 		ld2l.autocomplete(v, {
 			url : '/autocomplete/standins/'+v.dataset.season,

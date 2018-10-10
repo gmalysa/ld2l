@@ -10,12 +10,34 @@ ld2l.$ = {};
 
 /**
  * Call a function when the DOM is ready or immediately if it already is
+ * @param[in] f Function to call
  */
 ld2l.$.onReady = function(f) {
 	if (document.readyState != 'loading')
 		f();
 	else
 		document.addEventListener('DOMContentLoaded', f);
+};
+
+/**
+ * Make an AJAX call and parse the result for any global stuff we want to do
+ * @param[in] string url The url to send the request to
+ * @param[in] object data The data object, jsond
+ * @param[in] (optional) object options Additional options for request
+ * @return Promise with the response
+ */
+ld2l.$.ajax = function(url, data, options) {
+	var args = _.extend({
+		method : 'POST',
+		credentials: 'same-origin',
+		headers : {
+			'Content-Type': 'application/json',
+			'Accept' : 'application/json'
+		},
+		body : JSON.stringify(data)
+	}, options || {});
+
+	return fetch(url, args).then(function(r) { return r.json(); });
 };
 
 /**
