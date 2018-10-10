@@ -13,11 +13,9 @@ ld2l.inAutocomplete = false;
 ld2l.autocompleteResults = [];
 
 ld2l.autocomplete = function(elem, params) {
-	var jElem = $(elem);
-
-	jElem.on('keydown', function(evt) {
+	elem.addEventListener('keydown', function(evt) {
 		// Don't autocomplete when we expect lots of entries
-		if (jElem.val().length <= 2)
+		if (elem.value.length <= 2)
 			return;
 
 		// If we have results and we're tabbing, select that result
@@ -30,17 +28,16 @@ ld2l.autocomplete = function(elem, params) {
 		}
 
 		// Split on commas and autocomplete the last one
-		var contents = jElem.val();
+		var contents = elem.value;
 		var pieces = contents.split(',');
 
-		var dataContents = jElem.data(params.data_key)+'';
+		var dataContents = elem.dataset[params.data_key] + '';
 		var dataPieces = dataContents.split(',');
 
 		if (!ld2l.inAutocomplete) {
 			ld2l.inAutocomplete = true;
 			ld2l.$.ajax(params.url, {key : pieces[pieces.length-1]})
 			.then(function(data) {
-				console.log(data);
 				ld2l.inAutocomplete = false;
 
 				var results = data.search;
@@ -53,11 +50,11 @@ ld2l.autocomplete = function(elem, params) {
 						v.element = ld2l.addMenuItem(out, function() {
 							// Reconstruct the contents of both as a csv
 							pieces[pieces.length-1] = v[params.display_key];
-							jElem.val(pieces.join(','));
+							elem.value = pieces.join(',');
 							dataPieces[pieces.length-1] = v[params.data_key];
-							jElem.data(params.data_key, dataPieces.join(','));
+							elem.dataset[params.data_key] = dataPieces.join(',');
 
-							jElem.focus();
+							elem.focus();
 							ld2l.autocompleteResults = [];
 						});
 					});
