@@ -31,8 +31,9 @@
 			   value="{team.standin.display_name}"
 			   data-steamid="{team.standin.steamid}"
 			 {/team.standin}
+			 data-season="{match.season.id}"
 	  	     placeholder="Standin"
-	         class="ld2l-name-autocomplete" />
+	         class="ld2l-standin-autocomplete" />
 	{:else}
 	  {#team.standin}
 	    <div style="width: 1em;" class="inline">

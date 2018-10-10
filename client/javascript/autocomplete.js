@@ -90,7 +90,7 @@ $(document).ready(function() {
 $(document).ready(function() {
 	$('.ld2l-hero-autocomplete').each(function(k, v) {
 		ld2l.autocomplete(v, {
-			url : '/heroes',
+			url : '/autocomplete/heroes',
 			template : 'herocomplete',
 			display_key : 'localized_name',
 			data_key : 'id'
@@ -102,10 +102,22 @@ $(document).ready(function() {
 $(document).ready(function() {
 	$('.ld2l-item-autocomplete').each(function(k, v) {
 		ld2l.autocomplete(v, {
-			url : '/items',
+			url : '/autocomplete/items',
 			template : 'itemcomplete',
 			display_key : 'dname',
 			data_key : 'id',
+		});
+	});
+});
+
+// Same but with standins
+ld2l.$.onReady(function() {
+	document.querySelectorAll('.ld2l-standin-autocomplete').forEach(function(v) {
+		ld2l.autocomplete(v, {
+			url : '/autocomplete/standins/'+v.dataset.season,
+			template : 'autocomplete',
+			display_key : 'display_name',
+			data_key : 'steamid'
 		});
 	});
 });

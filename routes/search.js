@@ -8,6 +8,7 @@ var db = require('db-filters');
 var dotaconstants = require('dotaconstants');
 
 var users = require('../lib/users.js');
+var seasons = require('../lib/seasons.js');
 
 /**
  * Search for a user, including an optional partial string in the url for form results
@@ -102,6 +103,35 @@ function item(env, after) {
 	after();
 }
 
+/**
+ * Search for standins for a particular season, which are all players who have set
+ * standin to 1 and are not on a team
+ */
+var standins = new fl.Chain(
+	function(env, after) {
+		after(env.req.params.seasonid);
+	},
+	seasons.getSeasonBasic,
+	function(env, after, season) {
+		after(season, {valid_standin : 1, teamid : 0});
+	},
+	seasons.getSignups,
+	function(env, after, signups) {
+		var tester = new RegExp(env.req.body.key, 'i');
+		matches = _.filter(signups, function(player) {
+			return tester.test(player.display_name)
+				|| tester.test(player.name)
+				|| tester.test(player.steamid);
+		});
+
+		env.$json({
+			search : matches
+		});
+
+		after();
+	}
+).use_local_env(true);
+
 module.exports.init_routes = function(server) {
 	server.add_route('/search', {
 		pre : ['default', 'optional_user'],
@@ -115,15 +145,21 @@ module.exports.init_routes = function(server) {
 		fn : search
 	}, 'post');
 
-	server.add_route('/items', {
+	server.add_route('/autocomplete/items', {
 		pre : ['default', 'optional_user'],
 		post : ['default'],
 		fn : item
 	}, 'post');
 
-	server.add_route('/heroes', {
+	server.add_route('/autocomplete/heroes', {
 		pre : ['default', 'optional_user'],
 		post : ['default'],
 		fn : hero
+	}, 'post');
+
+	server.add_route('/autocomplete/standins/:seasonid', {
+		pre : ['default', 'optional_user'],
+		post : ['default'],
+		fn : standins
 	}, 'post');
 };

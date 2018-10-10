@@ -66,7 +66,8 @@
 	         name="player"
 			 id="player"
 			 placeholder="Player Name"
-	         class="ld2l-name-autocomplete" />
+			 data-season="{season.id}"
+	         class="ld2l-standin-autocomplete" />
       {~n}
 	  <input type="button"
 	         onclick="ld2l.addPlayerToTeam();"
