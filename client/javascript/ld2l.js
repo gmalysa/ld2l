@@ -5,9 +5,10 @@
 /**
  * Handle expanding/minimizing the sidebar menu for mobile/small layouts
  */
-$(document).ready(function() {
-	$('#menu-link').click(function() {
-		$('#ld2l-layout').toggleClass('active');
+document.addEventListener('DOMContentLoaded', function() {
+	var menu = document.getElementById('menu-link');
+	menu.addEventListener('click', function() {
+		document.getElementById('ld2l-layout').classList.toggle('active');
 	});
 });
 
