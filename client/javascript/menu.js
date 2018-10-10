@@ -29,7 +29,7 @@ ld2l.showMenu = function(elem) {
 
 	ld2l.popupMenu.menuList = document.createElement('ul');
 	ld2l.popupMenu.menuList.setAttribute('id', 'float-menu-list');
-	$(ld2l.popupMenu.menuList).addClass('pure-menu-list');
+	ld2l.popupMenu.menuList.classList.add('pure-menu-list');
 
 	ld2l.popupMenu.menuWrapper.style.display = 'block';
 	ld2l.popupMenu.menuWrapper.innerHTML = '';
@@ -53,14 +53,14 @@ ld2l.registerMenuHandler = function(fn) {
 
 ld2l.addMenuItem = function(text, action) {
 	var item = document.createElement('li');
-	$(item).addClass('pure-menu-item');
+	item.classList.add('pure-menu-item');
 	ld2l.popupMenu.menuList.appendChild(item);
 
 	var link = document.createElement('a');
-	$(link).addClass('ld2l-menu-link');
+	link.classList.add('ld2l-menu-link');
 	link.addEventListener('click', action);
 	link.innerHTML = text;
 
 	item.appendChild(link);
-	return $(link);
+	return link;
 }

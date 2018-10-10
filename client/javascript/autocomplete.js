@@ -23,7 +23,7 @@ ld2l.autocomplete = function(elem, params) {
 		// If we have results and we're tabbing, select that result
 		if (evt.keyCode == 9) {
 			if (ld2l.autocompleteResults.length) {
-				ld2l.autocompleteResults[0].jquery.click();
+				ld2l.$.click(ld2l.autocompleteResults[0].element);
 				evt.preventDefault();
 			}
 			return;
@@ -56,7 +56,7 @@ ld2l.autocomplete = function(elem, params) {
 				// All all partial matches, using dust to render each one
 				results.forEach(function(v, k) {
 					dust.render(params.template, v, function(err, out) {
-						v.jquery = ld2l.addMenuItem(out, function() {
+						v.element = ld2l.addMenuItem(out, function() {
 							// Reconstruct the contents of both as a csv
 							pieces[pieces.length-1] = v[params.display_key];
 							jElem.val(pieces.join(','));
