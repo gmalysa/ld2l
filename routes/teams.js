@@ -53,7 +53,7 @@ var team_info = new fl.Chain(
 			history : history,
 			canEditName : canEditName,
 			canEditTeam : isAdmin,
-			scripts : ['name']
+			scripts : ['name', 'autocomplete', 'teams']
 		});
 		after();
 	}
@@ -186,6 +186,35 @@ var remove_player = new fl.Chain(
 	}
 ).use_local_env(true);
 
+/**
+ * Add a player to a team
+ */
+var add_player = new fl.Chain(
+	function(env, after) {
+		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
+		if (!isAdmin) {
+			env.$throw(new Error('You cannot change this team\'s roster'));
+			return;
+		}
+
+		after(env.req.body.player);
+	},
+	users.getUser,
+	function(env, after, user) {
+		if (null == user) {
+			env.$throw(new Error('Couldn\'t find that steamid'));
+			return;
+		}
+
+		after(user, env.team);
+	},
+	teams.setTeam,
+	function(env, after) {
+		env.$redirect('/teams/about/'+env.teamId);
+		after();
+	}
+).use_local_env(true);
+
 module.exports.init_routes = function(server) {
 	server.add_pre_hook(team_preamble, 'team');
 
@@ -230,4 +259,10 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'require_user', 'team'],
 		post : ['default']
 	}, 'get');
+
+	server.add_route('/teams/about/:teamid/add', {
+		fn : add_player,
+		pre : ['default', 'require_user', 'team'],
+		post : ['default']
+	}, 'post');
 }

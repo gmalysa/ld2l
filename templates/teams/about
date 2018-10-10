@@ -55,6 +55,27 @@
 {:else}
   <p>Nobody has been drafted to this team yet.</p>
 {/team.players}
+{?canEditTeam}
+  <form method="post"
+        id="addPlayerForm"
+        action="/teams/about/{team.id}/add"
+		class="pure-form pure-form-aligned">
+  <fieldset>
+    <div>
+	  <input type="text"
+	         name="player"
+			 id="player"
+			 placeholder="Player Name"
+	         class="ld2l-name-autocomplete" />
+      {~n}
+	  <input type="button"
+	         onclick="ld2l.addPlayerToTeam();"
+	         value="Add Player"
+			 class="pure-button ld2l-button-primary"  />
+	</div>
+  </fieldset>
+  </form>
+{/canEditTeam}
 
 <h3>Matches</h3>
 {?history}
