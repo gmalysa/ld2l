@@ -20,7 +20,7 @@
 <div style="margin-bottom: 2px;">
   <div style="display: inline-block; width: 1em; padding-right: 0.5em;">
     {@eq key=result value=1 type="number"}
-	  <span class="fa fa-check"></span>
+	  <span class="fas fa-crown"></span>
 	{/eq}
   </div>
 
@@ -34,7 +34,7 @@
 
   <div style="display: inline-block; width: 1em; padding-left: 0.5em;">
     {@eq key=result value=2 type="number"}
-	  <span class="fa fa-check"></span>
+	  <span class="fas fa-crown"></span>
 	{/eq}
   </div>
 </div>
