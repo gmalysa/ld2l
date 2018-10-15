@@ -91,7 +91,7 @@ var create = new fl.Chain(
 var lobby_results = new fl.Chain(
 	function(env, after) {
 		// @todo verify api key here
-		after(env.req.body, lobbies.RESULTS_FORMAT_KAEDEBOT, 0, false);
+		after(env.req.body, lobbies.RESULTS_FORMAT_KAEDEBOT, 0);
 	},
 	lobbies.parseResults
 );
@@ -108,7 +108,7 @@ var opendota_parse = new fl.Chain(
 
 		request('https://api.opendota.com/api/matches/'+env.req.params.match,
 		        function(error, response, body) {
-					after(JSON.parse(body), lobbies.RESULTS_FORMAT_OPENDOTA, 0, false);
+					after(JSON.parse(body), lobbies.RESULTS_FORMAT_OPENDOTA, 0);
 				});
 	},
 	lobbies.parseResults,

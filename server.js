@@ -137,7 +137,7 @@ var sessionMiddleware = expressSession({
 server.use(config.static_path, express.static(config.static_dir));
 server.use(sessionMiddleware);
 server.use(bodyParser.urlencoded({extended : false}));
-server.use(bodyParser.json());
+server.use(bodyParser.json({limit : '1mb'}));
 server.use(passport.initialize());
 server.use(passport.session());
 

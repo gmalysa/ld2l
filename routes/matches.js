@@ -532,12 +532,11 @@ var parse = new fl.Chain(
 
 		env.matchid = id;
 		env.dotaid = dotaid;
-		env.swap = (env.req.body.swap == 'on' ? true : false);
 		request('https://api.opendota.com/api/matches/'+dotaid,
 		        env.$check(after));
 	},
 	function(env, after, response, body) {
-		after(JSON.parse(body), lobbies.RESULTS_FORMAT_OPENDOTA, env.matchid, env.swap);
+		after(JSON.parse(body), lobbies.RESULTS_FORMAT_OPENDOTA, env.matchid);
 	},
 	lobbies.parseResults,
 	function(env, after) {

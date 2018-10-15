@@ -77,10 +77,6 @@
     <label for="dotaid">Match ID</label>
 	<input type="text" id="dotaid" name="dotaid" />
   </div>
-  <div class="pure-control-group">
-    <label for="swap">Swap Sides</label>
-	<input type="checkbox" id="swap" name="swap" />
-  </div>
   <div class="pure-controls">
     <input class="pure-button ld2l-button-primary" type="submit" value="Parse" />
   </div>
