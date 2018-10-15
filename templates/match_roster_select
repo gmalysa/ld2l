@@ -33,7 +33,7 @@
 			 {/team.standin}
 			 data-season="{match.season.id}"
 	  	     placeholder="Standin"
-	         class="ld2l-standin-autocomplete" />
+	         class="ld2l-name-autocomplete" />
 	{:else}
 	  {#team.standin}
 	    <div style="width: 1em;" class="inline">
