@@ -1,5 +1,11 @@
 <div class="ld2l-lobby-side" id="{side}">
-  <span class="ld2l-lobby-team {side}">{team.name}</span>
+  {?team.ready}
+    <span class="far fa-check-circle" title="Ready"></span>
+  {:else}
+    <span class="far fa-circle" title="Not ready"></span>
+  {/team.ready}
+  {~n}<span class="ld2l-lobby-team {side}">{team.name}</span>
+
   {#team.players}
     <div class="ld2l-lobby-player pure-control-group">
 	  <div style="width: 1em;" class="inline">

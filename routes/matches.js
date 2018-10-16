@@ -14,9 +14,8 @@ var teams = require('../lib/teams.js');
 var matches = require('../lib/matches.js');
 var audit = require('../lib/audit.js');
 var lobbies = require('../lib/lobbies.js');
-
-// Store rosters for pre-game config in memory only
-var prelobbies = {};
+var flHelper = require('../lib/fl-helper.js');
+var prelobbies = require('../lib/prelobbies.js');
 
 /**
  * Remove all of the links between a player and a particular match
@@ -269,36 +268,21 @@ var match_preamble = new fl.Chain(
 );
 
 /**
- * Synchronous helper to add selected player info to the match object
- * @param[inout] team The team object to update
- * @param[in] lobbyTeam The lobby definition's team object
- */
-function addLobbyDetails(team, lobbyTeam) {
-	_.each(lobbyTeam.players, function(lobbyPlayer) {
-		var found = false;
-		_.each(team.players, function(player) {
-			if (player.steamid == lobbyPlayer.steamid) {
-				player.inGameRoster = true;
-				found = true;
-			}
-		});
-
-		// Standin isn't on the normal roster
-		if (!found) {
-			team.standin = lobbyPlayer;
-		}
-	});
-}
-
-/**
  * Show detailed information for the single match specified
- * @param[in] env.req.params.matchid The integer database id of the match to look up
  */
 var match_details = new fl.Chain(
 	function(env, after) {
+		after(env.match.id);
+	},
+	prelobbies.get,
+	function(env, after, prelobby) {
+		var anyCaptain = (env.teamCaptain >= 0);
 		var canEdit = privs.hasPriv(env.user.privs, privs.CREATE_LOBBY);
-		var showStartButton = false;
+		var ready = false;
+		var preventReady = false;
 		var started = false;
+
+		var showStartButton = false;
 
 		// Add captain to player list if we have real teams
 		if (env.match.home.id > 0)
@@ -307,18 +291,14 @@ var match_details = new fl.Chain(
 		if (env.match.away.id > 0)
 			env.match.away.players.push(env.match.away.captain);
 
-		if (undefined !== prelobbies[env.match.id]) {
-			var lobby = prelobbies[env.match.id];
-			addLobbyDetails(env.match.home, lobby.teams[0]);
-			addLobbyDetails(env.match.away, lobby.teams[1]);
+		// Only do prelobby stuff if we don't have a match result
+		if (null !== prelobby && env.match.result == matches.UNPLAYED) {
+			prelobbies.addDetails(prelobby, env.match.home, env.match.away);
 
-			if (lobby.teams[0].players.length == 5
-				&& lobby.teams[1].players.length == 5) {
-
-				if (lobby.started)
-					started = true;
-				else
-					showStartButton = true;
+			// Only stuff for a captain
+			if (anyCaptain) {
+				ready = prelobby.teams[env.teamCaptain].ready;
+				preventReady = prelobby.teams[env.teamCaptain].players.length != 5;
 			}
 		}
 
@@ -326,9 +306,10 @@ var match_details = new fl.Chain(
 			match : env.match,
 			canEdit : canEdit,
 			captainSide : env.teamCaptain,
-			anyCaptain : (env.teamCaptain >= 0),
-			showStartButton : showStartButton,
-			started : started,
+			anyCaptain : anyCaptain,
+			prelobby : prelobby,
+			ready : ready,
+			preventReady : preventReady,
 			scripts : ['menu', 'autocomplete', 'matches'],
 		});
 
@@ -348,9 +329,8 @@ var submit_roster = new fl.Chain(
 		}
 
 		var players = [];
-		var standin = {
-			use : false
-		};
+		var standin = {};
+		env.use_standin = false;
 
 		_.each(env.req.body, function(v, k) {
 			// For selected checkboxes, their presence implies selection
@@ -364,12 +344,12 @@ var submit_roster = new fl.Chain(
 			}
 
 			if (k == 'use-standin') {
-				standin.use = true;
+				env.use_standin = true;
 			}
 		});
 
 		// Check that it's a valid steamid by length
-		if (standin.use && standin.steamid.length == 17)
+		if (env.use_standin && standin.steamid.length == 17)
 			players.push(standin);
 
 		if (players.length > 5) {
@@ -381,102 +361,33 @@ var submit_roster = new fl.Chain(
 		env.standin = standin;
 		after();
 	},
-
-	// Get standin details if one is on the list
-	new fl.Branch(
+	flHelper.IfTrue('use_standin',
 		function(env, after) {
-			after(env.standin.use);
+			after(env.standin.steamid);
 		},
-		new fl.Chain(
-			function(env, after) {
-				after(env.standin.steamid);
-			},
-			users.getUser,
-			function(env, after, user) {
-				env.standin.avatar = user.avatar;
-				env.standin.display_name = user.display_name;
-				env.filters.signups.select({
-					steamid : env.standin.steamid,
-					season : env.match.season.id
-				}).exec(after, env.$throw);
-			},
-			function(env, after, signup) {
-				env.standin.medal = signup[0].medal;
-				after();
-			}
-		),
-		function(env, after) {
+		users.getUser,
+		function(env, after, user) {
+			env.standin.avatar = user.avatar;
+			env.standin.display_name = user.display_name;
+			env.filters.signups.select({
+				steamid : env.standin.steamid,
+				season : env.match.season.id
+			}).exec(after, env.$throw);
+		},
+		function(env, after, signup) {
+			env.standin.medal = signup[0].medal;
 			after();
 		}
 	),
 	function(env, after) {
-		// Update prelobby object for this match
-		if (undefined === prelobbies[env.match.id]) {
-			prelobbies[env.match.id] = {
-				teams : [{
-					players : [],
-					captain : null,
-				}, {
-					players : [],
-					captain : null,
-				}],
-				started : false
-			};
-		}
-
-		// Replace player list with the newly submitted one
-		prelobbies[env.match.id].teams[env.teamCaptain].players = env.players;
-
-		env.$redirect('/matches/'+env.match.id);
-		after();
-	}
-).use_local_env(true);
-
-/**
- * Used by captains or admin to launch a lobby
- */
-var start_match = new fl.Chain(
-	function(env, after) {
-		if (!(env.teamCaptain >= 0
-			  || privs.hasPriv(env.user.privs, privs.CREATE_LOBBY))) {
-			env.$throw(new Error('You are not allowed to start this lobby'));
-			return;
-		}
-
-		var lobby = prelobbies[env.match.id];
-		if (undefined === lobby) {
-			env.$throw(new Error('This lobby is not ready to start'));
-			return;
-		}
-
-		// Prevent people from trying to start the lobby twice
-		if (lobby.started) {
-			env.$throw(new Error('This lobby has already started'));
-			return;
-		}
-		lobby.started = true;
-
-		// Remap objects to be flat arrays with only steamids
-		var teams = [{
-			captain : lobby.teams[0].players[0].steamid,
-			players : _.map(lobby.teams[0].players, function(v) { return v.steamid; }),
-		}, {
-			captain : lobby.teams[1].players[1].steamid,
-			players : _.map(lobby.teams[1].players, function(v) { return v.steamid; }),
-		}];
-
-		after({
-			name : 'LD2L - '+env.match.home.name+' vs '+env.match.away.name,
-			ident : 'ld2l-match-'+env.match.id,
-			teams : teams,
-			tournament : env.match.season.ticket,
-			config : {
-				selection_priority_rules : 1
-			}
-		});
+		after(env.match.id);
 	},
-	lobbies.create,
-	function(env, after, response) {
+	prelobbies.get,
+	function(env, after, prelobby) {
+		after(prelobby, env.teamCaptain, env.players);
+	},
+	prelobbies.setRoster,
+	function(env, after) {
 		env.$redirect('/matches/'+env.match.id);
 		after();
 	}
@@ -487,22 +398,62 @@ var start_match = new fl.Chain(
  */
 var cancel_match = new fl.Chain(
 	function(env, after) {
-		if (!(env.teamCaptain >= 0
-			  || privs.hasPriv(env.user.privs, privs.CREATE_LOBBY))) {
+		if (env.teamCaptain < 0) {
 			env.$throw(new Error('You are not allowed to cancel this lobby'));
 			return;
 		}
 
-		if (!prelobbies[env.match.id].started) {
-			env.$throw(new Error('This lobby has not yet started.'));
+		after(env.match.id);
+	},
+	prelobbies.get,
+	prelobbies.cancel,
+	function(env, after) {
+		env.$redirect('/matches/'+env.match.id);
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Used by a captain to mark themselves ready
+ */
+var ready = new fl.Chain(
+	function(env, after) {
+		if (env.teamCaptain < 0) {
+			env.$throw(new Error('You\'re not the team captain!'));
 			return;
 		}
 
-		after('ld2l-match-'+env.match.id);
+		after(env.match.id);
 	},
-	lobbies.remove,
-	function(env, after, response) {
-		prelobbies[env.match.id].started = false;
+	prelobbies.get,
+	function(env, after, prelobby) {
+		after(prelobby, env.teamCaptain);
+	},
+	prelobbies.ready,
+	function(env, after) {
+		env.$redirect('/matches/'+env.match.id);
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Used by a captain to mark themselves unready
+ */
+var unready = new fl.Chain(
+	function(env, after) {
+		if (env.teamCaptain < 0) {
+			env.$throw(new Error('You\'re not the team captain!'));
+			return;
+		}
+
+		after(env.match.id);
+	},
+	prelobbies.get,
+	function(env, after, prelobby) {
+		after(prelobby, env.teamCaptain);
+	},
+	prelobbies.unready,
+	function(env, after) {
 		env.$redirect('/matches/'+env.match.id);
 		after();
 	}
@@ -679,14 +630,20 @@ module.exports.init_routes = function(server) {
 		post : ['default']
 	}, 'post');
 
-	server.add_route('/matches/:matchid/start', {
-		fn : start_match,
+	server.add_route('/matches/:matchid/cancel', {
+		fn : cancel_match,
 		pre : ['default', 'require_user', 'match'],
 		post : ['default']
 	}, 'get');
 
-	server.add_route('/matches/:matchid/cancel', {
-		fn : cancel_match,
+	server.add_route('/matches/:matchid/ready', {
+		fn : ready,
+		pre : ['default', 'require_user', 'match'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/matches/:matchid/unready', {
+		fn : unready,
 		pre : ['default', 'require_user', 'match'],
 		post : ['default']
 	}, 'get');

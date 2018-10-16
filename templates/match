@@ -34,34 +34,44 @@
 {>match_roster_select side="dire" team=match.away captainCheck=1 /}
 
 {?anyCaptain}
-  <div style="width: 36.5em; text-align:center;">
-    <input class="pure-button ld2l-button-primary"
-	       type="submit"
-		   value="Submit Roster" />
+  <div style="width: 36.5em;">
+  <p>You can edit your roster at any time before the lobby starts. When both captains
+  {~n}are ready, the lobby will be launched automatically. You cannot change your
+  {~n}roster after the lobby starts, but it can be canceled if a player does not
+  {~n}show.</p>
   </div>
-{/anyCaptain}
-{?showStartButton}
-  <div style="width: 36.5em; text-align:center;">
-	<a href="/matches/{match.id}/start">
-    <input class="pure-button ld2l-button-primary"
-           type="button"
-   	       value="Start Lobby" />
-    </a>
-  </div>
-{/showStartButton}
-{?started}
-  <div style="width: 36.5em; text-align: center;">
-    <input class="pure-button ld2l-button-primary"
-	       type="button"
-		   disabled
-		   value="Lobby Started" />
-    {~n}<a href="/matches{match.id}/cancel">
+  {?prelobby.started}
+	<p>Lobby status: {prelobby.kb_state} {prelobby.kb_reason}</p>
+    <a href="/matches/{match.id}/cancel">
 	  <input class="pure-button ld2l-button-primary"
 	         type="button"
 			 value="Cancel Lobby" />
 	</a>
-  </div>
-{/started}
+  {:else}
+    <div style="width: 36.5em; text-align:center;">
+      <input class="pure-button ld2l-button-primary"
+             type="submit"
+      	     value="Update Roster" />
+      {~n}
+      {?ready}
+        <a href="/matches/{match.id}/unready">
+          <input class="pure-button ld2l-button-secondary"
+      	       type="button"
+      		   value="Un-ready" />
+        </a>
+      {:else}
+        <a href="/matches/{match.id}/ready">
+          <input class="pure-button ld2l-button-secondary"
+      	       type="button"
+      		   value="Ready"
+			   {?preventReady}
+			   disabled
+			   {/preventReady}/>
+        </a>
+      {/ready}
+    </div>
+  {/prelobby.started}
+{/anyCaptain}
 
 </fieldset>
 </form>

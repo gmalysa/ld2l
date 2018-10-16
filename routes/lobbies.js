@@ -4,10 +4,12 @@ var fl = require('flux-link');
 var db = require('db-filters');
 var request = require('request');
 
+var config = require('../config.js');
 var logger = require('../logger.js');
 var users = require('../lib/users.js');
 var privs = require('../lib/privs.js');
 var lobbies = require('../lib/lobbies.js');
+var prelobbies = require('../lib/prelobbies.js');
 var InhouseQueue = require('../lib/InhouseQueue.js');
 
 /**
@@ -90,10 +92,21 @@ var create = new fl.Chain(
  */
 var lobby_results = new fl.Chain(
 	function(env, after) {
-		// @todo verify api key here
-		after(env.req.body, lobbies.RESULTS_FORMAT_KAEDEBOT, 0);
+		if (env.req.body.key != config.kbaas_key) {
+			env.$throw(new Error('Incorrect API key given'));
+			return;
+		}
+		logger.var_dump(env.req.body, 'KBaaS');
+
+		// @todo test type here and call appropriate functions
+		after();
 	},
-	lobbies.parseResults
+	prelobbies.KBUpdate
+//	function(env, after) {
+//		// @todo verify api key here
+//		after(env.req.body, lobbies.RESULTS_FORMAT_KAEDEBOT, 0);
+//	},
+//	lobbies.parseResults
 );
 
 /**
