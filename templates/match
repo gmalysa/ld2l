@@ -78,6 +78,21 @@
 {/eq}
 
 {?canEdit}
+<h3>Change Status</h3>
+<form action="/matches/{match.id}/set_result" method="post" class="pure-form">
+  <fieldset>
+    <select name="result">
+	  <option value="0">Not played</option>
+	  <option value="1">{match.home.name} win</option>
+	  <option value="2">{match.away.name} win</option>
+	  <option value="3">{match.home.name} forfeit</option>
+	  <option value="4">{match.away.name} forfeit</option>
+	  <option value="5">Double forfeit</option>
+	</select>
+	{~n}<input type="checkbox" name="clear_id" /> Clear DOTA ID
+	{~n}<input type="submit" class="pure-button ld2l-button-primary" />
+  </fieldset>
+</form>
 <h3>Load Match Results</h3>
 <form action="/matches/{match.id}/parse"
       method="post"

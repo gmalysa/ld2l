@@ -460,6 +460,36 @@ var unready = new fl.Chain(
 ).use_local_env(true);
 
 /**
+ * Set (or, more often, reset) the results for a particular match
+ */
+var set_result = new fl.Chain(
+	function(env, after) {
+		if (!privs.hasPriv(env.user.privs, privs.MODIFY_SEASON)) {
+			env.$throw(new Error('You do not have the ability to modify results'));
+			return;
+		}
+
+		env.data = {
+			result : parseInt(env.req.body.result)
+		};
+
+		if (undefined !== env.req.body.clear_id) {
+			env.data.dotaid = 0;
+		}
+
+		env.filters.matches.update(
+			env.data,
+			{id : env.match.id}
+		).exec(after, env.$throw);
+	},
+	function(env, after) {
+		env.$redirect('/matches/'+env.match.id);
+		after(env.user, audit.EVENT_EDIT, env.match, env.data);
+	},
+	audit.logMatchEvent
+).use_local_env(true);
+
+/**
  * Parse a dota ID onto the specified match
  */
 var parse = new fl.Chain(
@@ -615,6 +645,12 @@ module.exports.init_routes = function(server) {
 	server.add_route('/matches/:matchid/add_player', {
 		fn : add_player,
 		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/matches/:matchid/set_result', {
+		fn : set_result,
+		pre : ['default', 'require_user', 'match'],
 		post : ['default']
 	}, 'post');
 
