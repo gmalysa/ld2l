@@ -97,16 +97,9 @@ var lobby_results = new fl.Chain(
 			return;
 		}
 		logger.var_dump(env.req.body, 'KBaaS');
-
-		// @todo test type here and call appropriate functions
 		after();
 	},
 	prelobbies.KBUpdate
-//	function(env, after) {
-//		// @todo verify api key here
-//		after(env.req.body, lobbies.RESULTS_FORMAT_KAEDEBOT, 0);
-//	},
-//	lobbies.parseResults
 );
 
 /**
