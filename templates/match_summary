@@ -14,21 +14,25 @@
 	<tr>
 	  <td>
 		{>team_link team=home side="Radiant" /}
-		<div style="display:inline-block; width: 2em;">
+	  </td>
+	  <td>
+	    {~n}
+		<div style="display:inline-block; width: 20px;">
 		  {@eq key=result value=1}
 		    <span class="fa fa-crown"></span>
 		  {/eq}
 		</div>
-	  </td>
-	  <td>
+	    {~n}
 	    {>match_hero_list matchid=id heroes=heroes /}
-	  </td>
-	  <td>
-		<div style="display:inline-block; width: 2em;">
+	    {~n}
+		<div style="display:inline-block; width: 16px;">
 		  {@eq key=result value=2}
 		    <span class="fas fa-crown"></span>
 		  {/eq}
 		</div>
+	    {~n}
+	  </td>
+	  <td>
 		{>team_link team=away side="Dire" /}
 	  </td>
 	</tr>
