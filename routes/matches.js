@@ -611,6 +611,8 @@ var generate_matchups = new fl.Chain(
 module.exports.init_routes = function(server) {
 	server.add_pre_hook(match_preamble, 'match');
 
+	prelobbies.init(server.io.of('/match'));
+
 	// @todo add match hook to all routes with :matchid
 	server.add_route('/schedule/:seasonid', {
 		fn : show_matches,

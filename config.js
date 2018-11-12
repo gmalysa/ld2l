@@ -17,6 +17,7 @@ var defaults = {
 	static_path : '/static',
 	client_path : '/ui.js',
 	client_prefix : 'c-',
+	both_prefix : 'cs-',
 
 	// Server config settings
 	port : 8124,

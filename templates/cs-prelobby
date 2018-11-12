@@ -1,0 +1,23 @@
+<h3>Pre-Lobby</h3>
+<form class="pure-form pure-form-aligned"
+      method="post"
+	  id="rosterForm"
+	  action="/matches/{match.id}/roster">
+<fieldset>
+
+{>match_roster_select side="radiant" team=match.home captainCheck=0 /}
+
+{>match_roster_select side="dire" team=match.away captainCheck=1 /}
+
+{?anyCaptain}
+  <div style="width: 36.5em;">
+  <p>You can edit your roster at any time before the lobby starts. When both captains
+  {~n}are ready, the lobby will be launched automatically. You cannot change your
+  {~n}roster after the lobby starts, but it can be canceled if a player does not
+  {~n}show.</p>
+  </div>
+  {>prelobby_controls /}
+{/anyCaptain}
+
+</fieldset>
+</form>

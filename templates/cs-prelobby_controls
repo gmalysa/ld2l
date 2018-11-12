@@ -1,0 +1,35 @@
+<div id="controls">
+{?prelobby.started}
+  <div style="width: 36.5em;">
+	<p>Lobby status: {prelobby.kb_state} {prelobby.kb_reason}</p>
+    <a href="/matches/{match.id}/cancel">
+	  <input class="pure-button ld2l-button-primary"
+	         type="button"
+	         value="Cancel Lobby" />
+	</a>
+  </div>
+{:else}
+  <div style="width: 36.5em; text-align:center;">
+    <input class="pure-button ld2l-button-primary"
+           type="submit"
+    	   value="Update Roster" />
+    {~n}
+    {?ready}
+      <a href="/matches/{match.id}/unready">
+        <input class="pure-button ld2l-button-secondary"
+    	       type="button"
+      		   value="Un-ready" />
+      </a>
+    {:else}
+      <a href="/matches/{match.id}/ready">
+        <input class="pure-button ld2l-button-secondary"
+      	       type="button"
+      		   value="Ready"
+			   {?preventReady}
+			   disabled
+			   {/preventReady}/>
+      </a>
+    {/ready}
+  </div>
+{/prelobby.started}
+</div>

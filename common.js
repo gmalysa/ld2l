@@ -51,7 +51,7 @@ function init(server, options) {
 
 	// dustjs-linkedin template and routing configuration
 	this.client_templates = [];
-	this.load_dust_templates(this.options.template_dir, this.options.client_prefix);
+	this.load_dust_templates(this.options.template_dir, this.options.client_prefix, this.options.both_prefix);
 	server.get(this.options.client_path, function(req, res) {
 		res.set('Content-Type', 'application/javascript');
 		res.send(that.client_templates.join(' '));
@@ -90,10 +90,12 @@ function init(server, options) {
  * client template information, or by passing them directly to the dust engine
  * @param path String path on the file system for the template directory
  * @param prefix String prefix on file names that correspond to client templates
+ * @param both_prefix Shared template prefix (used both on client and server)
  * @param prepend String to prepend to template names during instantiation (for directory hierarchy)
  */
-function load_dust_templates(path, prefix, prepend) {
+function load_dust_templates(path, prefix, both_prefix, prepend) {
 	var prefix_len = prefix.length;
+	var both_len = both_prefix.length;
 	prepend = prepend || '';
 
 	var files = fs.readdirSync(path);
@@ -106,16 +108,28 @@ function load_dust_templates(path, prefix, prepend) {
 
 		fs.stat(path+'/'+v, function(err, stats) {
 			if (stats.isDirectory()) {
-				that.load_dust_templates(path+'/'+v, prefix, prepend+v+'_');
+				that.load_dust_templates(path+'/'+v, prefix, both_prefix, prepend+v+'_');
 			}
 			else {
 				var contents = fs.readFileSync(path+'/'+v, 'utf8');
 
 				// Save client templates specially to serve them
 				if (v.substr(0, prefix_len) == prefix) {
-					logger.info('Loading dust client template '+(prepend+v).cyan+'...', mod_name);
+					logger.info('Loading dust template '+(prepend+v).cyan+'...', mod_name);
 					var template = dust.compile(contents, prepend+v.substr(prefix_len, v.length));
 					that.client_templates.push(template);
+				}
+				else if (v.substr(0, both_len) == both_prefix) {
+					logger.info('Loading dust template '+(prepend+v).magenta+'...', mod_name);
+
+					var name = v.substr(both_len, v.length);
+
+					// Client side
+					var template = dust.compile(contents, prepend+name);
+					that.client_templates.push(template);
+
+					// Server side
+					dust.loadSource(dust.compile(contents, prepend+name));
 				}
 				else {
 					// Server templates should be put into our dust engine though

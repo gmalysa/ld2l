@@ -146,6 +146,7 @@ var ci = new common.init(server, {
 	base_url		: config.base_url,
 	template_dir	: config.template_dir,
 	client_prefix	: config.client_prefix,
+	both_prefix		: config.both_prefix,
 	client_path		: config.client_path,
 	route_dir		: config.route_dir,
 	port			: config.port
