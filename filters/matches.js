@@ -7,7 +7,8 @@ module.exports = function(db) {
 		week : db.int_t,
 		home : db.int_t,
 		away : db.int_t,
-		result : db.int_t
+		result : db.int_t,
+		playoff : db.int_t
 	};
 
 	db.add_filter("matches", new db("matches", cols, {}));
