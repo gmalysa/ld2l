@@ -35,6 +35,15 @@ var common = require('./common');
 mysql.init();
 
 /**
+ * Create the cache objects that are used within one request to reduce how much we hit the db
+ * while requesting multiple of the same thing (i.e. teams, users, etc.)
+ */
+function init_cache(env, after) {
+	env._teamCache = {};
+	after();
+}
+
+/**
  * Gets a connection from the mysql pool and clones instances
  * of database filter objects for our use. This is generally
  * the first step in handling any request.
@@ -162,6 +171,7 @@ ci.io.use(siopassport.authorize({
 
 // Add helpers and hooks
 ci.add_pre_hook(fl.mkfn(init_db, 0));
+ci.add_pre_hook(fl.mkfn(init_cache, 0));
 ci.add_finally_hook(fl.mkfn(cleanup_db, 0));
 ci.add_dust_filters({md : dust_markdown_filter});
 ci.add_dust_helpers({
