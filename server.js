@@ -43,31 +43,6 @@ function init_cache(env, after) {
 	after();
 }
 
-/**
- * Gets a connection from the mysql pool and clones instances
- * of database filter objects for our use. This is generally
- * the first step in handling any request.
- */
-function init_db(env, after) {
-	env.filters = db.clone_filters(db.filters);
-
-	mysql.getValidConnection(env, function() {
-		db.set_conn_all(env.conn, env.filters);
-		after();
-	});
-}
-
-/**
- * Cleans up the database connection
- */
-function cleanup_db(env, after) {
-	if (env.conn) {
-		env.conn.release();
-		delete env.conn;
-	}
-	after();
-}
-
 // Load databse filter definitions
 db.init(process.cwd() + '/filters', function(file) {
 	logger.info('Adding database definition ' + file.blue.bold + '...', 'db-filters');
@@ -170,9 +145,9 @@ ci.io.use(siopassport.authorize({
 }));
 
 // Add helpers and hooks
-ci.add_pre_hook(fl.mkfn(init_db, 0));
+ci.add_pre_hook(fl.mkfn(mysql.init_db, 0));
 ci.add_pre_hook(fl.mkfn(init_cache, 0));
-ci.add_finally_hook(fl.mkfn(cleanup_db, 0));
+ci.add_finally_hook(fl.mkfn(mysql.cleanup_db, 0));
 ci.add_dust_filters({md : dust_markdown_filter});
 ci.add_dust_helpers({
 	dota_hero_icon : function(chunk, context, bodies, params) {
