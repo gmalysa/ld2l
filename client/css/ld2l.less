@@ -469,3 +469,61 @@ div.ld2l-lobby-player {
 	}
 }
 
+.bracket-match {
+	.top-pad {
+		flex-grow: 1;
+	}
+	.details {
+		border-bottom: 1px solid black;
+		text-align: right;
+		padding-top: 0.25rem;
+		padding-left: 0.25rem;
+		padding-right: 0.25rem;
+		padding-bottom: 0.125rem;
+		display: flex;
+
+		.name {
+			text-align: left;
+			flex-grow: 1;
+		}
+
+		.score {
+			text-align: right;
+			flex-grow: 1;
+			margin-top: auto;
+		}
+	}
+	.bottom-pad {
+		flex-grow: 1;
+	}
+}
+
+.bracket-team-box {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+}
+
+.bracket-home-info {
+	display: flex;
+	flex-direction: column;
+	width: 15em;
+
+	.bottom-pad {
+		border-right: 1px solid black;
+	}
+}
+
+.bracket-away-info {
+	display: flex;
+	flex-direction: column;
+	width: 15em;
+	padding-bottom: 0.75rem;
+
+	.top-pad {
+		border-right: 1px solid black;
+	}
+	.details {
+		border-right: 1px solid black;
+	}
+}

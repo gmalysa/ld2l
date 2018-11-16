@@ -9,6 +9,33 @@
 </a>
 {/isAdmin}
 
+{?playoff}
+  <h3>Playoffs</h3>
+  {#playoff}
+	<div class="bracket-match">
+	<div class="bracket-team-box" style="justify-content: inherit;">
+      {>playoff_match /}
+	  <div class="bracket-home-info">
+	    <div class="top-pad"></div>
+		<div class="details">
+		 <div class="name">
+		   {@eq key=result value=1}
+		     {>team_link team=home.team /}
+		   {/eq}
+		   {@eq key=result value=2}
+		     {>team_link team=away.team /}
+		   {/eq}
+		 </div>
+		 <div class="score">
+		   <span class="fa fa-crown"></span>
+		 </div>
+		</div>
+		<div class="top-pad"></div>
+	  </div>
+	</div></div>
+  {/playoff}
+{/playoff}
+
 {>matchups matchups=matchups /}
 
 {?past_matchups}

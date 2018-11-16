@@ -1,0 +1,51 @@
+<div class="bracket-match">
+  <div class="bracket-team-box">
+    {@gt key=home_previous.playoff value="0"}
+	  {#home_previous}
+        {>playoff_match /}
+	  {/home_previous}
+    {/gt}
+	<div class="bracket-home-info">
+	  <div class="top-pad"></div>
+	  <div class="details">
+		<div class="name">
+          {?match.home.id}
+		   {>team_link team=match.home.team /}
+          {/match.home.id}
+		</div>
+	    <div class="score">
+		  {?bye}{:else}
+		    {match.home.points}
+		  {/bye}
+		</div>
+	  </div>
+	  <div class="bottom-pad"></div>
+	</div>
+  </div>
+  <div class="bracket-team-box">
+    {@gt key=away_previous.playoff value="0"}
+	  {#away_previous}
+        {>playoff_match /}
+	  {/away_previous}
+    {/gt}
+	<div class="bracket-away-info">
+	  <div class="top-pad">{~n}</div>
+	  <div class="details">
+		<div class="name">
+	      {?bye}
+		    BYE
+		  {/bye}
+          {?match.away.id}
+		    {>team_link team=match.away.team /}
+          {/match.away.id}
+		</div>
+	    <div class="score">
+		  {?bye}{:else}
+		    {match.away.points}
+		  {/bye}
+        </div>
+	  </div>
+	  <div class="bottom-pad">{~n}</div>
+	</div>
+  </div>
+</div>

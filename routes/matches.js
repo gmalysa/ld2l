@@ -16,6 +16,7 @@ var audit = require('../lib/audit.js');
 var lobbies = require('../lib/lobbies.js');
 var flHelper = require('../lib/fl-helper.js');
 var prelobbies = require('../lib/prelobbies.js');
+var flHelper = require('../lib/fl-helper.js');
 
 /**
  * Remove all of the links between a player and a particular match
@@ -536,13 +537,17 @@ var show_matches = new fl.Chain(
 	},
 	matches.getAllSeries,
 	function(env, after, series) {
-		var week = _.reduce(series, function(memo, v) {
+		env.series = series;
+
+		// Sort standings based on normal games
+		var normals = series.regular;
+		var week = _.reduce(normals, function(memo, v) {
 			return v[0].round > memo ? v[0].round : memo;
 		}, 0);
 
 		var current = [];
 		var past = [];
-		_.each(series, function(v, k) {
+		_.each(normals, function(v, k) {
 			if (week == k) {
 				current = v;
 			}
@@ -558,6 +563,11 @@ var show_matches = new fl.Chain(
 			return b.week - a.week;
 		});
 
+		// Populate playoff information if there are playoff matches
+		if (series.playoff.length > 0) {
+			env.hasPlayoffs = true;
+		}
+
 		env.$template('schedule');
 		env.$output({
 			week : week,
@@ -566,7 +576,74 @@ var show_matches = new fl.Chain(
 			scripts : ['schedule'],
 		});
 		after();
-	}
+	},
+	flHelper.IfTrue('hasPlayoffs',
+		function(env, after) {
+			after(env.season.id);
+		},
+		teams.getAllTeams,
+		function(env, after, teams) {
+			after(teams, env.season.id);
+		},
+		matches.addStandings,
+		function(env, after, teams) {
+			// @todo make number of playoff teams a season setting
+			// @todo make tiebreaker option a season setting
+			var bracket = matches.getPlayoffTemplate(8, 0);
+			var lookup = {};
+
+			// Determine if we have a tiebreaker bracket as well
+			if (teams[7].wins == teams[8].wins) {
+				var tiedTeams = 2;
+				var i = 9;
+				//while (i < teams.length && teams[i].wins == teams[7].wins) {
+				while (i < 10 && teams[i].wins == teams[7].wins) {
+					tiedTeams += 1;
+					i += 1;
+				}
+
+				// Add a dependency for 8th place on the winner of the tiebreaker
+				bracket.forEach(function(b) {
+					// These are hardcoded along with bracket size, for simplicity
+					if (7 == b.away_seed) {
+						b.away_previous = 8;
+					}
+				});
+
+				var tiebreakers = matches.getPlayoffTemplate(tiedTeams, 7);
+				bracket = bracket.concat(tiebreakers);
+			}
+
+			// Create lookup table mapping id to a bracket entry
+			bracket.forEach(function(b) {
+				lookup[b.playoff] = b;
+			});
+
+			// Create references to linked bracket entries (not just IDs)
+			bracket.forEach(function(b) {
+				if (b.home_previous > 0) {
+					b.home_previous = lookup[b.home_previous];
+				}
+
+				if (b.away_previous > 0) {
+					b.away_previous = lookup[b.away_previous];
+				}
+			});
+
+			// Fill in series info into the playoff bracket
+			env.series.playoff.forEach(function(p) {
+				lookup[p.playoff].match = p;
+			});
+
+			// Only add the finals match, the references pull in all dependent
+			// matches automatically
+			env.$output({
+				playoff : bracket[0]
+			});
+
+			after();
+		}
+	)
 );
 
 /**
