@@ -1,0 +1,52 @@
+{>header /}
+
+<h2>Create Series</h2>
+
+<form class="pure-form pure-form-aligned"
+      action="/create_match" method="post">
+<fieldset>
+
+  <div class="pure-control-group">
+    <label for="season">Season</label>
+	<input type="text" name="season" placeholder="Season ID" />
+  </div>
+
+  <div class="pure-control-group">
+    <label for="away">Week</label>
+	<input type="text" name="week" />
+  </div>
+
+  <div class="pure-control-group">
+    <label for="home">Home</label>
+	<input type="text" name="home" placeholder="Home Team ID" />
+  </div>
+
+  <div class="pure-control-group">
+    <label for="away">Away</label>
+	<input type="text" name="away" placeholder="Away Team ID" />
+  </div>
+
+  <div class="pure-control-group">
+    <label for="dotaid">Dota Match ID</label>
+	<input type="text" name="dotaid" placeholder="blank for unplayed" />
+  </div>
+
+  <div class="pure-control-group">
+    <label for="playoff">Playoff Sequence Number</label>
+	<input type="text" name="playoff" placeholder="Ask Greg" />
+  </div>
+
+  <div class="pure-control-group">
+    <label for="count">Series Game Count (1 = bo1, 2 = bo2, etc.)</label>
+	<input type="text" name="count" value="1" />
+  </div>
+
+  <div class="pure-controls">
+    <input class="pure-button ld2l-button-primary" type="submit" value="Create Series" />
+  </div>
+
+</fieldset>
+</form>
+
+{>footer /}
+
