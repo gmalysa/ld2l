@@ -16,7 +16,6 @@ var audit = require('../lib/audit.js');
 var lobbies = require('../lib/lobbies.js');
 var flHelper = require('../lib/fl-helper.js');
 var prelobbies = require('../lib/prelobbies.js');
-var flHelper = require('../lib/fl-helper.js');
 
 /**
  * Remove all of the links between a player and a particular match
@@ -528,6 +527,91 @@ var parse = new fl.Chain(
 ).use_local_env(true);
 
 /**
+ * Admin form to submit a new match/series to be created
+ */
+var create_series = new fl.Chain(
+	function(env, after) {
+		if (!privs.hasPriv(env.user.privs, privs.MODIFY_SEASON)) {
+			env.$throw(new Error('You do not have the ability to create new series'));
+			return;
+		}
+
+		env.$template('create_series');
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Actually does the match creation work
+ */
+var create_series_post = new fl.Chain(
+	function(env, after) {
+		if (!privs.hasPriv(env.user.privs, privs.MODIFY_SEASON)) {
+			env.$throw(new Error('You do not have the ability to create new series'));
+			return;
+		}
+
+		var season = parseInt(env.req.body.season);
+		var home = parseInt(env.req.body.home) || 0;
+		var away = parseInt(env.req.body.away) || 0;
+		var week = parseInt(env.req.body.week) || 0;
+		var dotaid = parseInt(env.req.body.dotaid) || 0;
+		var playoff = parseInt(env.req.body.playoff) || 0;
+		var count = parseInt(env.req.body.count) || 1;
+
+		env.config = {
+			season : season,
+			week : week,
+			home : home,
+			away : away,
+			playoff : playoff
+		};
+		env.dotaid = dotaid;
+		env.count = count;
+
+		// Check if we have already parsed this or not
+		if (dotaid > 0) {
+			env.filters.matches.select({dotaid : dotaid}).exec(after, env.$throw);
+		}
+		else {
+			after([]);
+		}
+	},
+	function(env, after, results) {
+		if (results.length > 0 && env.dotaid > 0) {
+			console.log(env.config);
+			console.log(results);
+			env.$throw(new Error('This dota match ID has already been parsed!'));
+			return;
+		}
+		after(env.config, env.count);
+	},
+	matches.createSeries,
+	function(env, after, ids) {
+		env.parseResults = env.dotaid > 0;
+		env.firstId = ids[0];
+		after();
+	},
+	flHelper.IfTrue('parseResults',
+		function(env, after) {
+			request('https://api.opendota.com/api/matches/'+env.dotaid,
+		        function(error, response, body) {
+					after(
+						JSON.parse(body),
+						lobbies.RESULTS_FORMAT_OPENDOTA,
+						env.firstId
+					);
+				});
+		},
+		lobbies.parseResults
+	),
+	function(env, after) {
+		env.$redirect('/matches/'+env.firstId);
+		after();
+	}
+).use_local_env(true);
+
+/**
  * Show all matches from the given season
  * @param[in] season id
  */
@@ -762,4 +846,16 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'require_user', 'match'],
 		post : ['default']
 	}, 'get');
+
+	server.add_route('/create_match', {
+		fn : create_series,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/create_match', {
+		fn : create_series_post,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
 };

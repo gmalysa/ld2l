@@ -102,28 +102,6 @@ var lobby_results = new fl.Chain(
 	prelobbies.KBUpdate
 );
 
-/**
- * Look up a match on opendota and save the results
- */
-var opendota_parse = new fl.Chain(
-	function(env, after) {
-		if (!privs.hasPriv(env.user.privs, privs.CREATE_LOBBY)) {
-			env.$throw(new Error('You cannot request importing match details.'));
-			return;
-		}
-
-		request('https://api.opendota.com/api/matches/'+env.req.params.match,
-		        function(error, response, body) {
-					after(JSON.parse(body), lobbies.RESULTS_FORMAT_OPENDOTA, 0);
-				});
-	},
-	lobbies.parseResults,
-	function(env, after, match) {
-		env.$redirect('/matches/'+match);
-		after();
-	}
-);
-
 module.exports.init_routes = function(server) {
 	inhouseQueue.setup(server.io);
 
@@ -161,12 +139,5 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'require_user'],
 		post : ['default'],
 		fn : null
-	}, 'get');
-
-	// @todo Make this a post that responds to the parse endpoint submitting a form
-	server.add_route('/lobbies/parse/:match', {
-		pre : ['default', 'require_user'],
-		post : ['default'],
-		fn : opendota_parse
 	}, 'get');
 };
