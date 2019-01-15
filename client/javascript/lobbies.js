@@ -172,7 +172,7 @@ ld2l.inhouseQueue = {
 };
 
 $(window).load(function() {
-	ld2l.inhouseQueue.socket = io('/queue');
+	ld2l.inhouseQueue.socket = io('/queue', {transports : ['websocket']});
 
 	ld2l.inhouseQueue.socket.on('addPlayer', function(data) {
 		console.log('Add a player');
