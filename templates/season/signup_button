@@ -1,11 +1,21 @@
 {?canSignUp}
-  <p><a href="/seasons/signup/{season.id}">
-    <input type="button" class="pure-button ld2l-button-primary" value="Sign up" />
-  </a></p>
+  <p>
+    <a href="/seasons/signup/{season.id}">
+      <input type="button" class="pure-button ld2l-button-primary" value="Sign up" />
+    </a>
+	{~n}<a href="/seasons/{season.id}/export">
+	  <input type="button" class="pure-button ld2l-button-secondary" value="Draft Sheet CSV" />
+	</a>
+  </p>
 {/canSignUp}
 
 {?signedUp}
-  <p><a href="/seasons/signup/{season.id}">
-    <input type="button" class="pure-button ld2l-button-primary" value="Edit signup" />
-  </a></p>
+  <p>
+    <a href="/seasons/signup/{season.id}">
+      <input type="button" class="pure-button ld2l-button-primary" value="Edit signup" />
+    </a>
+	{~n}<a href="/seasons/{season.id}/export">
+	  <input type="button" class="pure-button ld2l-button-secondary" value="Draft Sheet CSV" />
+	</a>
+  </p>
 {/signedUp}

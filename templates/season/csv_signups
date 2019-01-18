@@ -1,0 +1,6 @@
+<pre>
+Name, Medal, Linear Medal, Vouched, Draftable, Captain, Steam ID64, Dotabuff Link, Statement{~n}
+{#signups}
+{display_name},{medal},{linear_medal},{vouched},{draftable},{captain},{steamid},https://www.dotabuff.com/players/{id32},{statement}{~n}
+{/signups}
+</pre>

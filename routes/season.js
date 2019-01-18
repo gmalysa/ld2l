@@ -187,6 +187,24 @@ var signups = new fl.Chain(
 ).use_local_env(true);
 
 /**
+ * Export the signups to a csv format for easy download or import to google sheets
+ */
+var export_signups = new fl.Chain(
+	function(env, after) {
+		after(env.season, {});
+	},
+	seasons.getSignups,
+	function(env, after, signups) {
+		env.$template('season_csv_signups');
+		env.$output({
+			title : 'Signups Export',
+			signups : signups
+		});
+		after();
+	}
+).use_local_env(true);
+
+/**
  * Show the list of dedicated standins, which covers people who requested to be such
  * and people we moved to the standin list
  */
@@ -619,6 +637,12 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'require_user'],
 		post : ['default']
 	}, 'post');
+
+	server.add_route('/seasons/:seasonid/export', {
+		fn : export_signups,
+		pre : ['default', 'require_user', 'season'],
+		post : ['default']
+	}, 'get');
 
 	server.add_route('/seasons/new_team', {
 		fn : create_team,
