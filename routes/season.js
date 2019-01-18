@@ -700,4 +700,10 @@ module.exports.init_routes = function(server) {
 			return chunk;
 		}
 	});
+
+	server.add_dust_filters({
+		csv : function(content) {
+			return content.replace(/,/g, '').replace(/\n/g, '').replace(/\r/g, '');
+		}
+	});
 }
