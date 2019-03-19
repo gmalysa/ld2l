@@ -677,7 +677,7 @@ var show_matches = new fl.Chain(
 			var lookup = {};
 
 			// Determine if we have a tiebreaker bracket as well
-			if (teams[7].wins == teams[8].wins) {
+			if (teams[8] !== undefined && teams[7].wins == teams[8].wins) {
 				var tiedTeams = 2;
 				var i = 9;
 				//while (i < teams.length && teams[i].wins == teams[7].wins) {
