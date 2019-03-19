@@ -12,8 +12,8 @@ $(document).ready(function() {
 			rows.sort(function(a, b) {
 				var aText = $(a).children(':nth-child('+(idx+1)+')').text();
 				var bText = $(b).children(':nth-child('+(idx+1)+')').text();
-				var aInt = parseInt(aText);
-				var bInt = parseInt(bText);
+				var aInt = parseFloat(aText);
+				var bInt = parseFloat(bText);
 				if (isNaN(aInt) || isNaN(bInt)) {
 					if (th.dataset.asc > 0)
 						return aText.localeCompare(bText);
