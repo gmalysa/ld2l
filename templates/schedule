@@ -19,10 +19,10 @@
 	    <div class="top-pad"></div>
 		<div class="details">
 		 <div class="name">
-		   {@eq key=match.result value=1}
+		   {@eq key=result value=1}
 		     {>team_link team=match.home.team /}
 		   {/eq}
-		   {@eq key=match.result value=2}
+		   {@eq key=result value=2}
 		     {>team_link team=match.away.team /}
 		   {/eq}
 		 </div>

@@ -719,6 +719,14 @@ var show_matches = new fl.Chain(
 				lookup[p.playoff].match = p;
 			});
 
+			// Determine final winner if any
+			if (bracket[0].match && bracket[0].match.home && bracket[0].match.away) {
+				if (bracket[0].match.home.points > bracket[0].match.away.points)
+					bracket[0].result = 1;
+				else if (bracket[0].match.home.points < bracket[0].match.away.points)
+					bracket[0].result = 2;
+			}
+
 			// Only add the finals match, the references pull in all dependent
 			// matches automatically
 			env.$output({
