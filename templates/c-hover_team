@@ -5,7 +5,7 @@
 <b><a href="/teams/about/{id}">{name}</a></b><br />
 Record: {wins} - {losses} ({tiebreaker})<br />
 {#captain}
-  <div>{>roster_card /} <span class="fa fa-chevron-down"></span></div>
+  <div>{>roster_card /} <span class="fa fa-chess-king"></span></div>
 {/captain}
 {#players}
   <div>{>roster_card /}</div>
