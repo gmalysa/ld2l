@@ -87,6 +87,7 @@
     <thead>
 	<tr>
 	  <th></th>
+	  <th></th>
 	  <th>Season</th>
 	  <th>Team</th>
 	  <th>Record</th>
@@ -96,6 +97,7 @@
       {#signups}
 	    <tr>
 		  <td>{@counter/}</td>
+		  <td>{>medal medal=medal /}</td>
 		  <td><a href="/seasons/{season.id}">{season.name}</a></td>
           {@eq key=teamid value="0" type="number"}
 		    <td>Standin/FA</td>
