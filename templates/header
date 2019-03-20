@@ -28,6 +28,7 @@
 
 <body>
 <div id="float-menu" class="pure-menu ld2l-float-menu" style="display: none;"></div>
+<div id="hovercard" class="hovercard" style="display: none;"></div>
 <div id="ld2l-layout">
   <a href="#menu" id="menu-link" class="menu-link"><span></span></a>
   <div class="pure-menu ld2l-menu" id="menu">

@@ -14,9 +14,12 @@
    the fallback name is used, as the parameter 'side'
 !}
 {?team.id}
-  <a href="/teams/about/{team.id}">{team.name}</a>
-  {~n}
-  (<a href="/profile/{team.captain.steamid}">{team.captain.display_name}</a>)
+  <div class="team-name"
+    onmouseenter="ld2l.loadHovercard(this);"
+	onmouseleave="ld2l.hideHovercard();"
+    data-hovercard-type="team" data-hovercard-id="{team.id}" data-title="{team.name}">
+    <a href="/teams/about/{team.id}">{team.name}</a>
+  </div>
 {:else}
   {side}
 {/team.id}

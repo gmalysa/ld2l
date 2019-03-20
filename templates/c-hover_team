@@ -1,0 +1,13 @@
+<div class="hover-team">
+{?logo}
+  <img src="{logo}" width="64" height="64" />
+{/logo}
+<b><a href="/teams/about/{id}">{name}</a></b><br />
+Record: {wins} - {losses} ({tiebreaker})<br />
+{#captain}
+  <div>{>roster_card /}</div>
+{/captain}
+{#players}
+  <div>{>roster_card /}</div>
+{/players}
+</div>

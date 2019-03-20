@@ -88,3 +88,93 @@ ld2l.$.onReady(function() {
 	});
 });
 
+// Hovercard data is cached here and used to determine if we load more
+ld2l._hover = {
+	cache : {},
+	current : null,
+	fadeTimer : null
+};
+
+/**
+ * Handle loading hovercard-like info boxes for things. The given element supplies
+ * information about the hovercard via data attributes:
+ * data-hovercard-type: 'player' or 'team'
+ * data-hovercard-id: id of the item to look up
+ * @param[in] elm The element for which hovercard data needs to be populated
+ */
+ld2l.loadHovercard = function(elem) {
+	var type = elem.dataset.hovercardType;
+	var id = elem.dataset.hovercardId;
+	var cacheId = type+'-'+id;
+	var hovercardWrapper = document.getElementById('hovercard');
+
+	if (ld2l._hover.current)  {
+		ld2l._hover.current.destroy();
+		ld2l._hover.current = null;
+	}
+
+	if (ld2l._hover.fadeTimer) {
+		clearTimeout(ld2l._hover.fadeTimer);
+		ld2l._hover.fadeTimer = null;
+	}
+
+	ld2l._hover.current = new Popper(
+		elem,
+		hovercardWrapper,
+		{ placement : 'right-start' }
+	);
+
+	hovercardWrapper.style.display = 'block';
+	hovercardWrapper.innerHTML = 'Loading...';
+
+	if (ld2l._hover.cache[cacheId] !== undefined) {
+		hovercardWrapper.innerHTML = ld2l._hover.cache[cacheId];
+		return;
+	}
+
+	ld2l._hover.cache[cacheId] = 'Loading...';
+
+	ld2l.$.ajax('/hovercard', {
+		type : type,
+		id : id
+	}).then(function(data) {
+		dust.render(data.hoverTemplate, data.hoverData, function(err, out) {
+			ld2l._hover.cache[cacheId] = out;
+			hovercardWrapper.innerHTML = ld2l._hover.cache[cacheId];
+		});
+	});
+}
+
+/**
+ * Prepare to hide hovercard, but if we move into the hovercard before the fade
+ * time ends, don't hide it
+ */
+ld2l.hideHovercard = function() {
+	if (!ld2l._hover.fadeTimer)
+		ld2l._hover.fadeTimer = setTimeout(ld2l.actuallyHideHovercard, 500);
+}
+
+/**
+ * Actually hide the hovercard
+ */
+ld2l.actuallyHideHovercard = function() {
+	var hovercardWrapper = document.getElementById('hovercard');
+	ld2l._hover.fadeTimer = null;
+	hovercardWrapper.style.display = 'none';
+	ld2l._hover.current.destroy();
+	ld2l._hover.current = null;
+}
+
+/**
+ * Cancel hover card fade if we move onto the hovercard itself
+ */
+ld2l.$.onReady(function() {
+	var hovercardWrapper = document.getElementById('hovercard');
+	hovercardWrapper.addEventListener('mouseenter', function(evt) {
+		if (ld2l._hover.fadeTimer) {
+			clearTimeout(ld2l._hover.fadeTimer);
+			ld2l._hover.fadeTimer = null;
+		}
+	});
+	hovercardWrapper.addEventListener('mouseleave', ld2l.hideHovercard);
+});
