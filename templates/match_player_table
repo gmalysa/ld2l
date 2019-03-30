@@ -31,7 +31,7 @@
   <tr>
     <td>{level}</td>
     <td>{@dota_hero_icon hero=hero /}</td>
-    <td><a href="/profile/{steamid}">{display_name}</a></td>
+    <td>{>profile_link /}</td>
 	<td>{kills}</td>
 	<td>{deaths}</td>
 	<td>{assists}</td>

@@ -13,7 +13,7 @@
 {#leaderboard}
   <tr>
     <td>{@counter /}</td>
-	<td><a href="/profile/{user.steamid}">{user.display_name}</a></td>
+	<td>{#user}{>profile_link /}{/user}</a></td>
 	<td>{wins} - {losses}</td>
   </tr>
 {/leaderboard}

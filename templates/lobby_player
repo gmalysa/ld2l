@@ -1,6 +1,6 @@
 {@eq key=team value=team_match}
   <div class="ld2l-player">
 	<img src="{player.avatar}" />
-	<a href="/profile/{player.steamid}">{player.display_name}</a><br />
+	{>profile_link /}<br />
   </div>
 {/eq}

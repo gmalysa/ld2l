@@ -42,7 +42,7 @@
 		onclick="ld2l.signupExpand(this, event);">
       <td>{@counter/}</td>
       <td>{>medal medal=medal /}</td>
-      <td><a href="/profile/{steamid}">{display_name}</a></td>
+      <td>{>profile_link /}</td>
 	  <td>
 	    <a href="https://www.dotabuff.com/players/{id32}">DB</a><br />
         <a href="https://www.opendota.com/players/{id32}">OD</a>

@@ -31,7 +31,11 @@
 <h3>Captain</h3>
 {#team.captain}
   <div>
-    {>roster_card /}
+    <div class="ld2l-player inline">
+      {>medal medal=medal /}
+      <img src="{avatar}" />
+      {>profile_link /}
+    </div>
   </div>
 {/team.captain}
 
@@ -50,7 +54,11 @@
 			   class="pure-button ld2l-button-primary" />
 	  </a>
 	{/canEditTeam}
-    {>roster_card /}
+    <div class="ld2l-player inline">
+      {>medal medal=medal /}
+      <img src="{avatar}" />
+      {>profile_link /}
+    </div>
   </div>
 {:else}
   <p>Nobody has been drafted to this team yet.</p>
