@@ -52,18 +52,8 @@ var hovercard_team = new fl.Chain(
 		after(env.teamId);
 	},
 	teams.get,
+	matches.addRecord,
 	function(env, after, team) {
-		env.seasonId = team.seasonid;
-		after(team.seasonid);
-	},
-	teams.getAllTeams,
-	function(env, after, teams) {
-		after(teams, env.seasonId);
-	},
-	matches.addStandings,
-	function(env, after, teams) {
-		var team = _.find(teams, function(t) { return t.id == env.teamId; });
-
 		env.$json({
 			hoverTemplate : 'hover_team',
 			hoverData : hoverTeamInfo(team)
