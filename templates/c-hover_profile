@@ -3,7 +3,7 @@
     {>roster_card /}
   </div>
   {?played}
-	<hr style="margin-top: 0.5rem; margin-bottom: 0.5rem; height: 1px; background: black;" />
+	<hr />
     {#played}
       <div>
         <img class="ld2l-dota-hero" alt="{name}" src="{img}" />
