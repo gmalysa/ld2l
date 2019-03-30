@@ -28,7 +28,7 @@
           </td>
           <td>{tag}</td>
           <td><a href="/teams/about/{id}">{name}</td>
-          <td><a href="/profile/{captain.steamid}">{captain.display_name}</a></td>
+          <td>{#captain}{>profile_link /}{/captain}</td>
 		  <td>{wins} - {losses}</td>
 		  <td>{tiebreaker}</td>
 		  <td>{medal}</td>

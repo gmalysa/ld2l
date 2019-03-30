@@ -1,0 +1,7 @@
+<div class="ld2l-player inline"
+  onmouseenter="ld2l.loadHovercard(this);"
+  onmouseleave="ld2l.hideHovercard();"
+  data-hovercard-type="profile" data-hovercard-id="{steamid}" data-title="{display_name}">
+
+  <a href="/profile/{steamid}">{display_name}</a>
+</div>
