@@ -2,11 +2,14 @@
   <td colspan="6">
 	<div style="display:inline-block; width: 20em;">
 <ul>
-  <li>MMR: <b>{mmr}</b> ({solo_mmr}/{party_mmr})</li>
+  <li>Draft Value: {linear}</li>
   <li>Team: {team}</li>
   <li>Captain: {captain}</li>
   <li>Draftable: {?draftable}Y{:else}N{/draftable}</li>
-  <li>MMR Screenshot: <a href="{mmr_screenshot}">{mmr_screenshot}</a></li>
+  {?solo_mmr}
+    <li>MMR: {solo_mmr}/{party_mmr}</li>
+    <li>MMR Screenshot: <a href="{mmr_screenshot}">{mmr_screenshot}</a></li>
+  {/solo_mmr}
 </ul>
 	</div>
 	<div class="ld2l-signup-options">

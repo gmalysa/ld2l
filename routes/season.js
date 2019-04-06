@@ -127,6 +127,7 @@ var season_hub = new fl.Chain(
 		var linearLabels = [
 			{value : seasons.LINEARIZATION_2018S1, label : "2018 Season 1"},
 			{value : seasons.LINEARIZATION_2018S2, label : "2018 Season 2"},
+			{value : seasons.LINEARIZATION_MAX_MMR, label : "Max MMR"},
 		];
 
 		statusLabels.forEach(function(v) {
@@ -706,6 +707,8 @@ module.exports.init_routes = function(server) {
 				chunk.write('2018 January-July');
 			else if (seasons.LINEARIZATION_2018S2 == linear)
 				chunk.write('2018 August-December');
+			else if (seasons.LINEARIZATION_MAX_MMR == linear)
+				chunk.write('Max of MMRs');
 			else
 				chunk.write('Unrecognized linearization: '+linear);
 
