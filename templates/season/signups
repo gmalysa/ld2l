@@ -19,6 +19,7 @@
   <tr>
     <th></th>
 	<th></th>
+	<th>MMR</th>
 	<th>Name</th>
 	<th></th>
 	<th>Statement</th>
@@ -34,6 +35,9 @@
 		data-validstandin="{valid_standin}"
 		data-vouched="{vouched}"
 		data-standin="{standin}"
+		data-party-mmr="{party_mmr}"
+		data-solo-mmr="{solo_mmr}"
+		data-mmr-screenshot="{mmr_screenshot}"
 		class="clickable 
 		{@gt key=teamid value="0"}
 		  drafted
@@ -42,6 +46,7 @@
 		onclick="ld2l.signupExpand(this, event);">
       <td>{@counter/}</td>
       <td>{>medal medal=medal /}</td>
+	  <td>{mmr}</td>
       <td>{>profile_link /}</td>
 	  <td>
 	    <a href="https://www.dotabuff.com/players/{id32}">DB</a><br />

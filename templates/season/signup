@@ -13,6 +13,18 @@
     <input type="text" name="medal" value="{medal}" {?fixedMedal}readonly{/fixedMedal}/>
   </div>
   <div class="pure-control-group">
+    <label for="solo_mmr">Solo MMR</label>
+	<input type="text" name="solo_mmr" value="{solo_mmr}" />
+  </div>
+  <div class="pure-control-group">
+    <label for="party_mmr">Party MMR</label>
+	<input type="text" name="party_mmr" value="{party_mmr}" />
+  </div>
+  <div class="pure-control-group">
+    <label for="mmr_screenshot">MMR Screenshot</label>
+	<input type="text" name="mmr_screenshot" value="{mmr_screenshot}" />
+  </div>
+  <div class="pure-control-group">
     <label for="captain">Would you like to captain?</label>
     <label for="captain-0" class="pure-radio">
       <input id="captain-0" type="radio" name="captain" value="0"

@@ -332,6 +332,9 @@ var show_signup_form = new fl.Chain(
 				captain : signup[0].captain+'',
 				standin : signup[0].standin+'',
 				medal : signup[0].medal,
+				solo_mmr : signup[0].solo_mmr,
+				party_mmr : signup[0].party_mmr,
+				mmr_screenshot : signup[0].mmr_screenshot,
 				editSignup : true,
 				fixedMedal : env.mySignup
 			});
@@ -431,6 +434,9 @@ var handle_signup_form = new fl.Chain(
 		if (signup.length > 0) {
 			env.filters.signups.update({
 				medal : env.medal,
+				solo_mmr : parseInt(env.req.body.solo_mmr),
+				party_mmr : parseInt(env.req.body.party_mmr),
+				mmr_screenshot : env.req.body.mmr_screenshot,
 				statement : env.req.body.statement,
 				captain : parseInt(env.req.body.captain),
 				standin : parseInt(env.req.body.standin)
@@ -445,6 +451,9 @@ var handle_signup_form = new fl.Chain(
 				steamid : env.steamid,
 				season : env.season.id,
 				medal : env.medal,
+				solo_mmr : parseInt(env.req.body.solo_mmr),
+				party_mmr : parseInt(env.req.body.party_mmr),
+				mmr_screenshot : env.req.body.mmr_screenshot,
 				statement : env.req.body.statement,
 				captain : parseInt(env.req.body.captain),
 				standin : parseInt(env.req.body.standin)
@@ -459,6 +468,9 @@ var handle_signup_form = new fl.Chain(
 			time : new Date(),
 			season : env.season.id,
 			medal : env.medal,
+			solo_mmr : parseInt(env.req.body.solo_mmr),
+			party_mmr : parseInt(env.req.body.party_mmr),
+			mmr_screenshot : env.req.body.mmr_screenshot.substring(0, 128),
 			statement : env.req.body.statement.substring(0, 255),
 			captain : parseInt(env.req.body.captain),
 			standin : parseInt(env.req.body.standin)
