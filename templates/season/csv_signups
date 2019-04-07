@@ -1,5 +1,5 @@
 <pre>
-Name, Medal, Linear Medal, Solo MMR, Party MMR, Vouched, Draftable, Captain, Steam ID64, Dotabuff Link, Statement{~n}
+Name, Medal, Draft Value, Solo MMR, Party MMR, Vouched, Draftable, Captain, Steam ID64, Dotabuff Link, Statement{~n}
 {#signups}
 {display_name},{medal},{linear_medal},{solo_mmr},{party_mmr},{vouched},{draftable},{captain},{steamid},https://www.dotabuff.com/players/{id32},{statement|csv}{~n}
 {/signups}
