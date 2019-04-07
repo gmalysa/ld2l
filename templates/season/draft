@@ -14,6 +14,7 @@
     <th></th>
 	<th></th>
 	<th></th>
+	<th></th>
 	<th>Name</th>
 	<th></th>
 	<th>Statement</th>
@@ -43,6 +44,7 @@
 			   disabled />
 	  </td>
       <td>{>medal medal=medal /}</td>
+	  <td>{linear_medal}</td>
       <td>{>profile_link /}</td>
 	  <td>
 	    <a href="https://www.dotabuff.com/players/{id32}">DB</a><br />

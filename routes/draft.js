@@ -90,14 +90,18 @@ Draft.prototype.clientTeams = function() {
 			captain : {
 				avatar : v.captain.avatar,
 				display_name : v.captain.display_name,
-				steamid : v.captain.steamid
+				steamid : v.captain.steamid,
+				solo_mmr : v.captain.solo_mmr,
+				party_mmr : v.captain.party_mmr,
 			},
 			medal : v.medal,
 			players : _.map(v.players, function(v) {
 				return {
 					avatar : v.avatar,
 					display_name : v.display_name,
-					steamid : v.steamid
+					steamid : v.steamid,
+					solo_mmr : v.solo_mmr,
+					party_mmr : v.party_mmr,
 				};
 			}),
 			drafted : v.drafted
