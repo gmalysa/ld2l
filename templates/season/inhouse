@@ -3,6 +3,10 @@
 
 <span id="inhouseData" data-season="{season.id}"></span>
 
+<div class="inhouseQueueTitle">
+  Current Queue
+</div>
+
 <div id="inhouseQueue">
   Queue is currently empty.
 </div>
