@@ -569,6 +569,12 @@ var show_queue = new fl.Chain(
 			return;
 		}
 
+		after(env.season);
+	},
+	InhouseQueue.getQueue,
+	function(env, after, queue) {
+		// Fetch the queue object here so that queueing works for the first visitor
+
 		env.$template('season_inhouse');
 		env.$output({
 			canQueueInhouses : canQueueInhouses(env.user),
@@ -625,6 +631,15 @@ var leave_inhouse_queue = new fl.Chain(
 		after();
 	}
 ).use_local_env(true);
+
+/**
+ * Inhouse game results need to be added to the database
+ */
+var inhouse_results = new fl.Chain(
+	function(env, after) {
+		after();
+	}
+);
 
 /**
  * Chain used to get season information for display in the sidebar
@@ -752,6 +767,12 @@ module.exports.init_routes = function(server) {
 	server.add_route('/seasons/:seasonid/inhouses/leaveQueue', {
 		fn : leave_inhouse_queue,
 		pre : ['default', 'require_user', 'season'],
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/seasons/:seasonid/inhouses/results', {
+		fn : inhouse_results,
+		pre : ['default', 'optional_user', 'season'],
 		post : ['default']
 	}, 'post');
 
