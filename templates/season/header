@@ -15,7 +15,7 @@
 {@eq key=season.type value=1}
   <a href="/seasons/{season.id}/leaderboard">Leaderboard</a> |
   {~n}<a href="/seasons/{season.id}/matches">Match History</a> |
-  {~n}<a href="/lobbies">Queue</a>
+  {~n}<a href="/seasons/{season.id}/inhouses">Queue</a>
 {/eq}
   </div>
 </div>

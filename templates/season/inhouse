@@ -1,0 +1,26 @@
+{>header /}
+{>season_header title="Queue" /}
+
+<span id="inhouseData" data-season="{season.id}"></span>
+
+<div id="inhouseQueue">
+  Queue is currently empty.
+</div>
+<div id="inhouseConfig"></div>
+
+{?canQueueInhouses}
+  <input type="button"
+         id="queueMe"
+         class="pure-button ld2l-button-primary"
+		 value="Queue"
+         onclick="ld2l.inhouseQueue.queueMe();" />
+  <input type="button"
+         style="display:none;"
+         id="leaveQueue"
+		 class="pure-button ld2l-button-primary"
+		 value="Leave Queue"
+		 onclick="ld2l.inhouseQueue.leaveQueue();" />
+{/canQueueInhouses}
+
+{>season_footer /}
+{>footer /}

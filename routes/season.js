@@ -15,12 +15,23 @@ var seasons = require('../lib/seasons.js');
 var teams = require('../lib/teams.js');
 var matches = require('../lib/matches.js');
 
+var InhouseQueue = require('../lib/InhouseQueue.js');
+
 /**
  * Helper used to check if someone has the ability to create seasons or not
  * @return true if they can modify seasons, false otherwise
  */
 function checkSeasonPrivs(env, after) {
 	after(privs.hasPriv(env.user.privs, privs.MODIFY_SEASON));
+}
+
+/**
+ * Check if a player can queue for inhouses or not
+ * @return true if they can queue for inhouses, false otherwise
+ */
+function canQueueInhouses(player) {
+	return !(privs.hasPriv(player.privs, privs.INELIGIBLE)
+		     || privs.hasPriv(player.privs, privs.BANNED));
 }
 
 /**
@@ -561,6 +572,73 @@ var show_leaderboard = new fl.Chain(
 ).use_local_env(true);
 
 /**
+ * Show inhouse page for an inhouse enabled season
+ */
+var show_queue = new fl.Chain(
+	function(env, after) {
+		if (seasons.TYPE_IHL != env.season.type) {
+			env.$throw(new Error('This is not an inhouse season and has no queue.'));
+			return;
+		}
+
+		env.$template('season_inhouse');
+		env.$output({
+			canQueueInhouses : canQueueInhouses(env.user),
+			scripts : ['inhouses', 'menu']
+		});
+
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Add a player to the inhouse queue
+ */
+var queue_for_inhouse = new fl.Chain(
+	function(env, after) {
+		if (seasons.TYPE_IHL != env.season.type) {
+			env.$throw(new Error('This is not an inhouse season and has no queue.'));
+			return;
+		}
+
+		if (!canQueueInhouses(env.user)) {
+			env.$throw(new Error('You are not allowed to play inhouses'));
+			return;
+		}
+
+		after(env.season);
+	},
+	InhouseQueue.getQueue,
+	function(env, after, queue) {
+		env.$json({
+			success : queue.addPlayer(env.user)
+		});
+		after();
+	}
+).use_local_env(true);
+
+/**
+ * Remove a player from the inhouse queue
+ */
+var leave_inhouse_queue = new fl.Chain(
+	function(env, after) {
+		if (seasons.TYPE_IHL != env.season.type) {
+			env.$throw(new Error('This is not an inhouse season and has no queue.'));
+			return;
+		}
+
+		after(env.season);
+	},
+	InhouseQueue.getQueue,
+	function(env, after, queue) {
+		env.$json({
+			success : queue.removePlayer(env.user)
+		});
+		after();
+	}
+).use_local_env(true);
+
+/**
  * Chain used to get season information for display in the sidebar
  */
 var sidebar_seasons = new fl.Chain(
@@ -584,6 +662,8 @@ var sidebar_seasons = new fl.Chain(
 module.exports.init_routes = function(server) {
 	server.add_pre_hook(sidebar_seasons, 'default');
 	server.add_pre_hook(season_preamble, 'season');
+
+	InhouseQueue.setup(server.io);
 
 	server.add_route('/seasons', {
 		fn : season_index,
@@ -668,6 +748,24 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'optional_user', 'season'],
 		post : ['default']
 	}, 'get');
+
+	server.add_route('/seasons/:seasonid/inhouses', {
+		fn : show_queue,
+		pre : ['default', 'require_user', 'season'],
+		post : ['default']
+	}, 'get');
+
+	server.add_route('/seasons/:seasonid/inhouses/queue', {
+		fn : queue_for_inhouse,
+		pre : ['default', 'require_user', 'season'],
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/seasons/:seasonid/inhouses/leaveQueue', {
+		fn : leave_inhouse_queue,
+		pre : ['default', 'require_user', 'season'],
+		post : ['default']
+	}, 'post');
 
 	server.add_dust_helpers({
 		season_status : function(chunk, context, bodies, params) {
