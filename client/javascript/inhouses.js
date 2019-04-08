@@ -1,5 +1,6 @@
 /**
  * UI support for inhouse queues
+ * @todo Remove jquery dependency here
  */
 
 if (undefined === ld2l) {

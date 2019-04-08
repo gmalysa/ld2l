@@ -542,23 +542,11 @@ var create_team = new fl.Chain(
  */
 var show_leaderboard = new fl.Chain(
 	function(env, after) {
-		env.seasonId = parseInt(env.req.params.seasonid);
-		if (isNaN(env.seasonId)) {
-			env.$throw(new Error('Invalid season ID specified'));
-			return;
-		}
-
-		after(env.seasonId);
-	},
-	seasons.getSeason,
-	function(env, after, season) {
-		if (seasons.TYPE_IHL != season.type) {
+		if (seasons.TYPE_IHL != env.season.type) {
 			env.$throw(new Error('This season is not an inhouse league and has no leaderboard!'));
 			return;
 		}
-
-		env.season = season;
-		after(season);
+		after(env.season);
 	},
 	matches.getLeaderboards,
 	function(env, after, leaderboard) {
