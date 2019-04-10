@@ -5,6 +5,11 @@
    {#players}
      <div class="ld2l-player"
 	      data-picksteamid="{steamid}"
+          onmouseenter="ld2l.loadHovercard(this);"
+          onmouseleave="ld2l.hideHovercard();"
+          data-hovercard-type="profile"
+		  data-hovercard-id="{steamid}"
+		  data-title="{display_name}"
 		  onclick="ld2l.inhouseQueue.pickPlayer(this);">
       <img src="{avatar}" /><span>{display_name}</span>
 	 </div>

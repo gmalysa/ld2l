@@ -23,7 +23,7 @@ ld2l.inhouseQueue = {
 		if (this.queue.length == 1) {
 			$('#inhouseQueue').html('');
 		}
-		dust.render('autocomplete', player, function(err, out) {
+		dust.render('inhouse_player', player, function(err, out) {
 			$('#inhouseQueue').append(out);
 		});
 	},
