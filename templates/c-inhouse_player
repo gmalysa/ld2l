@@ -1,5 +1,6 @@
 <div>
 <div class="ld2l-player inline"
+  data-steamid="{steamid}"
   onmouseenter="ld2l.loadHovercard(this);"
   onmouseleave="ld2l.hideHovercard();"
   data-hovercard-type="profile"
