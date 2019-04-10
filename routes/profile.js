@@ -104,6 +104,7 @@ var buildProfile = new fl.Chain(
 			profileUser : displayUser,
 			dotabuff : 'https://www.dotabuff.com/players/'+displayUser.id32,
 			opendota : 'https://www.opendota.com/players/'+displayUser.id32,
+			stratz : 'https://stratz.com/en-us/player/'+displayUser.id32,
 			showPrivs : showPrivs,
 			vouched : privs.hasPriv(userPrivs, privs.JOIN_SEASON),
 			banned : privs.hasPriv(userPrivs, privs.BANNED),
