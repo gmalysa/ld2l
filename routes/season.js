@@ -648,20 +648,34 @@ var inhouse_results = new fl.Chain(
 			return;
 		}
 
-		env.filters.matches.insert({
-			season : env.season.id,
-			week : 0,
-			home : 0,
-			away : 0,
-			result : 0,
-			dotaid : 0,
-			playoff : 0
-		}).exec(after, env.$throw);
+		after();
 	},
-	function(env, after, match) {
-		after(env.req.body.match, lobbies.RESULTS_FORMAT_KAEDEBOT, match.insertId);
-	},
-	lobbies.parseResults
+	new fl.Branch(
+		function(env, after) {
+			// Only save results on state 5, sending results
+			after(env.req.body.state == 5);
+		},
+		new fl.Chain(
+			function(env, after) {
+				env.filters.matches.insert({
+					season : env.season.id,
+					week : 0,
+					home : 0,
+					away : 0,
+					result : 0,
+					dotaid : 0,
+					playoff : 0
+				}).exec(after, env.$throw);
+			},
+			function(env, after, match) {
+				after(env.req.body.match, lobbies.RESULTS_FORMAT_KAEDEBOT, match.insertId);
+			},
+			lobbies.parseResults
+		),
+		function(env, after) {
+			after();
+		}
+	)
 );
 
 /**
