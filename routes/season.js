@@ -8,12 +8,16 @@ var _ = require('underscore');
 var dust = require('dustjs-linkedin');
 require('dustjs-helpers');
 
+var logger = require('../logger.js');
+
+var config = require('../config.js');
 var privs = require('../lib/privs.js');
 var audit = require('../lib/audit.js');
 var users = require('../lib/users.js');
 var seasons = require('../lib/seasons.js');
 var teams = require('../lib/teams.js');
 var matches = require('../lib/matches.js');
+var lobbies = require('../lib/lobbies.js');
 
 var InhouseQueue = require('../lib/InhouseQueue.js');
 
@@ -637,8 +641,27 @@ var leave_inhouse_queue = new fl.Chain(
  */
 var inhouse_results = new fl.Chain(
 	function(env, after) {
-		after();
-	}
+		logger.var_dump(env.req.body);
+
+		if (env.req.body.key != config.kbaas_key) {
+			env.$throw(new Error('Incorrect API key given'));
+			return;
+		}
+
+		env.filters.matches.insert({
+			season : env.season.id,
+			week : 0,
+			home : 0,
+			away : 0,
+			result : 0,
+			dotaid : 0,
+			playoff : 0
+		}).exec(after, env.$throw);
+	},
+	function(env, after, match) {
+		after(env.req.body.match, lobbies.RESULTS_FORMAT_KAEDEBOT, match.insertId);
+	},
+	lobbies.parseResults
 );
 
 /**
