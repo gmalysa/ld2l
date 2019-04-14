@@ -19,6 +19,8 @@ var dotaconstants = require('dotaconstants');
 var dust = require('dustjs-linkedin');
 require('dustjs-helpers');
 
+const child_process = require('child_process');
+
 // Express middleware
 var bodyParser = require('body-parser');
 var expressSession = require('express-session');
@@ -31,6 +33,15 @@ var siopassport = require('passport.socketio');
 var logger = require('./logger');
 var mysql = require('./mysql');
 var common = require('./common');
+
+var version = {};
+
+/**
+ * Get version from git as the current commit hash
+ */
+child_process.exec("git log -n 1 --pretty=oneline", function(err, out, stderr) {
+	version.v = out.split(' ')[0];
+});
 
 mysql.init();
 
@@ -143,6 +154,13 @@ ci.io.use(siopassport.authorize({
 	secret : config.session_secret,
 	store : sessionStorage
 }));
+
+// Send server version to client on startup
+ci.io.on('connect', function(socket) {
+	if (undefined !== version.v) {
+		socket.emit('version', version.v);
+	}
+});
 
 // Add helpers and hooks
 ci.add_pre_hook(fl.mkfn(mysql.init_db, 0));

@@ -76,6 +76,29 @@ ld2l.$.click = function(e) {
 	e.dispatchEvent(evt);
 };
 
+/**
+ * Show the modal dialog box with a dust template contents
+ */
+ld2l.$.showModal = function(template, context) {
+	dust.render(template, context, function(err, out) {
+		if (err) {
+			console.log(err);
+		}
+
+		var modal = document.getElementById('modal');
+		modal.innerHTML = out;
+		modal.style.display = 'flex';
+	});
+}
+
+/**
+ * Hide the modal dialog box when we're done
+ */
+ld2l.$.hideModal = function() {
+	var modal = document.getElementById('modal');
+	modal.style.display = 'none';
+}
+
 // Separate code that actually runs on every page instead of just lib things
 
 /**
@@ -85,6 +108,27 @@ ld2l.$.onReady(function() {
 	var menu = document.getElementById('menu-link');
 	menu.addEventListener('click', function() {
 		document.getElementById('ld2l-layout').classList.toggle('active');
+	});
+});
+
+ld2l._version = {
+	version : 0,
+	socket : null
+};
+
+/**
+ * Handle client side versioning
+ */
+ld2l.$.onReady(function() {
+	ld2l._version.socket = io();
+	ld2l._version.socket.on('version', function(v) {
+		console.log('Received version string '+v);
+		if (0 == ld2l._version.version) {
+			ld2l._version.version = v;
+		}
+		else {
+			ld2l.$.showModal('newversion', {});
+		}
 	});
 });
 
