@@ -16,16 +16,23 @@ This will serve as both a list of League rules and an explanation of how a stand
 
 ## Signing Up
 
-1. Signups for all LD2L events are handled via the League website using your Steam Account.
+1. Signups for all LD2L divisions and events are handled via the League website using your Steam Account.
 
 2. Your handle on the League website defaults to your Steam handle, and should be something consistent and recognizable to the League Admins. This can be edited on your profile page if necessary.
 
-3. The player statement portion of the signup should be used to provide information to potential Captains such as your preferred positions. Keep in mind you may be drafted to play a position other than your preferred one depending on team needs.
+3. The player statement portion of the signup should be used to provide information to potential Captains such as your availability for team practice and preferred positions. Keep in mind you may be drafted to play a position other than your preferred one depending on team needs.
 
-4. In order to be eligible to participate in a season of LD2L either as a drafted player or as a standin/free agent you must:
-    * Have a current badge of Legend 5 or below (or fall under the [graduation rule](#graduating)).
+4. In order to be eligible to participate in the regular LD2L division either as a drafted player or as a standin/free agent you must:
+    * Be below 3000 MMR
     * Be vouched on the League website by a previous League participant.
     * Have public matchmaking data exposed on dotabuff/opendota.
+
+5. In order to be eligible to participate in the LD2L Masters division either as a drafted player or as a standin/free agent you must:
+    * Be between 2500 and 4000 MMR
+    * Be vouched on the League website by a previous League participant.
+    * Have public matchmaking data exposed on dotabuff/opendota.
+
+6. Players between 2500 and 3000 MMR may sign up for either or both divisions, but may only be drafted to one team (since the divisions are played concurrently). Players who sign up for both divisions will be assigned a division by the Admins according to league needs.
 
 5. In order to be "draft eligible" players must also participate in the preseason inhouse league. This will enable you to get to know the community and assist Captains who may be interested in drafting you. 
     * The minimum number of games for new League players is 5. 
@@ -42,9 +49,9 @@ This will serve as both a list of League rules and an explanation of how a stand
 
 4. The draft pool will be determined by signup date on a first-come first-served basis.  Remaining signups will compose the Free Agent pool. Players who do not meet the requirements to be draft eligible (outlined [above](#signingup)) will not be included in the draft pool.
 
-5. Draft order will be determined for each round by the average badge of the partially-drafted teams, lowest to highest. This average is calculated based on a linearized badge value.
+5. Draft order will be determined for each round by the average MMR of the partially-drafted teams, lowest to highest. This average is calculated based on the MMRs submitted at signup.
 
-6. For the purposes of the draft, all Heralds and Guardians will count toward draft order as if they were Guardian 5. 
+6. For the purposes of the draft, all players below 1000 MMR will count toward the team average as 1000. 
 
 ## Team Management
 
@@ -58,7 +65,7 @@ This will serve as both a list of League rules and an explanation of how a stand
 
 5. Players should, in general, abide by their Captains' decisions regarding lineups, roles, draft, etc. Captains should, in general, take players' wishes into account when making these decisions. Conflicts should be handled internally where possible. If conflicts cannot be resolved, Admins should be contacted via PM. Discussion of internal team conflicts in public League Discord channels is strongly discouraged.
 
-6. Disbands, kicking players, and leaving teams are strongly discouraged and may result in being unvouched or losing Captain permissions for future seasons, depending on circumstances. Admins should be consulted regarding any of these actions.
+6. Disbands, kicking players, and leaving teams are strongly discouraged and may result in being unvouched or losing Captain permissions for future seasons, depending on circumstances. Admins should be consulted regarding any of these actions. Unless a substantial reason is provided to the Admins, the standard penalty for abandoning a team will be a ban for the next LD2L season.
 
 7. Captains may, if they wish, recruit friends or community members to help coach their team. Coaches may not communicate with team members during the draft or game, but may communicate with team members between games. If a Captain would like a coach but doesn't have anyone they can ask, they should make a request on the League Discord. We have lots of high MMR community members and associates who may be happy to help. The Admins do not, however, promise to provide a Coach for every team.
 
@@ -113,21 +120,23 @@ This will serve as both a list of League rules and an explanation of how a stand
 
 6. A team may not use more than one standin for each game. If a team only has 3 players present they must forfeit the game or series.
 
-7. Each team is permitted up to ten minutes of pause time (up to 20 total) for technical or connectivity issues. A pause may be initiated at any time outside of an ongoing teamfight, and a succinct explanation of the reason provided in all-chat (regardless of all-chat allowance). BM pauses, tactical pauses, etc. are not permitted and will be dealt with on a case-by-case basis.
+7. Players may not pause during the in-game draft. If the captain needs to step away during the draft, they should pass in-game captain to a player who is able to continue drafting. If a pause is still necessary once the draft has reached Strategy Time a reason should be provided to the other team.
 
-8. Resuming from a pause is permitted once both teams have acknowledged they are ready to continue. If the team that did not initiate the pause is not ready to continue, their pause time is used for the remaining duration.
+8. Each team is permitted up to ten minutes of pause time (up to 20 total) for technical or connectivity issues. A pause may be initiated at any time outside of an ongoing teamfight, and a succinct explanation of the reason provided in all-chat (regardless of all-chat allowance). BM pauses, tactical pauses, etc. are not permitted and will be dealt with on a case-by-case basis.
 
-9. If a team does not have pause time remaining, the match should be unpaused at that time. If pause is abused after time has expired to continue delaying the game, an Admin will determine if a forfeit loss is to be awarded. If an Admin is not in the lobby, the game should be played to conclusion (if possible) and will be reviewed afterwards.
+9. Resuming from a pause is permitted once both teams have acknowledged they are ready to continue. If the team that did not initiate the pause is not ready to continue, their pause time is used for the remaining duration.
 
-10. If a player disconnects before first blood and cannot reconnect, the game can be remade with a fresh draft replacing the disconnected player. Suspected abuse of this rule will be dealt with on a case-by-case basis.
+10. If a team does not have pause time remaining, the match should be unpaused at that time. If pause is abused after time has expired to continue delaying the game, an Admin will determine if a forfeit loss is to be awarded. If an Admin is not in the lobby, the game should be played to conclusion (if possible) and will be reviewed afterwards.
 
-11. All-chat is permitted unless and until a Captain requests no all-chat.  No all-chat requests may be made in the lobby, at the start of the match, or at any time during the match. If a non-Captain requests no all-chat, his or her Captain should be asked to confirm. 
+11. If a player disconnects before first blood and cannot reconnect, the game can be remade with a fresh draft replacing the disconnected player. Suspected abuse of this rule will be dealt with on a case-by-case basis.
 
-12. Bad manners, including but not limited to excessive flaming, harassment, racism, sexism, or other discrimination, are not permitted in or out of game, and punishment will be decided on a case by case basis ranging from individual warnings to being removed (even mid season).
+12. All-chat is permitted unless and until a Captain requests no all-chat.  No all-chat requests may be made in the lobby, at the start of the match, or at any time during the match. If a non-Captain requests no all-chat, his or her Captain should be asked to confirm. 
 
-13. Fake, tactical, or taunting ggs are not permitted. If a Captain calls gg it is binding. If a player inadvertently calls gg the opposing Captain may request an Admin review after the game to determine if it impacted the outcome of the game.
+13. Bad manners, including but not limited to excessive flaming, harassment, racism, sexism, or other discrimination, are not permitted in or out of game, and punishment will be decided on a case by case basis ranging from individual warnings to being removed (even mid season).
 
-14. In general players should not engage in arguments over possible rules violations during the game. If there is a suspected rules violation a Captain should say so only once in all-chat (so that it shows up in the replay), and then request a replay review at the end of the game. Continued discussion of rules issues during the game will be considered bad manners. Declaring a potential rules violation is also automatically a request for no all-chat.
+14. Fake, tactical, or taunting ggs are not permitted. If a Captain calls gg it is binding. If a player inadvertently calls gg the opposing Captain may request an Admin review after the game to determine if it impacted the outcome of the game.
+
+15. In general players should not engage in arguments over possible rules violations during the game. If there is a suspected rules violation a Captain should say so only once in all-chat (so that it shows up in the replay), and then request a replay review at the end of the game. Continued discussion of rules issues during the game will be considered bad manners. Declaring a potential rules violation is also automatically a request for no all-chat.
 
 ## Playoffs
 
@@ -174,18 +183,11 @@ This will serve as both a list of League rules and an explanation of how a stand
 
 5. Drafted players who abandon, quit, or are kicked from their teams may not stand in or become free agents.
 
-6. Players drafted to other teams may stand in only if no other replacement is available. Admins must be notified of all cross-team standins.
+6. Players drafted to other teams in the same division may stand in only if no other replacement is available. Admins must be notified of all cross-team standins.
 
-7. A player's "replacement value" is the linearized value of their badge at the time of the draft.
+7. Players drafted to teams in other divisions may stand in if they do not have a concurrent match and they satisfy the MMR requirements.
 
-8. A standin or free agent's "replacing value" is determined by the *greater* of the linearized value of their badge at the time of the draft or the linearized value of their badge at the time of replacement minus 2.
+8. A permissible standin is one whose recorded MMR is less than or equal to the MMR the team player was drafted at. If there is reason to believe a standin's MMR has increased substantially from when it was recorded (e.g. their badge has gone up significantly) the Admins may request an updated MMR screenshot and adjust their recorded MMR accordingly.
 
-9. A standin or free agent is permitted if the replacing value of the standin or free agent is less than or equal to the replacement value of the missing player.
+9. Teams consist of 6 players in order to reduce reliance on standins. If five of your six players are present for a match, Captains are encouraged to play their five players in both games unless it would create a substantial competitive disadvantage. Admins reserve the right to deny any standin request deemed inappropriate.
 
-10. Free agents who join teams acquire the replacement value of the player they replace.
-
-11. Teams consist of 6 players in order to reduce reliance on standins. If five of your six players are present for a match, Captains are encouraged to play their five players in both games unless it would create a substantial competitive disadvantage. As a rough guideline: if the missing player is below Legend, the Captain should strongly consider not taking a standin for the match unless they are missing two players. Admins reserve the right to deny any standin deemed inappropriate.
-
-## Graduating
-
-The stated goal of LD2L for players to improve. In an ideal world, every League player would eventually move on to higher MMR leagues because they would get too good to stay. So we don’t want to punish people for improving. So every League player is allowed one "Graduation Season". If a player climbs out of the badge range mid-season or between seasons, they are welcome to come back and play the following season as a one-time Graduation Exception to the badge limit. Graduation Exception players are highly encouraged to be Captains.
