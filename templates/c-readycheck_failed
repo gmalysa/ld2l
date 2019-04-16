@@ -4,6 +4,6 @@
     <input type="button"
 	       class="pure-button ld2l-button-primary"
 		   value="OK"
-		   onclick="ld2l.inhouseQueue.clearPrompt()" />
+		   onclick="ld2l.$.hideModal()" />
   </div>
 </div>

@@ -2,5 +2,5 @@
   <input type="button"
          class="pure-button ld2l-button-primary"
 		 value="Done"
-		 onclick="ld2l.inhouseQueue.clearConfig();" />
+		 onclick="ld2l.$.hideModal();" />
 </div>

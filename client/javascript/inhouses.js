@@ -74,14 +74,11 @@ ld2l.inhouseQueue = {
 	},
 
 	doReadyCheck : function(data) {
-		dust.render('readycheck', data, function(err, out) {
-			$('#inhouseConfig').html(out);
-			$('#inhouseConfig').css('display', 'flex');
+		ld2l.$.showModal('readycheck', data);
 
-			var ping = new Audio('http://ld2l.gg/static/Scan_clear.mp3');
-			ping.volume = 0.3;
-			ping.play();
-		});
+		var ping = new Audio('http://ld2l.gg/static/Scan_clear.mp3');
+		ping.volume = 0.3;
+		ping.play();
 	},
 
 	iAmReady : function(elem) {
@@ -96,26 +93,16 @@ ld2l.inhouseQueue = {
 	},
 
 	readyCheckFailed : function() {
-		dust.render('readycheck_failed', {}, function(err, out) {
-			$('#inhouseConfig').html(out);
-			$('#inhouseConfig').css('display', 'flex');
-		});
-	},
-
-	clearPrompt : function() {
-		$('#inhouseConfig').css('display', 'none');
+		ld2l.$.showModal('readycheck_failed', {});
 	},
 
 	startMatchConfig : function(data) {
 		this.players = data.players;
 
-		dust.render('matchconfig', {
+		ld2l.$.showModal('matchconfig', {
 			players : data.players,
 			captains : data.captains,
-		}, function(err, out) {
-			$('#inhouseConfig').html(out);
-			$('#inhouseConfig').css('display', 'flex');
-
+		}, function() {
 			// Add pick dummies
 			var counter = 0;
 			_.each(data.pickOrder, function(v) {
@@ -165,10 +152,6 @@ ld2l.inhouseQueue = {
 		this.socket.emit('pick', {
 			steamid : elem.dataset.picksteamid
 		});
-	},
-
-	clearConfig : function() {
-		this.clearPrompt();
 	}
 
 };

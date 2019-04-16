@@ -79,15 +79,21 @@ ld2l.$.click = function(e) {
 /**
  * Show the modal dialog box with a dust template contents
  */
-ld2l.$.showModal = function(template, context) {
+ld2l.$.showModal = function(template, context, after) {
 	dust.render(template, context, function(err, out) {
 		if (err) {
 			console.log(err);
 		}
 
 		var modal = document.getElementById('modal');
-		modal.innerHTML = out;
 		modal.style.display = 'flex';
+
+		var modalContent = document.getElementById('modal-content');
+		modalContent.innerHTML = out;
+
+		if (after) {
+			setTimeout(after, 0);
+		}
 	});
 }
 
