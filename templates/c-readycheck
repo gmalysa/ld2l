@@ -1,5 +1,5 @@
-<div id="readyCheck">
-<div>
+<div style="text-align: center;"><b>INHOUSE READY CHECK</b></div>
+<div class="ready-player-list">
   {#players}
     <div style="display:inline-block;" data-steamid="{steamid}">
       <div class="ready"></div>
@@ -12,5 +12,4 @@
          type="button"
 		 value="Ready"
 		 onclick="ld2l.inhouseQueue.iAmReady(this);" />
-</div>
 </div>
