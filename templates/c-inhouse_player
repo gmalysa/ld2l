@@ -1,4 +1,4 @@
-<div data-steamid="{steamid}">
+<div data-steamid="{steamid}" class="inhouse-player">
 <div class="ld2l-player inline"
   onmouseenter="ld2l.loadHovercard(this);"
   onmouseleave="ld2l.hideHovercard();"

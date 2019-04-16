@@ -7,6 +7,10 @@
   Current Queue
 </div>
 
+<div id="inhouseQueue">
+  Queue is currently empty.
+</div>
+
 {?canQueueInhouses}
   <input type="button"
          id="queueMe"
@@ -20,10 +24,6 @@
 		 value="Leave Queue"
 		 onclick="ld2l.inhouseQueue.leaveQueue();" />
 {/canQueueInhouses}
-
-<div id="inhouseQueue">
-  Queue is currently empty.
-</div>
 
 {>season_footer /}
 {>footer /}

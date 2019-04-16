@@ -383,6 +383,16 @@ div.ld2l-lobby-player {
 	margin-top: 0.5rem;
 	margin-left: 0.5rem;
 	margin-bottom: 0.5rem;
+
+	// Room for 10 players
+	height: 360px;
+
+	counter-reset: ihplayer;
+}
+
+.inhouse-player::before {
+	counter-increment: ihplayer;
+	content : counter(ihplayer) " ";
 }
 
 .ld2l-modal {
