@@ -10,7 +10,7 @@ Draftable Players:
   	  data-hovercard-id="{steamid}"
   	  data-title="{display_name}"
   	  onclick="ld2l.inhouseQueue.pickPlayer(this);">
-    <img src="{avatar}" /><span>{display_name} [{wins}-{losses}: <b>{ihmmr}</b>]</span>
+    <img src="{avatar}" /><span>[<b>{ihmmr}</b>] {display_name} ({wins}-{losses})</span>
    </div>
  {/players}
 </div>
@@ -20,7 +20,7 @@ Draftable Players:
       {team}
     </div>
     <div class="ld2l-player">
-      <img src="{avatar}" /><span>{display_name}</span>
+      <img src="{avatar}" /><span><b>[{ihmmr}</b>] {display_name} ({wins}-{losses})</span>
     </div>
     <div data-side="{side}">
     </div>
