@@ -604,6 +604,12 @@ var queue_for_inhouse = new fl.Chain(
 			return;
 		}
 
+		after(env.user, env.season);
+	},
+	matches.getPlayerSeasonRecord,
+	function(env, after, record) {
+		env.user.wins = record.wins;
+		env.user.losses = record.losses;
 		after(env.season);
 	},
 	InhouseQueue.getQueue,

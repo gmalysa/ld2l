@@ -11,7 +11,7 @@
 		  data-hovercard-id="{steamid}"
 		  data-title="{display_name}"
 		  onclick="ld2l.inhouseQueue.pickPlayer(this);">
-      <img src="{avatar}" /><span>{display_name}</span>
+      <img src="{avatar}" /><span>{display_name} [{wins}-{losses}: <b>{ihmmr}</b>]</span>
 	 </div>
    {/players}
   </div>

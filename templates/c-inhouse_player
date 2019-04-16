@@ -6,6 +6,6 @@
   data-hovercard-id="{steamid}"
   data-title="{display_name}">
 
-  <img src="{avatar}" /> {display_name}
+  <img src="{avatar}" /> {display_name} [{wins}-{losses}: <b>{ihmmr}</b>]
 </div>
 </div>
