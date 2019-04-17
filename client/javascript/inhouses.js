@@ -143,7 +143,8 @@ ld2l.inhouseQueue = {
 
 	launch : function(data) {
 		dust.render('lobby_launch', data, function(err, out) {
-			$('.ld2l-config-container').append(out);
+			var modal = document.getElementById('modal-content');
+			modal.innerHTML = modal.innerHTML + out;
 		});
 	},
 
