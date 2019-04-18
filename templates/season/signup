@@ -21,6 +21,9 @@
 	<input type="text" name="party_mmr" value="{party_mmr}" />
   </div>
   <div class="pure-control-group">
+    <span class="pure-form-message-inline">Upload your MMR screenshot to imgur or similar and supply a link.</span>
+  </div>
+  <div class="pure-control-group">
     <label for="mmr_screenshot">MMR Screenshot</label>
 	<input type="text" name="mmr_screenshot" value="{mmr_screenshot}" />
   </div>
