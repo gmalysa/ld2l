@@ -14,8 +14,8 @@ ld2l.season = {
 	current_row : ''
 };
 
-$(window).load(function() {
-	var table = $('#draft-list')[0];
+ld2l.$.onReady(function() {
+	var table = document.getElementById('draft-list');
 	ld2l.season.id = parseInt(table.dataset.season);
 	ld2l.season.admin = table.dataset.admin == 'true';
 });
@@ -25,7 +25,9 @@ $(window).load(function() {
  */
 ld2l.signupExpand = function(row) {
 	if (ld2l.expandedSignup) {
-		ld2l.expandedSignup.remove();
+		// element.remove() is experimental
+		ld2l.expandedSignup.parentNode.removeChild(ld2l.expandedSignup);
+		ld2l.expandedSignup = null;
 
 		// Second click on the same row collapses
 		if (row.dataset.steamid == ld2l.season.current_row) {
@@ -35,9 +37,6 @@ ld2l.signupExpand = function(row) {
 	}
 
 	ld2l.season.current_row = row.dataset.steamid;
-
-	var solo = parseInt(row.dataset.soloMmr);
-	var party = parseInt(row.dataset.partyMmr);
 
 	var data = {
 		admin : ld2l.season.admin,
@@ -58,38 +57,26 @@ ld2l.signupExpand = function(row) {
 	console.log(data);
 
 	dust.render('expanded_signup', data, function(err, out) {
-		$(row).after(out);
-		ld2l.expandedSignup = $('#expanded_signup');
+		row.insertAdjacentHTML('afterend', out);
+		ld2l.expandedSignup = document.getElementById('expanded_signup');
 	});
 }
 
 function createTeam(steamid) {
-	console.log('Creating new team in season '+ld2l.season.id+' run by '+steamid);
-	var row = $('tr[data-steamid="'+steamid+'"]')[0];
+	var row = document.querySelector('tr[data-steamid="'+steamid+'"]');
 
-	$.ajax({
-		url : '/seasons/new_team',
-		data : {
-			season : ld2l.season.id,
-			steamid : steamid
-		},
-		method : 'POST',
-		dataType : 'json'
-	}).done(function(data, status, xhr) {
-		console.log(data);
-		console.log(status);
+	ld2l.$.ajax('/seasons/new_team', {
+		season : ld2l.season.id,
+		steamid : steamid
+	}).then(function(data) {
 		ld2l.signupExpand(row);
 	});
 }
 
 function vouch(steamid) {
-	$.ajax({
-		url : '/profile/'+steamid+'/vouch',
-		method : 'GET',
-		accepts : 'application/json'
-	}).done(function(data, status, xhr) {
+	ld2l.$.ajax('/profile/'+steamid+'/vouch', {}).then(function(data) {
 		if (data.success) {
-			var row = $('tr[data-steamid="'+steamid+'"]')[0];
+			var row = document.querySelector('tr[data-steamid="'+steamid+'"]');
 			row.dataset.vouched = "1";
 			ld2l.signupExpand(row);
 		}
@@ -97,7 +84,6 @@ function vouch(steamid) {
 }
 
 function hideSignup(steamid, hide) {
-	console.log('Setting hidden to '+hide+' for '+steamid);
 	ld2l.$.ajax('/seasons/hide_signup', {
 		steamid : steamid,
 		hide : hide,
@@ -116,18 +102,13 @@ function hideSignup(steamid, hide) {
 }
 
 function setDraftable(steamid, draftable) {
-	console.log('Setting draftable to '+draftable+' for player '+steamid+' in season '+ld2l.season.id);
-	$.ajax({
-		url : '/draft/toggle',
-		data : {
-			steamid : steamid,
-			draftable : draftable,
-			season : ld2l.season.id
-		},
-		method : 'POST',
-		dataType : 'json'
-	}).done(function(data, status, xhr) {
-		var row = $('tr[data-steamid="'+steamid+'"]')[0];
+	ld2l.$.ajax('/draft/toggle',{
+		steamid : steamid,
+		draftable : draftable,
+		season : ld2l.season.id
+	}).then(function(data) {
+		var row = document.querySelector('tr[data-steamid="'+steamid+'"]');
+
 		if (draftable) {
 			row.dataset.draftable = "1";
 		}
@@ -139,18 +120,13 @@ function setDraftable(steamid, draftable) {
 }
 
 function setStandin(steamid, free) {
-	console.log('Setting standin to '+free+' for player '+steamid+' in season '+ld2l.season.id);
-	$.ajax({
-		url : '/standin/toggle',
-		data : {
-			steamid : steamid,
-			standin : free,
-			season : ld2l.season.id
-		},
-		method : 'POST',
-		dataType : 'json'
-	}).done(function(data, status, xhr) {
-		var row = $('tr[data-steamid="'+steamid+'"]')[0];
+	ld2l.$.ajax('/standin/toggle', {
+		steamid : steamid,
+		standin : free,
+		season : ld2l.season.id
+	}).then(function(data) {
+		var row = document.querySelector('tr[data-steamid="'+steamid+'"]');
+
 		if (free) {
 			row.dataset.validstandin = "1";
 		}

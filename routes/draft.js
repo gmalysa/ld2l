@@ -341,12 +341,8 @@ var toggle_draftable = new fl.Chain(
 
 		env.$json({success : true});
 
-		var draftable = 1;
-		if ("false" == env.req.body.draftable)
-			draftable = 0;
-
 		env.filters.signups.update({
-			draftable : draftable
+			draftable : env.req.body.draftable ? 1 : 0
 		}, {
 			steamid : env.req.body.steamid,
 			season : env.req.body.season
