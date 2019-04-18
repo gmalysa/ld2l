@@ -53,6 +53,18 @@
 		   value="Create Team" />
   {/createTeam}
 
+  {?hide}
+    <input type="button"
+	       class="pure-button ld2l-button-primary"
+		   onclick="hideSignup('{steamid}', true);"
+		   value="Hide" />
+  {:else}
+    <input type="button"
+	       class="pure-button ld2l-button-primary"
+		   onclick="hideSignup('{steamid}', false);"
+		   value="Unhide" />
+  {/hide}
+
   <input type="button"
          class="pure-button ld2l-button-primary"
          onclick="editSignup('{steamid}');"

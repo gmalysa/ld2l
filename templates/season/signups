@@ -38,9 +38,10 @@
 		data-party-mmr="{party_mmr}"
 		data-solo-mmr="{solo_mmr}"
 		data-mmr-screenshot="{mmr_screenshot}"
-		class="clickable 
+		data-hidden="{hidden}"
+		class="clickable
 		{@gt key=teamid value="0"}
-		  drafted
+		  {~n}drafted
 		{/gt}
 		"
 		onclick="ld2l.signupExpand(this, event);">

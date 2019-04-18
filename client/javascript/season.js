@@ -50,6 +50,7 @@ ld2l.signupExpand = function(row) {
 		standin : (row.dataset.validstandin == '1'),
 		draftable : (row.dataset.draftable == '1'),
 		vouched : (row.dataset.vouched == '1'),
+		hide : (row.dataset.hidden == '0'),
 		solo_mmr : row.dataset.soloMmr,
 		party_mmr : row.dataset.partyMmr,
 		mmr : mmr,
@@ -94,6 +95,25 @@ function vouch(steamid) {
 			row.dataset.vouched = "1";
 			ld2l.signupExpand(row);
 		}
+	});
+}
+
+function hideSignup(steamid, hide) {
+	console.log('Setting hidden to '+hide+' for '+steamid);
+	ld2l.$.ajax('/seasons/hide_signup', {
+		steamid : steamid,
+		hide : hide,
+		season : ld2l.season.id
+	}).then(function(data) {
+		var row = document.querySelector('tr[data-steamid="'+steamid+'"]');
+
+		if (hide) {
+			row.dataset.hidden = "1";
+		}
+		else {
+			row.dataset.hidden = "0";
+		}
+		ld2l.signupExpand(row);
 	});
 }
 

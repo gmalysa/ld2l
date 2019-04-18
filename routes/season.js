@@ -179,7 +179,13 @@ var season_hub = new fl.Chain(
  */
 var signups = new fl.Chain(
 	function(env, after) {
-		after(env.season, {valid_standin : 0, standin : 0});
+		// Admins can see hidden signups but regular users cannot
+		if (privs.hasPriv(env.user.privs, privs.MODIFY_SEASON)) {
+			after(env.season, {valid_standin : 0, standin : 0});
+		}
+		else {
+			after(env.season, {valid_standin : 0, standin : 0, hidden : 0});
+		}
 	},
 	seasons.getSignups,
 	function(env, after, signups) {
@@ -207,7 +213,7 @@ var signups = new fl.Chain(
  */
 var export_signups = new fl.Chain(
 	function(env, after) {
-		after(env.season, {});
+		after(env.season, {hidden : 0});
 	},
 	seasons.getSignups,
 	function(env, after, signups) {
@@ -246,7 +252,12 @@ var standins = new fl.Chain(
  */
 var draft = new fl.Chain(
 	function(env, after) {
-		after(env.season, {draftable : 1, standin : 0, valid_standin : 0});
+		after(env.season, {
+			draftable : 1,
+			standin : 0,
+			valid_standin : 0,
+			hidden : 0
+		});
 	},
 	seasons.getSignups,
 	function(env, after, signups) {
@@ -685,6 +696,37 @@ var inhouse_results = new fl.Chain(
 );
 
 /**
+ * Toggle someone's hidden/visible status for a signup
+ */
+var hide_signup = new fl.Branch(
+	checkSeasonPrivs,
+	new fl.Chain(
+		function(env, after) {
+			env.$json({succes : true});
+
+			env.filters.signups.update({
+				hidden : env.req.body.hide ? 1 : 0
+			}, {
+				steamid : env.req.body.steamid,
+				season : parseInt(env.req.body.season)
+			}).limit(1).exec(after, env.$throw);
+		},
+		function(env, after) {
+			after(env.user, audit.EVENT_HIDE_SIGNUP, {
+				steamid : env.req.body.steamid
+			}, {
+				hide : env.req.body.hide,
+				season : parseInt(env.req.body.season)
+			});
+		},
+		audit.logUserEvent
+	),
+	function(env, after) {
+		env.$throw(new Error('You don\'t have permission to hide a signup.'));
+	}
+);
+
+/**
  * Chain used to get season information for display in the sidebar
  */
 var sidebar_seasons = new fl.Chain(
@@ -817,6 +859,12 @@ module.exports.init_routes = function(server) {
 		fn : inhouse_results,
 		pre : ['default', 'optional_user', 'season'],
 		post : ['default']
+	}, 'post');
+
+	server.add_route('/seasons/hide_signup', {
+		fn : hide_signup,
+		pre : ['default', 'require_user'],
+		psot : ['default']
 	}, 'post');
 
 	server.add_dust_helpers({
