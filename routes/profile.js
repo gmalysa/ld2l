@@ -313,6 +313,12 @@ module.exports.init_routes = function(server) {
 		post : ['default']
 	}, 'get');
 
+	server.add_route('/profile/:steamid/vouch', {
+		fn : vouch,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
+
 	server.add_route('/profile/:steamid/priv', {
 		fn : change_priv,
 		pre : ['default', 'require_user'],
