@@ -38,7 +38,6 @@ ld2l.signupExpand = function(row) {
 
 	var solo = parseInt(row.dataset.soloMmr);
 	var party = parseInt(row.dataset.partyMmr);
-	var mmr = Math.max(solo, party);
 
 	var data = {
 		admin : ld2l.season.admin,
@@ -53,7 +52,6 @@ ld2l.signupExpand = function(row) {
 		hide : (row.dataset.hidden == '0'),
 		solo_mmr : row.dataset.soloMmr,
 		party_mmr : row.dataset.partyMmr,
-		mmr : mmr,
 		mmr_screenshot : row.dataset.mmrScreenshot,
 		steamid : row.dataset.steamid
 	};

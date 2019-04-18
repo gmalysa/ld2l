@@ -262,7 +262,7 @@ var draft = new fl.Chain(
 	seasons.getSignups,
 	function(env, after, signups) {
 		signups = _.sortBy(signups, function(v) {
-			return -v.medal;
+			return -v.linear_medal;
 		});
 		env.$output({signups : signups});
 		after(env.season.id);
