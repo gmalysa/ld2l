@@ -23,6 +23,9 @@
 		 class="pure-button ld2l-button-primary"
 		 value="Leave Queue"
 		 onclick="ld2l.inhouseQueue.leaveQueue();" />
+{:else}
+<p>You're not allowed to queue for inhouses. If you think this is a mistake, contact the league
+{~n}admins on discord.</p>
 {/canQueueInhouses}
 
 {>season_footer /}
