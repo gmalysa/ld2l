@@ -6,6 +6,7 @@
   <li>Team: {team}</li>
   <li>Captain: {captain}</li>
   <li>Draftable: {?draftable}Y{:else}N{/draftable}</li>
+  <li>Vouched: {?vouched}Y{:else}N{/vouched}</li>
   {?solo_mmr}
     <li>MMR: {solo_mmr}/{party_mmr}</li>
     <li>MMR Screenshot: <a href="{mmr_screenshot}">{mmr_screenshot}</a></li>
