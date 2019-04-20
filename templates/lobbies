@@ -2,7 +2,11 @@
 
 <h2>Ongoing Lobbies</h2>
 {#lobbies}
-  <h4>{lobbyName}</h4>
+  <h4>{lobbyName}
+  {?lobby.matchId}
+    {~n}- <a href="https://www.trackdota.com/matches/{lobby.matchId}">TrackDota</a>
+  {/lobby.matchId}
+  </h4>
   <div class="ld2l-lobby-side" id="radiant">
   <span class="ld2l-lobby-team radiant">Radiant</span>
     {#lobby.members}
