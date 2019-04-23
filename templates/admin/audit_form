@@ -1,0 +1,17 @@
+<h2>View Audit Log</h2>
+<form class="pure-form pure-form-aligned"
+      action="/admin/audit" method="post">
+<fieldset>
+  <div class="pure-control-group">
+  	<label for="start">Start at</label>
+	<input type="text" name="start" value="0" />
+  </div>
+  <div class="pure-control-group">
+    <label for="count">Count</label>
+	<input type="text" name="count" value="100" />
+  </div>
+  <div class="pure-controls">
+    <input class="pure-button ld2l-button-primary" type="submit" value="Get Audit Log" />
+  </div>
+</fieldset>
+</form>

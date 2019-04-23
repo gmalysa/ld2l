@@ -1,0 +1,31 @@
+{>header /}
+<h1>LD2L Control Panel</h1>
+
+{>admin_audit_form /}
+
+<h2>View Users by Priv</h2>
+<form class="pure-form pure-form-aligned"
+      action="/admin/privlist" method="post">
+<fieldset>
+  <div class="pure-control-group">
+    <label for="priv">Select a privilege</label>
+	<select name="priv">
+	  {#privs}
+	    <option value="{value}">{label}</option>
+	  {/privs}
+	</select>
+  </div>
+  <div class="pure-controls">
+    <input class="pure-button ld2l-button-primary" type="submit" value="Search Privs" />
+  </div>
+</fieldset>
+</form>
+
+<h2>Signup Data Explorer</h2>
+<form class="pure-form pure-form-aligned"
+      action="/admin/signups" method="post">
+<fieldset>
+</fieldset>
+</form>
+
+{>footer /}

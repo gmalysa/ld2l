@@ -1,0 +1,30 @@
+{>header /}
+
+{>admin_audit_form /}
+
+<table class="ld2l-table">
+  <thead>
+    <tr>
+	  <th></th>
+	  <th>Date</th>
+	  <th>Who</th>
+	  <th>What</th>
+	  <th>To</th>
+	  <th>Details</th>
+	</tr>
+  </thead>
+  <tbody>
+    {#audit}
+	  <tr>
+	    <td id="count"></td>
+		<td width="50">{time}</td>
+		<td>{steamid}</td>
+		<td>{@audit_action action=action /}</td>
+		<td>{@audit_target type=targettype target=targetid /}</td>
+		<td><pre>{data}</pre></td>
+	  </tr>
+    {/audit}
+  </tbody>
+</table>
+
+{>footer /}
