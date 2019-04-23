@@ -160,6 +160,15 @@ ci.io.on('connect', function(socket) {
 	if (undefined !== version.v) {
 		socket.emit('version', version.v);
 	}
+
+	// Track some extra events and print them
+	socket.on('error', function(err) {
+		logger.var_dump(err, 'sio error');
+	});
+
+	socket.on('disconnect', function(reason) {
+		logger.var_dump(reason, 'sio disconnect');
+	});
 });
 
 // Add helpers and hooks
