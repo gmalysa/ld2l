@@ -157,6 +157,14 @@ ci.io.use(siopassport.authorize({
 
 // Send server version to client on startup
 ci.io.on('connect', function(socket) {
+	var timer = {
+		timer : null
+	};
+
+	timer.timer = setInterval(function() {
+		socket.emit('ping', '');
+	}, 20000);
+
 	if (undefined !== version.v) {
 		socket.emit('version', version.v);
 	}
@@ -167,7 +175,11 @@ ci.io.on('connect', function(socket) {
 	});
 
 	socket.on('disconnect', function(reason) {
-		logger.var_dump(reason, 'sio disconnect');
+		// Skip normal disconnect reasons
+		if ('transport close' != reason)
+			logger.var_dump(reason, 'sio disconnect');
+
+		clearInterval(timer);
 	});
 });
 
