@@ -14,18 +14,23 @@
   </div>
   <div class="pure-control-group">
     <label for="solo_mmr">Solo MMR</label>
-	<input type="text" name="solo_mmr" value="{solo_mmr}" />
+	<input type="text" name="solo_mmr" value="{solo_mmr}" {?mmr_valid}disabled {/mmr_valid}/>
   </div>
   <div class="pure-control-group">
     <label for="party_mmr">Party MMR</label>
-	<input type="text" name="party_mmr" value="{party_mmr}" />
+	<input type="text" name="party_mmr" value="{party_mmr}" {?mmr_valid}disabled {/mmr_valid}/>
   </div>
   <div class="pure-control-group">
-    <span class="pure-form-message-inline">Upload your MMR screenshot to imgur or similar and supply a link.</span>
+    {?mmr_valid}
+	  <span class="pure-form-message-inline">Your MMR has been locked for this season; if you need
+	  to update it please contact an admin on Discord.</span>
+	{:else}
+      <span class="pure-form-message-inline">Upload your MMR screenshot to imgur or similar and supply a link.</span>
+	{/mmr_valid}
   </div>
   <div class="pure-control-group">
     <label for="mmr_screenshot">MMR Screenshot</label>
-	<input type="text" name="mmr_screenshot" value="{mmr_screenshot}" />
+	<input type="text" name="mmr_screenshot" value="{mmr_screenshot}" {?mmr_valid}disabled {/mmr_valid}/>
   </div>
   <div class="pure-control-group">
     <label for="captain">Would you like to captain?</label>

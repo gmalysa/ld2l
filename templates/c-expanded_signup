@@ -10,6 +10,7 @@
   {?solo_mmr}
     <li>MMR: {solo_mmr}/{party_mmr}</li>
     <li>MMR Screenshot: <a href="{mmr_screenshot}">{mmr_screenshot}</a></li>
+    {?mmr_valid}<li>MMR validated</li>{/mmr_valid}
   {/solo_mmr}
 </ul>
 	</div>
@@ -34,6 +35,18 @@
            onclick="setDraftable('{steamid}', true);"
 		   value="Make Draftable" />
   {/draftable}
+
+  {?mmr_valid}
+    <input type="button"
+           class="pure-button ld2l-button-primary"
+           onclick="lockMmr('{steamid}', false);"
+		   value="Unlock MMR" />
+  {:else}
+    <input type="button"
+           class="pure-button ld2l-button-primary"
+           onclick="lockMmr('{steamid}', true);"
+		   value="MMR Valid" />
+  {/mmr_valid}
 
   {?standin}
     <input type="button"

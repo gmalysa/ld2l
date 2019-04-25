@@ -362,6 +362,7 @@ var show_signup_form = new fl.Chain(
 				solo_mmr : signup[0].solo_mmr,
 				party_mmr : signup[0].party_mmr,
 				mmr_screenshot : signup[0].mmr_screenshot,
+				mmr_valid : signup[0].mmr_valid,
 				editSignup : true,
 				fixedMedal : env.mySignup
 			});
@@ -459,15 +460,20 @@ var handle_signup_form = new fl.Chain(
 	},
 	function(env, after, signup) {
 		if (signup.length > 0) {
-			env.filters.signups.update({
+			var update = {
 				medal : env.medal,
-				solo_mmr : parseInt(env.req.body.solo_mmr),
-				party_mmr : parseInt(env.req.body.party_mmr),
-				mmr_screenshot : env.req.body.mmr_screenshot,
 				statement : env.req.body.statement,
 				captain : parseInt(env.req.body.captain),
 				standin : parseInt(env.req.body.standin)
-			}, {
+			};
+
+			if (!signup.mmr_valid) {
+				update.solo_mmr = parseInt(env.req.body.solo_mmr);
+				update.party_mmr = parseInt(env.req.body.party_mmr);
+				update.mmr_screenshot = env.req.body.mmr_screenshot;
+			}
+
+			env.filters.signups.update(update, {
 				steamid : env.steamid,
 				season : env.season.id
 			}).exec(after, env.$throw);
@@ -712,7 +718,7 @@ var hide_signup = new fl.Branch(
 			}).limit(1).exec(after, env.$throw);
 		},
 		function(env, after) {
-			after(env.user, audit.EVENT_HIDE_SIGNUP, {
+			after(env.user, audit.EVENT_SIGNUP_FLAG, {
 				steamid : env.req.body.steamid
 			}, {
 				hide : env.req.body.hide,
@@ -723,6 +729,37 @@ var hide_signup = new fl.Branch(
 	),
 	function(env, after) {
 		env.$throw(new Error('You don\'t have permission to hide a signup.'));
+	}
+);
+
+/**
+ * Toggle someone's mmr valid flag for a signup
+ */
+var lock_mmr = new fl.Branch(
+	checkSeasonPrivs,
+	new fl.Chain(
+		function(env, after) {
+			env.$json({success : true});
+
+			env.filters.signups.update({
+				mmr_valid : env.req.body.lock ? 1 : 0
+			}, {
+				steamid : env.req.body.steamid,
+				season : parseInt(env.req.body.season)
+			}).limit(1).exec(after, env.$throw);
+		},
+		function(env, after) {
+			after(env.user, audit.EVENT_SIGNUP_FLAG, {
+				steamid : env.req.body.steamid
+			}, {
+				lock : env.req.body.lock,
+				season : parseInt(env.req.body.season)
+			});
+		},
+		audit.logUserEvent
+	),
+	function(env, after) {
+		env.$throw(new Error('You don\'t have permission to lock a signup.'));
 	}
 );
 
@@ -864,7 +901,13 @@ module.exports.init_routes = function(server) {
 	server.add_route('/seasons/hide_signup', {
 		fn : hide_signup,
 		pre : ['default', 'require_user'],
-		psot : ['default']
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/seasons/lock_mmr', {
+		fn : lock_mmr,
+		pre : ['default', 'require_user'],
+		post : ['default']
 	}, 'post');
 
 	server.add_dust_helpers({

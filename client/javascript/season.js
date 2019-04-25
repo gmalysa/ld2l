@@ -52,6 +52,7 @@ ld2l.signupExpand = function(row) {
 		solo_mmr : row.dataset.soloMmr,
 		party_mmr : row.dataset.partyMmr,
 		mmr_screenshot : row.dataset.mmrScreenshot,
+		mmr_valid : (row.dataset.mmrValid == '1'),
 		steamid : row.dataset.steamid
 	};
 	console.log(data);
@@ -96,6 +97,24 @@ function hideSignup(steamid, hide) {
 		}
 		else {
 			row.dataset.hidden = "0";
+		}
+		ld2l.signupExpand(row);
+	});
+}
+
+function lockMmr(steamid, lock) {
+	ld2l.$.ajax('/seasons/lock_mmr', {
+		steamid : steamid,
+		lock : lock,
+		season : ld2l.season.id
+	}).then(function(data) {
+		var row = document.querySelector('tr[data-steamid="'+steamid+'"]');
+
+		if (lock) {
+			row.dataset.mmrValid = "1";
+		}
+		else {
+			row.dataset.mmrValid = "0";
 		}
 		ld2l.signupExpand(row);
 	});

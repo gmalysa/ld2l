@@ -39,6 +39,7 @@
 		data-solo-mmr="{solo_mmr}"
 		data-mmr-screenshot="{mmr_screenshot}"
 		data-hidden="{hidden}"
+		data-mmr-valid="{mmr_valid}"
 		class="clickable
 		{@gt key=teamid value="0"}
 		  {~n}drafted
@@ -47,7 +48,10 @@
 		onclick="ld2l.signupExpand(this, event);">
       <td>{@counter/}</td>
       <td>{>medal medal=medal /}</td>
-	  <td>{mmr}</td>
+	  <td>
+		{linear_medal}
+	    {@eq key=mmr_valid value=1} <span class="fa fa-check" style="color: green;"></span>{/eq}
+      </td>
       <td>{>profile_link /}</td>
 	  <td>
 	    <a href="https://www.dotabuff.com/players/{id32}">DB</a><br />
