@@ -27,36 +27,36 @@
   {?draftable}
     <input type="button"
            class="pure-button ld2l-button-primary"
-           onclick="setDraftable('{steamid}', false);"
+           onclick="ld2l.season.setDraftable('{steamid}', false);"
 		   value="Make Undraftable" />
   {:else}
     <input type="button"
            class="pure-button ld2l-button-primary"
-           onclick="setDraftable('{steamid}', true);"
+           onclick="ld2l.season.setDraftable('{steamid}', true);"
 		   value="Make Draftable" />
   {/draftable}
 
   {?mmr_valid}
     <input type="button"
            class="pure-button ld2l-button-primary"
-           onclick="lockMmr('{steamid}', false);"
+           onclick="ld2l.season.lockMmr('{steamid}', false);"
 		   value="Unlock MMR" />
   {:else}
     <input type="button"
            class="pure-button ld2l-button-primary"
-           onclick="lockMmr('{steamid}', true);"
+           onclick="ld2l.season.lockMmr('{steamid}', true);"
 		   value="MMR Valid" />
   {/mmr_valid}
 
   {?standin}
     <input type="button"
            class="pure-button ld2l-button-primary"
-           onclick="setStandin('{steamid}', false);"
+           onclick="ld2l.season.setStandin('{steamid}', false);"
 		   value="Remove Standin" />
   {:else}
     <input type="button"
            class="pure-button ld2l-button-primary"
-           onclick="setStandin('{steamid}', true);"
+           onclick="ld2l.season.setStandin('{steamid}', true);"
 		   value="Make Standin" />
   {/standin}
 
@@ -70,12 +70,12 @@
   {?hide}
     <input type="button"
 	       class="pure-button ld2l-button-primary"
-		   onclick="hideSignup('{steamid}', true);"
+		   onclick="ld2l.season.hideSignup('{steamid}', true);"
 		   value="Hide" />
   {:else}
     <input type="button"
 	       class="pure-button ld2l-button-primary"
-		   onclick="hideSignup('{steamid}', false);"
+		   onclick="ld2l.season.hideSignup('{steamid}', false);"
 		   value="Unhide" />
   {/hide}
 

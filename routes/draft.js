@@ -332,24 +332,6 @@ var draft_player = new fl.Chain(
 	}
 );
 
-var toggle_draftable = new fl.Chain(
-	function(env, after) {
-		if (!privs.hasPriv(env.user.privs, privs.MODIFY_SEASON)) {
-			env.$throw(new Error('You don\'t have the authority to change draftable'));
-			return;
-		}
-
-		env.$json({success : true});
-
-		env.filters.signups.update({
-			draftable : env.req.body.draftable ? 1 : 0
-		}, {
-			steamid : env.req.body.steamid,
-			season : env.req.body.season
-		}).exec(after, env.$throw);
-	}
-);
-
 module.exports.init_routes = function(server) {
 	io = server.io;
 
@@ -368,8 +350,4 @@ module.exports.init_routes = function(server) {
 		pre : ['default', 'require_user']
 	});
 
-	server.add_route('/draft/toggle', {
-		fn : toggle_draftable,
-		pre : ['default', 'require_user']
-	}, 'post');
 }

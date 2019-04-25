@@ -84,78 +84,52 @@ function vouch(steamid) {
 	});
 }
 
-function hideSignup(steamid, hide) {
-	ld2l.$.ajax('/seasons/hide_signup', {
-		steamid : steamid,
-		hide : hide,
-		season : ld2l.season.id
-	}).then(function(data) {
-		var row = document.querySelector('tr[data-steamid="'+steamid+'"]');
+/**
+ * Factory method to generate flag toggling functions for each signup, since we have a lot of flags
+ * that are updated in an analogous way
+ * @param[in] options.url URL of AJAX endpoint to toggle
+ * @param[in] options.dataName Name of dataset field to update based on toggle
+ */
+function signupFlagToggler(options) {
+	return function(steamid, flag) {
+		ld2l.$.ajax(options.url, {
+			steamid : steamid,
+			flag : flag,
+			season : ld2l.season.id
+		}).then(function(result) {
+			var row = document.querySelector('tr[data-steamid="'+steamid+'"]');
 
-		if (hide) {
-			row.dataset.hidden = "1";
-		}
-		else {
-			row.dataset.hidden = "0";
-		}
-		ld2l.signupExpand(row);
-	});
+			if (flag) {
+				row.dataset[options.dataName] = "1";
+			}
+			else {
+				row.dataset[options.dataName] = "0";
+			}
+
+			ld2l.signupExpand(row);
+		});
+	};
 }
 
-function lockMmr(steamid, lock) {
-	ld2l.$.ajax('/seasons/lock_mmr', {
-		steamid : steamid,
-		lock : lock,
-		season : ld2l.season.id
-	}).then(function(data) {
-		var row = document.querySelector('tr[data-steamid="'+steamid+'"]');
+ld2l.season.hideSignup = signupFlagToggler({
+	url : '/seasons/hide_signup',
+	dataName : 'hidden',
+});
 
-		if (lock) {
-			row.dataset.mmrValid = "1";
-		}
-		else {
-			row.dataset.mmrValid = "0";
-		}
-		ld2l.signupExpand(row);
-	});
-}
+ld2l.season.lockMmr = signupFlagToggler({
+	url : '/seasons/lock_mmr',
+	dataName : 'mmrValid',
+});
 
-function setDraftable(steamid, draftable) {
-	ld2l.$.ajax('/draft/toggle',{
-		steamid : steamid,
-		draftable : draftable,
-		season : ld2l.season.id
-	}).then(function(data) {
-		var row = document.querySelector('tr[data-steamid="'+steamid+'"]');
+ld2l.season.setDraftable = signupFlagToggler({
+	url : '/seasons/mark_draftable',
+	dataName : 'draftable',
+});
 
-		if (draftable) {
-			row.dataset.draftable = "1";
-		}
-		else {
-			row.dataset.draftable = "0";
-		}
-		ld2l.signupExpand(row);
-	});
-}
-
-function setStandin(steamid, free) {
-	ld2l.$.ajax('/standin/toggle', {
-		steamid : steamid,
-		standin : free,
-		season : ld2l.season.id
-	}).then(function(data) {
-		var row = document.querySelector('tr[data-steamid="'+steamid+'"]');
-
-		if (free) {
-			row.dataset.validstandin = "1";
-		}
-		else
-		{
-			row.dataset.validstandin = "0";
-		}
-		ld2l.signupExpand(row);
-	});
-}
+ld2l.season.setStandin = signupFlagToggler({
+	url : '/seasons/mark_standin',
+	dataName : 'validstandin',
+});
 
 function editSignup(steamid) {
 	window.location.href = '/seasons/signup/'+ld2l.season.id+'/'+steamid;

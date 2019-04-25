@@ -702,66 +702,45 @@ var inhouse_results = new fl.Chain(
 );
 
 /**
- * Toggle someone's hidden/visible status for a signup
+ * Factory method for generating signup toggle routes
+ * @param[in] options.fieldName Name of the database field in the signup to update
  */
-var hide_signup = new fl.Branch(
-	checkSeasonPrivs,
-	new fl.Chain(
-		function(env, after) {
-			env.$json({succes : true});
+function makeToggleRouteHandler(options) {
+	return new fl.Branch(
+		checkSeasonPrivs,
+		new fl.Chain(
+			function(env, after) {
+				var data = {};
+				data[options.fieldName] = env.req.body.flag ? 1 : 0;
 
-			env.filters.signups.update({
-				hidden : env.req.body.hide ? 1 : 0
-			}, {
-				steamid : env.req.body.steamid,
-				season : parseInt(env.req.body.season)
-			}).limit(1).exec(after, env.$throw);
-		},
-		function(env, after) {
-			after(env.user, audit.EVENT_SIGNUP_FLAG, {
-				steamid : env.req.body.steamid
-			}, {
-				hide : env.req.body.hide,
-				season : parseInt(env.req.body.season)
-			});
-		},
-		audit.logUserEvent
-	),
-	function(env, after) {
-		env.$throw(new Error('You don\'t have permission to hide a signup.'));
-	}
-);
+				env.$json({success : true});
+				env.filters.signups.update(data, {
+					steamid : env.req.body.steamid,
+					season : parseInt(env.req.body.season)
+				}).limit(1).exec(after, env.$throw);
+			},
+			function(env, after) {
+				var data = {
+					season : parseInt(env.req.body.season)
+				};
+				data[options.fieldName] = env.req.body.flag;
 
-/**
- * Toggle someone's mmr valid flag for a signup
- */
-var lock_mmr = new fl.Branch(
-	checkSeasonPrivs,
-	new fl.Chain(
+				after(env.user, audit.EVENT_SIGNUP_FLAG, {
+					steamid : env.req.body.steamid
+				}, data);
+			},
+			audit.logUserEvent
+		),
 		function(env, after) {
-			env.$json({success : true});
+			env.$throw(new Error('You cannot change signup attributes!'));
+		}
+	);
+}
 
-			env.filters.signups.update({
-				mmr_valid : env.req.body.lock ? 1 : 0
-			}, {
-				steamid : env.req.body.steamid,
-				season : parseInt(env.req.body.season)
-			}).limit(1).exec(after, env.$throw);
-		},
-		function(env, after) {
-			after(env.user, audit.EVENT_SIGNUP_FLAG, {
-				steamid : env.req.body.steamid
-			}, {
-				lock : env.req.body.lock,
-				season : parseInt(env.req.body.season)
-			});
-		},
-		audit.logUserEvent
-	),
-	function(env, after) {
-		env.$throw(new Error('You don\'t have permission to lock a signup.'));
-	}
-);
+var hide_signup = makeToggleRouteHandler({fieldName : 'hidden'});
+var lock_mmr = makeToggleRouteHandler({fieldName : 'mmr_valid'});
+var mark_standin = makeToggleRouteHandler({fieldName : 'valid_standin'});
+var mark_draftable = makeToggleRouteHandler({fieldName : 'draftable'});
 
 /**
  * Chain used to get season information for display in the sidebar
@@ -906,6 +885,18 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/seasons/lock_mmr', {
 		fn : lock_mmr,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/seasons/mark_draftable', {
+		fn : mark_draftable,
+		pre : ['default', 'require_user'],
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/seasons/mark_standin', {
+		fn : mark_standin,
 		pre : ['default', 'require_user'],
 		post : ['default']
 	}, 'post');
