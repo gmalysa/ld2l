@@ -1,7 +1,3 @@
-/**
- * @todo this needs audit logging of changes being made
- */
-
 var fl = require('flux-link');
 var db = require('db-filters');
 var _ = require('underscore');
@@ -72,12 +68,6 @@ var edit_season = new fl.Branch(
 	checkSeasonPrivs,
 	new fl.Chain(
 		function(env, after) {
-			var id = parseInt(env.req.params.seasonid);
-			if (isNaN(id)) {
-				env.$throw(new Error('Invalid season ID specified'));
-				return;
-			}
-
 			var seasonStatus = parseInt(env.req.body.status);
 			var seasonType = parseInt(env.req.body.type);
 			var seasonLinear = parseInt(env.req.body.linearization);
@@ -89,14 +79,21 @@ var edit_season = new fl.Branch(
 				return;
 			}
 
-			env.filters.seasons.update({
+			env.newSeasonInfo = {
 				name : env.req.body.name,
 				status : seasonStatus,
 				type : seasonType,
 				ticket : seasonTicket,
 				linearization : seasonLinear,
-			}, {id : id}).exec(after, env.$throw);
+			};
+
+			env.filters.seasons.update(env.newSeasonInfo, {id : env.season.id})
+				.exec(after, env.$throw);
 		},
+		function(env, after) {
+			after(env.user, audit.EVENT_EDIT, env.season, env.newSeasonInfo);
+		},
+		audit.logSeasonEvent,
 		function(env, after) {
 			env.$redirect('/seasons/'+env.req.params.seasonid);
 			after();
@@ -291,6 +288,10 @@ var season_create = new fl.Branch(
 				status : 0
 			}).exec(after, env.$throw);
 		},
+		function(env, after, result) {
+			after(env.user, audit.EVENT_CREATE, {id : result.insertId}, {});
+		},
+		audit.logSeasonEvent,
 		function(env, after) {
 			env.$redirect('/seasons');
 			after();
@@ -306,15 +307,13 @@ var season_create = new fl.Branch(
  */
 var show_signup_form = new fl.Chain(
 	function(env, after) {
-		var id = parseInt(env.req.params.seasonid);
-		if (isNaN(id)) {
-			env.$throw(new Error('Invalid season ID specified'));
+		if (seasons.STATUS_SIGNUPS != env.season.status) {
+			env.$throw(new Error('This season is not currently accepting signups'));
 			return;
 		}
 
 		// Find the correct steamid of the signup to edit
 		var steamid = env.req.params.steamid;
-		env.steamid = steamid;
 		env.mySignup = true;
 		if (undefined !== steamid && steamid != env.user.steamid) {
 			env.mySignup = false;
@@ -324,26 +323,16 @@ var show_signup_form = new fl.Chain(
 			}
 		}
 		else {
-			env.steamid = env.user.steamid;
-		}
-
-		after(id);
-	},
-	seasons.getSeasonBasic,
-	function(env, after, seasonInfo) {
-		if (seasons.STATUS_SIGNUPS != seasonInfo.status) {
-			env.$throw(new Error('This season is not currently accepting signups'));
-			return;
+			steamid = env.user.steamid;
 		}
 
 		env.$output({
-			season : seasonInfo,
-			steamid : env.steamid
+			steamid : steamid
 		});
 
 		env.filters.signups.select({
-			steamid : env.steamid,
-			season : seasonInfo.id
+			steamid : steamid,
+			season : env.season.id
 		})
 			.left_join(env.filters.users, 'u')
 			.on(['steamid', 'steamid'])
@@ -401,9 +390,8 @@ var show_signup_form = new fl.Chain(
  */
 var handle_signup_form = new fl.Chain(
 	function(env, after) {
-		var id = parseInt(env.req.params.seasonid);
-		if (isNaN(id)) {
-			env.$throw(new Error('Invalid season ID specified'));
+		if (seasons.STATUS_SIGNUPS !== env.season.status) {
+			env.$throw(new Error('This season is not currently accepting signups'));
 			return;
 		}
 
@@ -421,16 +409,6 @@ var handle_signup_form = new fl.Chain(
 			env.steamid = env.user.steamid;
 		}
 
-		after(id);
-	},
-	seasons.getSeasonBasic,
-	function(env, after, seasonInfo) {
-		if (seasons.STATUS_SIGNUPS !== seasonInfo.status) {
-			env.$throw(new Error('This season is not currently accepting signups'));
-			return;
-		}
-
-		env.season = seasonInfo;
 		after();
 	},
 	new fl.Branch(
@@ -459,6 +437,8 @@ var handle_signup_form = new fl.Chain(
 		}).exec(after, env.$throw);
 	},
 	function(env, after, signup) {
+		env.signup = signup[0];
+
 		if (signup.length > 0) {
 			var update = {
 				medal : env.medal,
@@ -467,7 +447,7 @@ var handle_signup_form = new fl.Chain(
 				standin : parseInt(env.req.body.standin)
 			};
 
-			if (!signup.mmr_valid) {
+			if (!signup[0].mmr_valid) {
 				update.solo_mmr = parseInt(env.req.body.solo_mmr);
 				update.party_mmr = parseInt(env.req.body.party_mmr);
 				update.mmr_screenshot = env.req.body.mmr_screenshot;
@@ -494,20 +474,24 @@ var handle_signup_form = new fl.Chain(
 		}
 	},
 	function(env, after) {
-		// Trim statement to match db field size
-		after(env.user, audit.EVENT_EDIT, {
-			steamid : env.steamid
-		}, {
-			time : new Date(),
+		var data = {
 			season : env.season.id,
 			medal : env.medal,
-			solo_mmr : parseInt(env.req.body.solo_mmr),
-			party_mmr : parseInt(env.req.body.party_mmr),
-			mmr_screenshot : env.req.body.mmr_screenshot.substring(0, 128),
 			statement : env.req.body.statement.substring(0, 255),
 			captain : parseInt(env.req.body.captain),
 			standin : parseInt(env.req.body.standin)
-		});
+		};
+
+		// Only store these if they were available to edit
+		if (!env.signup.mmr_valid) {
+			data.solo_mmr = parseInt(env.req.body.solo_mmr);
+			data.party_mmr = parseInt(env.req.body.party_mmr);
+			data.mmr_screenshot = env.req.body.mmr_screenshot.substring(0, 128);
+		}
+
+		after(env.user, audit.EVENT_EDIT, {
+			steamid : env.steamid
+		}, data);
 	},
 	audit.logUserEvent,
 	function(env, after) {
@@ -807,7 +791,7 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/seasons/signup/:seasonid', {
 		fn : handle_signup_form,
-		pre : ['default', 'require_user'],
+		pre : ['default', 'require_user', 'season'],
 		post : ['default']
 	}, 'post');
 
@@ -819,7 +803,7 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/seasons/signup/:seasonid/:steamid', {
 		fn : handle_signup_form,
-		pre : ['default', 'require_user'],
+		pre : ['default', 'require_user', 'season'],
 		post : ['default']
 	}, 'post');
 
@@ -831,7 +815,7 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/seasons/:seasonid/edit', {
 		fn : edit_season,
-		pre : ['default', 'require_user'],
+		pre : ['default', 'require_user', 'season'],
 		post : ['default']
 	}, 'post');
 
