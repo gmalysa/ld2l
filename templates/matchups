@@ -18,6 +18,18 @@
 	    <td colspan="3">
 	      {#games}
 <div style="margin-bottom: 2px;">
+{@eq key=result value=0 type="number"}
+  Game {@counter /} not yet played [<a href="/matches/{id}">Link</a>]
+{:else}
+  {@eq key=result value=3 type="number"}
+    Game {@counter /}: {>team_link team=home /} forfeit
+  {:else}
+    {@eq key=result value=4 type="number"}
+      Game {@counter /}: {>team_link team=away /} forfeit
+    {:else}
+      {@eq key=result value=5 type="number"}
+	    Game {@counter /}: Double forfeit
+	  {:else}
   <div style="display: inline-block; width: 1em; padding-right: 0.5em;">
     {@eq key=result value=1 type="number"}
 	  <span class="fas fa-crown"></span>
@@ -25,11 +37,7 @@
   </div>
 
   <div style="display: inline-block">
-{@eq key=result value=0 type="number"}
-  Game {@counter /} not yet played [<a href="/matches/{id}">Link</a>]
-{:else}
-  {>match_hero_list matchid=id heroes=heroes /}
-{/eq}
+    {>match_hero_list matchid=id heroes=heroes /}
   </div>
 
   <div style="display: inline-block; width: 1em; padding-left: 0.5em;">
@@ -37,6 +45,10 @@
 	  <span class="fas fa-crown"></span>
 	{/eq}
   </div>
+	  {/eq}
+    {/eq}
+  {/eq}
+{/eq}
 </div>
 	      {/games}
 		</td>
