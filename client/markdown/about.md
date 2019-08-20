@@ -24,3 +24,13 @@ LD2L is currently run by four admins based in North America, who can be reached 
 * Teresa#5900
 
 Plus there are many streamers, bloggers, and memers in the community on Discord contributing to the league throughout the season.
+
+### Legal
+
+LD2L is a BSD licensed open source project, with up-to-date source code available at https://github.com/gmalysa/ld2l.
+Information on ld2l.gg is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 license (CC BY-NC-SA 4.0).
+Some information is obtained from the [Dota 2 Wiki](https://dota2.gamepedia.com/Dota_2_Wiki) under the terms of the CC BY-NC-SA 3.0 license.
+Currently, this includes only medal icons with stars. Hero portraits, image portraits, the dota 2 logo, the steam logo, and other Valve
+assets are property of Valve Corporation.
+
+
