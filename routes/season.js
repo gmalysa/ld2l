@@ -186,7 +186,7 @@ var signups = new fl.Chain(
 	},
 	seasons.getSignups,
 	function(env, after, signups) {
-		var canSignUp = (seasons.STATUS_SIGNUPS == env.season.status);
+		var canSignUp = seasons.isAcceptingSignups(env.season);
 		var signedUp = _.reduce(signups, function(memo, v, k) {
 			return memo || (v.steamid == env.user.steamid);
 		}, false);
@@ -307,7 +307,7 @@ var season_create = new fl.Branch(
  */
 var show_signup_form = new fl.Chain(
 	function(env, after) {
-		if (seasons.STATUS_SIGNUPS != env.season.status) {
+		if (!seasons.isAcceptingSignups(env.season)) {
 			env.$throw(new Error('This season is not currently accepting signups'));
 			return;
 		}
