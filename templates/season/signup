@@ -33,6 +33,14 @@
 	<input type="text" name="mmr_screenshot" value="{mmr_screenshot}" {@eq key=mmr_valid value=1}disabled {/eq}/>
   </div>
   <div class="pure-control-group">
+    <span class="pure-form-message-inline">Please rate your ability and preference on each role (1 = worst, 5 = best)</span>
+  </div>
+  {>season_signup_pref_list label="Pos 1" field="pos_1" current=pos_1 /}
+  {>season_signup_pref_list label="Pos 2" field="pos_2" current=pos_2 /}
+  {>season_signup_pref_list label="Pos 3" field="pos_3" current=pos_3 /}
+  {>season_signup_pref_list label="Pos 4" field="pos_4" current=pos_4 /}
+  {>season_signup_pref_list label="Pos 5" field="pos_5" current=pos_5 /}
+  <div class="pure-control-group">
     <label for="captain">Would you like to captain?</label>
     <label for="captain-0" class="pure-radio">
       <input id="captain-0" type="radio" name="captain" value="0"

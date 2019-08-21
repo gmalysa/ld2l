@@ -352,6 +352,11 @@ var show_signup_form = new fl.Chain(
 				party_mmr : signup[0].party_mmr,
 				mmr_screenshot : signup[0].mmr_screenshot,
 				mmr_valid : signup[0].mmr_valid,
+				pos_1 : signup[0].pos_1+'',
+				pos_2 : signup[0].pos_2+'',
+				pos_3 : signup[0].pos_3+'',
+				pos_4 : signup[0].pos_4+'',
+				pos_5 : signup[0].pos_5+'',
 				editSignup : true,
 				fixedMedal : env.mySignup
 			});
@@ -390,7 +395,7 @@ var show_signup_form = new fl.Chain(
  */
 var handle_signup_form = new fl.Chain(
 	function(env, after) {
-		if (seasons.STATUS_SIGNUPS !== env.season.status) {
+		if (!seasons.isAcceptingSignups(env.season)) {
 			env.$throw(new Error('This season is not currently accepting signups'));
 			return;
 		}
@@ -444,7 +449,12 @@ var handle_signup_form = new fl.Chain(
 				medal : env.medal,
 				statement : env.req.body.statement,
 				captain : parseInt(env.req.body.captain),
-				standin : parseInt(env.req.body.standin)
+				standin : parseInt(env.req.body.standin),
+				pos_1 : parseInt(env.req.body.pos_1),
+				pos_2 : parseInt(env.req.body.pos_2),
+				pos_3 : parseInt(env.req.body.pos_3),
+				pos_4 : parseInt(env.req.body.pos_4),
+				pos_5 : parseInt(env.req.body.pos_5)
 			};
 
 			if (!signup[0].mmr_valid) {
@@ -469,7 +479,12 @@ var handle_signup_form = new fl.Chain(
 				mmr_screenshot : env.req.body.mmr_screenshot,
 				statement : env.req.body.statement,
 				captain : parseInt(env.req.body.captain),
-				standin : parseInt(env.req.body.standin)
+				standin : parseInt(env.req.body.standin),
+				pos_1 : parseInt(env.req.body.pos_1),
+				pos_2 : parseInt(env.req.body.pos_2),
+				pos_3 : parseInt(env.req.body.pos_3),
+				pos_4 : parseInt(env.req.body.pos_4),
+				pos_5 : parseInt(env.req.body.pos_5)
 			}).exec(after, env.$throw);
 		}
 	},
@@ -479,11 +494,16 @@ var handle_signup_form = new fl.Chain(
 			medal : env.medal,
 			statement : env.req.body.statement.substring(0, 255),
 			captain : parseInt(env.req.body.captain),
-			standin : parseInt(env.req.body.standin)
+			standin : parseInt(env.req.body.standin),
+			pos_1 : parseInt(env.req.body.pos_1),
+			pos_2 : parseInt(env.req.body.pos_2),
+			pos_3 : parseInt(env.req.body.pos_3),
+			pos_4 : parseInt(env.req.body.pos_4),
+			pos_5 : parseInt(env.req.body.pos_5)
 		};
 
 		// Only store these if they were available to edit
-		if (!env.signup.mmr_valid) {
+		if (!env.signup || !env.signup.mmr_valid) {
 			data.solo_mmr = parseInt(env.req.body.solo_mmr);
 			data.party_mmr = parseInt(env.req.body.party_mmr);
 			data.mmr_screenshot = env.req.body.mmr_screenshot.substring(0, 128);

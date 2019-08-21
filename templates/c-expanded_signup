@@ -1,6 +1,6 @@
 <tr id="expanded_signup">
   <td colspan="6">
-	<div style="display:inline-block; width: 20em;">
+	<div style="display:inline-block; width: 30em;">
 <ul>
   <li>Draft Value: {linear}</li>
   <li>Team: {team}</li>
@@ -12,6 +12,13 @@
     <li>MMR Screenshot: <a href="{mmr_screenshot}">{mmr_screenshot}</a></li>
     {?mmr_valid}<li>MMR validated</li>{/mmr_valid}
   {/solo_mmr}
+  <li>
+    Position preferences:{~s}
+	{#positions}
+	  {type}
+	  {@sep}, {/sep}
+	{/positions}
+  </li>
 </ul>
 	</div>
 	<div class="ld2l-signup-options">

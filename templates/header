@@ -5,6 +5,9 @@
   <title>{?title}{title} - {/title}Learn Dota 2 League</title>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/dustjs-linkedin/2.7.2/dust-core.min.js">
   </script>
+  <script type="text/javascript"
+    src="//cdnjs.cloudflare.com/ajax/libs/dustjs-helpers/1.7.4/dust-helpers.min.js">
+  </script>
   <script type="text/javascript" src="{@url url="/ui.js" /}"></script>
   <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   <script type="text/javascript" src="//underscorejs.org/underscore-min.js"></script>

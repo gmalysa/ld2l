@@ -1,0 +1,28 @@
+<div class="pure-control-group">
+  <label for="{field}">{label}</label>
+  <label for="{field}-1" class="role-pref">
+    <input type="radio" id="{field}-1" name="{field}" value="1"
+	  {@eq key=current value="1"}checked{/eq} />
+	{~s}1
+  </label>
+  <label for="{field}-2" class="role-pref">
+    <input type="radio" id="{field}-2" name="{field}" value="2"
+	  {@eq key=current value="2"}checked{/eq} />
+	{~s}2
+  </label>
+  <label for="{field}-3" class="role-pref">
+    <input type="radio" id="{field}-3" name="{field}" value="3"
+	  {@eq key=current value="3"}checked{/eq} />
+	{~s}3
+  </label>
+  <label for="{field}-4" class="role-pref">
+    <input type="radio" id="{field}-4" name="{field}" value="4"
+	  {@eq key=current value="4"}checked{/eq} />
+	{~s}4
+  </label>
+  <label for="{field}-5" class="role-pref">
+    <input type="radio" id="{field}-5" name="{field}" value="5"
+	  {@eq key=current value="5"}checked{/eq} />
+	{~s}5
+  </label>
+</div>

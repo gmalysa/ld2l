@@ -40,6 +40,11 @@
 		data-mmr-screenshot="{mmr_screenshot}"
 		data-hidden="{hidden}"
 		data-mmr-valid="{mmr_valid}"
+		data-pos1="{pos_1}"
+		data-pos2="{pos_2}"
+		data-pos3="{pos_3}"
+		data-pos4="{pos_4}"
+		data-pos5="{pos_5}"
 		class="clickable
 		{@gt key=teamid value="0"}
 		  {~n}drafted

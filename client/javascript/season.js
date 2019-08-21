@@ -38,6 +38,16 @@ ld2l.signupExpand = function(row) {
 
 	ld2l.season.current_row = row.dataset.steamid;
 
+	var ratings = [
+		{ type : 'carry', score : -parseInt(row.dataset.pos1)},
+		{ type : 'mid', score : -parseInt(row.dataset.pos2)},
+		{ type : 'offlane', score : -parseInt(row.dataset.pos3)},
+		{ type : '4 support', score : -parseInt(row.dataset.pos4)},
+		{ type : '5 support', score : -parseInt(row.dataset.pos5)}
+	];
+
+	ratings = _.sortBy(ratings, 'score');
+
 	var data = {
 		admin : ld2l.season.admin,
 		season : ld2l.season.id,
@@ -53,9 +63,9 @@ ld2l.signupExpand = function(row) {
 		party_mmr : row.dataset.partyMmr,
 		mmr_screenshot : row.dataset.mmrScreenshot,
 		mmr_valid : (row.dataset.mmrValid == '1'),
+		positions : ratings,
 		steamid : row.dataset.steamid
 	};
-	console.log(data);
 
 	dust.render('expanded_signup', data, function(err, out) {
 		row.insertAdjacentHTML('afterend', out);
