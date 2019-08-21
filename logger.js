@@ -3,41 +3,43 @@
  * adds some formatted printing and more color coding, because you can
  * never have enough color coding.
  */
-var module_name = 'Logger';
-var module_version = '2.0.1';
+const module_name = 'Logger';
+const module_version = '2.1.0';
 
 // Node.js modules
 require('colors');
-var _ = require('underscore');
-var spyglass = require('spyglass');
-var fs = require('fs');
+const _ = require('underscore');
+const spyglass = require('spyglass');
+const fs = require('fs');
+const sprintf = require('sprintf-js').sprintf;
 
 // Styles for messages
 var default_styles = {
-	'modname'	: ['green'],
-	'version'	: ['cyan'],
-	'init'		: ['grey'],
-	'info'		: ['white', 'bold'],
-	'warn'		: ['yellow'],
-	'error'		: ['red', 'bold'],
-	'debug'		: ['blue', 'bold'],
-	'??????'	: ['rainbow']
+	time      : ['grey'],
+	modname   : ['green'],
+	version   : ['cyan'],
+	init      : ['grey'],
+	info      : ['white', 'bold'],
+	warn      : ['yellow'],
+	error     : ['red', 'bold'],
+	debug     : ['blue', 'bold'],
+	'??????'  : ['rainbow']
 };
 
 // Options for logger
 var default_options = {
-	'styles'		: default_styles,
-	'console'		: true,
-	'file'			: true,
-	'path'			: './default.log',
-	'spyglass'		: {
-		'stream': null,
-		'skip'	: ['stack'],
-		'hide'	: {'types' : ['null', 'undefined']}
+	styles      : default_styles,
+	console     : true,
+	file        : true,
+	path        : './default.log',
+	versionSize : 6,
+	modNameSize : 12,
+	typeSize    : 8,
+	spyglass    : {
+		stream : null,
+		skip   : ['stack'],
+		hide   : {'types' : ['null', 'undefined']}
 	},
-	'versionSize'	: 6,
-	'modNameSize'	: 12,
-	'typeSize'		: 8
 };
 
 /**
@@ -52,14 +54,14 @@ function Logger(options) {
  * Member variables. The logger is a singleton though, so it doesn't really matter where these are
  */
 _.extend(Logger.prototype, {
-	gls : null,				//!< Spyglass instance, this will be (re)set during configure() calls
-	anonCount : 0,			//!< Count of anonymous variables printed via var_dump()
-	options : {},			//!< Options passed in to configure
-	RIGHT : 0,				//!< Alignment constant, make text right aligned in a fixed-width field
-	CENTER : 1,				//!< Alignment constant, make text centered
-	LEFT : 2,				//!< Aignment constant, make text left aligned
-	outfile : null,			//!< Stream to write output log file
-	unknown : '(unknown)',	//!< Unknown source module substitute name
+	gls : null,            //!< Spyglass instance, this will be (re)set during configure() calls
+	anonCount : 0,         //!< Count of anonymous variables printed via var_dump()
+	options : {},          //!< Options passed in to configure
+	RIGHT : 0,             //!< Alignment constant, make text right aligned in a fixed-width field
+	CENTER : 1,            //!< Alignment constant, make text centered
+	LEFT : 2,              //!< Aignment constant, make text left aligned
+	outfile : null,        //!< Stream to write output log file
+	unknown : '(unknown)', //!< Unknown source module substitute name
 
 	/**
 	 * Merges together two or more options objects in a property-aware way
@@ -83,7 +85,7 @@ _.extend(Logger.prototype, {
 		this.options = this.merge(this.options, options);
 		this.gls = new spyglass(this.options.spyglass);
 		this.unknown = this.pad('(unknown)', this.options.modNameSize, this.CENTER);
-		
+
 		if (this.outfile) {
 			this.outfile.end();
 			this.outfile = null;
@@ -153,13 +155,22 @@ _.extend(Logger.prototype, {
 	 * @param type The type of message to print
 	 * @param src The source of the message
 	 * @param msg The messae itself
-	 * @todo Strip colors from outfile
 	 */
 	log : function(type, src, msg) {
+		var time = new Date();
+		var datestr = this.s(sprintf('%04d-%02d-%02d %02d:%02d:%02d.%03d ',
+			time.getFullYear(),
+			time.getMonth()+1,
+			time.getDate(),
+			time.getHours(),
+			time.getMinutes(),
+			time.getSeconds(),
+			time.getMilliseconds()
+		), 'time');
 		var typestr = this.s('[ ' + this.pad('-' + type + '-', this.options.typeSize) + ' ]', type);
 		var modname = this.s('[ ' + this.pad(src, this.options.modNameSize) + ' ]', 'modname');
-		var output = typestr + ' ' + modname + ' ' + msg;
-		
+		var output = datestr + typestr + ' ' + modname + ' ' + msg;
+
 		if (this.options.console)
 			console.log(output);
 
@@ -182,7 +193,7 @@ _.extend(Logger.prototype, {
 
 		this.debug(this.gls.inspect(obj, 'var_dump(' + name + ')', _.omit(options, ['src', 'name'])), src);
 	},
-	
+
 	/**
 	 * Convenience functions to call log() with various message types
 	 * @param msg The message
