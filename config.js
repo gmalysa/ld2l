@@ -11,7 +11,8 @@ var defaults = {
 	enable : ['trust proxy'],
 
 	// Project directory and URL organization
-	static_dir :'static',
+	filter_dir : 'filters',
+	static_dir : 'static',
 	route_dir : 'routes',
 	template_dir : 'templates',
 	static_path : '/static',
