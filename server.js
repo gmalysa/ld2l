@@ -14,7 +14,6 @@ var express = require('express');
 var _ = require('underscore');
 var db = require('db-filters');
 var fl = require('flux-link');
-var db_migrate = require('db-migrate');
 var dotaconstants = require('dotaconstants');
 var dust = require('dustjs-linkedin');
 require('dustjs-helpers');
