@@ -348,8 +348,8 @@ var show_signup_form = new fl.Chain(
 				captain : signup[0].captain+'',
 				standin : signup[0].standin+'',
 				medal : signup[0].medal,
-				solo_mmr : signup[0].solo_mmr,
-				party_mmr : signup[0].party_mmr,
+				core_mmr : signup[0].core_mmr,
+				support_mmr : signup[0].support_mmr,
 				mmr_screenshot : signup[0].mmr_screenshot,
 				mmr_valid : signup[0].mmr_valid,
 				pos_1 : signup[0].pos_1+'',
@@ -458,8 +458,8 @@ var handle_signup_form = new fl.Chain(
 			};
 
 			if (!signup[0].mmr_valid) {
-				update.solo_mmr = parseInt(env.req.body.solo_mmr);
-				update.party_mmr = parseInt(env.req.body.party_mmr);
+				update.core_mmr = parseInt(env.req.body.core_mmr);
+				update.support_mmr = parseInt(env.req.body.support_mmr);
 				update.mmr_screenshot = env.req.body.mmr_screenshot;
 			}
 
@@ -474,8 +474,8 @@ var handle_signup_form = new fl.Chain(
 				steamid : env.steamid,
 				season : env.season.id,
 				medal : env.medal,
-				solo_mmr : parseInt(env.req.body.solo_mmr),
-				party_mmr : parseInt(env.req.body.party_mmr),
+				core_mmr : parseInt(env.req.body.core_mmr),
+				support_mmr : parseInt(env.req.body.support_mmr),
 				mmr_screenshot : env.req.body.mmr_screenshot,
 				statement : env.req.body.statement,
 				captain : parseInt(env.req.body.captain),
@@ -504,8 +504,8 @@ var handle_signup_form = new fl.Chain(
 
 		// Only store these if they were available to edit
 		if (!env.signup || !env.signup.mmr_valid) {
-			data.solo_mmr = parseInt(env.req.body.solo_mmr);
-			data.party_mmr = parseInt(env.req.body.party_mmr);
+			data.core_mmr = parseInt(env.req.body.core_mmr);
+			data.support_mmr = parseInt(env.req.body.support_mmr);
 			data.mmr_screenshot = env.req.body.mmr_screenshot.substring(0, 128);
 		}
 

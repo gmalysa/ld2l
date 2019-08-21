@@ -7,11 +7,13 @@
   <li>Captain: {captain}</li>
   <li>Draftable: {?draftable}Y{:else}N{/draftable}</li>
   <li>Vouched: {?vouched}Y{:else}N{/vouched}</li>
-  {?solo_mmr}
-    <li>MMR: {solo_mmr}/{party_mmr}</li>
+  {?core_mmr}
+    <li>MMR: {core_mmr}/{support_mmr}</li>
+  {/core_mmr}
+  {?mmr_screenshot}
     <li>MMR Screenshot: <a href="{mmr_screenshot}">{mmr_screenshot}</a></li>
-    {?mmr_valid}<li>MMR validated</li>{/mmr_valid}
-  {/solo_mmr}
+  {/mmr_screenshot}
+  {?mmr_valid}<li>MMR validated</li>{/mmr_valid}
   <li>
     Position preferences:{~s}
 	{#positions}

@@ -13,12 +13,12 @@
     <input type="text" name="medal" value="{medal}" {?fixedMedal}readonly{/fixedMedal}/>
   </div>
   <div class="pure-control-group">
-    <label for="solo_mmr">Solo MMR</label>
-	<input type="text" name="solo_mmr" value="{solo_mmr}" {@eq key=mmr_valid value=1}disabled {/eq}/>
+    <label for="core_mmr">Core MMR</label>
+	<input type="text" name="core_mmr" value="{core_mmr}" {@eq key=mmr_valid value=1}disabled {/eq}/>
   </div>
   <div class="pure-control-group">
-    <label for="party_mmr">Party MMR</label>
-	<input type="text" name="party_mmr" value="{party_mmr}" {@eq key=mmr_valid value=1}disabled {/eq}/>
+    <label for="support_mmr">Support MMR</label>
+	<input type="text" name="support_mmr" value="{support_mmr}" {@eq key=mmr_valid value=1}disabled {/eq}/>
   </div>
   <div class="pure-control-group">
     {@eq key=mmr_valid value=1}
