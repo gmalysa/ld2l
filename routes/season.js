@@ -515,7 +515,7 @@ var handle_signup_form = new fl.Chain(
 	},
 	audit.logUserEvent,
 	function(env, after) {
-		env.$redirect('/seasons/'+env.season.id+'/signups');
+		env.$template('season_after_signup');
 		after();
 	}
 );

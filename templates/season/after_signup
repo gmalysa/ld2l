@@ -1,0 +1,9 @@
+{>header /}
+
+{>season_header title=title /}
+
+Thanks for signing up! Please be sure to link your discord account to your account on the
+website (in <a href="/profile">your profile</a>) and join the LD2L discord server to Please be sure to join the discord server: <a href="https://discord.gg/6HBUdHE">https://discord.gg/6HBUdHE</a>
+
+{>season_footer /}
+{>footer /}
