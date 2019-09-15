@@ -38,8 +38,8 @@ ld2l.resolveName = function(v) {
 				}
 				else {
 					jElem.val(results[0].display_name);
-					jElem.data('steamid', results[0].steamid);
-					def.resolve(results[0].steamid);
+					jElem.data('steamid', results[0].steamid+'');
+					def.resolve(results[0].steamid+'');
 				}
 			});
 		}
