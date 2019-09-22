@@ -14,11 +14,11 @@
   </div>
   <div class="pure-control-group">
     <label for="core_mmr">Core MMR</label>
-	<input type="text" name="core_mmr" value="{core_mmr}" {@eq key=mmr_valid value=1}disabled {/eq}/>
+	<input type="number" name="core_mmr" value="{core_mmr}" {@eq key=mmr_valid value=1}disabled {/eq}/>
   </div>
   <div class="pure-control-group">
     <label for="support_mmr">Support MMR</label>
-	<input type="text" name="support_mmr" value="{support_mmr}" {@eq key=mmr_valid value=1}disabled {/eq}/>
+	<input type="number" name="support_mmr" value="{support_mmr}" {@eq key=mmr_valid value=1}disabled {/eq}/>
   </div>
   <div class="pure-control-group">
     {@eq key=mmr_valid value=1}

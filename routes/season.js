@@ -458,8 +458,8 @@ var handle_signup_form = new fl.Chain(
 			};
 
 			if (!signup[0].mmr_valid) {
-				update.core_mmr = parseInt(env.req.body.core_mmr);
-				update.support_mmr = parseInt(env.req.body.support_mmr);
+				update.core_mmr = parseInt(env.req.body.core_mmr) || 0;
+				update.support_mmr = parseInt(env.req.body.support_mmr) || 0;
 				update.mmr_screenshot = env.req.body.mmr_screenshot;
 			}
 
@@ -474,8 +474,8 @@ var handle_signup_form = new fl.Chain(
 				steamid : env.steamid,
 				season : env.season.id,
 				medal : env.medal,
-				core_mmr : parseInt(env.req.body.core_mmr),
-				support_mmr : parseInt(env.req.body.support_mmr),
+				core_mmr : parseInt(env.req.body.core_mmr) || 0,
+				support_mmr : parseInt(env.req.body.support_mmr) || 0,
 				mmr_screenshot : env.req.body.mmr_screenshot,
 				statement : env.req.body.statement,
 				captain : parseInt(env.req.body.captain),
