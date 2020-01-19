@@ -9,7 +9,7 @@ The league is based in North America on the US East server. But we have consiste
 The website is http://ld2l.gg. Congrats, you're already there. The website handles preseason inhouse queueing, drafting, matchups and results, as well as historical data on league players and teams.
 
 ### Discord
-LD2L maintains a strong Discord community which you can join here: https://discord.gg/NGtDhFN.
+LD2L maintains a strong Discord community which you can join here: https://discord.gg/rYc3w7.
 
 Announcements and news are posted to both the site and Discord. 
 
