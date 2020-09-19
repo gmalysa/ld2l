@@ -34,18 +34,13 @@ This will serve as both a list of League rules and an explanation of how a stand
 
 6. Players between 2500 and 3000 MMR may sign up for either or both divisions, but may only be drafted to one team (since the divisions are played concurrently). Players who sign up for both divisions will be assigned a division by the Admins according to league needs.
 
-5. In order to be "draft eligible" players must also participate in the preseason inhouse league. This will enable you to get to know the community and assist Captains who may be interested in drafting you. 
-    * The minimum number of games for new League players is 5. 
-    * Returning players who want to be drafted are also expected to participate in the inhouse league, but the 5 game requirement may be waived in exceptional circumstances. 
-    * Returning players who sign up as standins are not required to play in the inhouse league.
-
 ## The Draft
 
-1. Each team will have 6 fixed players consisting of a Captain and 5 drafted players. The Captain is responsible for all official communication with the Admins and other Captains.
+1. Each regular season team will have 6 fixed players consisting of a Captain and 5 drafted players, Masters division teams will have only 5 fixed players. The Captain is responsible for all official communication with the Admins and other Captains.
 
 2. Captains will be selected at the end of the signup period depending on the number of draft eligible players. 
 
-3. The draft pool will consist of five players per Captain, ensuring everyone in the pool will get drafted. 
+3. The draft pool will consist of five players per Captain (four for Masters), ensuring everyone in the pool will get drafted. 
 
 4. The draft pool will be determined by signup date on a first-come first-served basis.  Remaining signups will compose the Free Agent pool. Players who do not meet the requirements to be draft eligible (outlined [above](#signingup)) will not be included in the draft pool.
 
@@ -116,9 +111,9 @@ This will serve as both a list of League rules and an explanation of how a stand
   | 30+ minutes   | forfeit       |
 
 
-5. The loser of the first game has choice of first pick, second pick, radiant, or dire in the second game.
+5. The loser of the first game's coin flip has choice of first pick, second pick, radiant, or dire in the second game.
 
-6. A team may not use more than one standin for each game. If a team only has 3 players present they must forfeit the game or series.
+6. A team may not use more than one standin for each game. If a team only has 3 players present they must forfeit the game or series. Teams in the Masters divsion may use 2 standins in a game with an admins permission.
 
 7. Players may not pause during the in-game draft. If the captain needs to step away during the draft, they should pass in-game captain to a player who is able to continue drafting. If a pause is still necessary once the draft has reached Strategy Time a reason should be provided to the other team.
 
@@ -140,19 +135,21 @@ This will serve as both a list of League rules and an explanation of how a stand
 
 ## Playoffs
 
-1. The single-elimination playoff bracket will be posted the Monday after the conclusion of the regular season.
+1. The single-elimination playoff bracket will be posted the Monday(ish) after the conclusion of the regular season.
 
 2. Two way ties for playoff seeding will be settled first by head-to-head record, then by a tiebreaker score based on the team's "strength of schedule" (i.e. their and their opponents' regular season results).
 
 3. Three or more way ties for playoff seeding will be settled as follows:
     * If a team 2-0ed all other teams in the tie, they are ranked ahead of the rest of the group, and the rest of the group is treated as a new tie.
     * If no team 2-0ed all other teams in the tie, the tie is ranked by tiebreaker score.
+    
+4. More complicated tie situations will be dealt with on a case by case basis.    
+    
+5. Playoff matches are played in a best-of-3 (bo3) format on Sundays at 5 PM Eastern on the USEast server.
 
-4. Playoff matches are played in a best-of-3 (bo3) format on Sundays at 5 PM Eastern on the USEast server.
+6. Reschedule/alternate server/match rules are the same for the playoffs as for the regular season.
 
-5. Reschedule/alternate server/match rules are the same for the playoffs as for the regular season.
-
-6. Should a third game be necessary, a new coin flip determines who has choice in the third game.
+7. Should a third game be necessary, a new coin flip determines who has choice in the third game.
 
 ## Broadcasting and Spectating
 
@@ -169,6 +166,8 @@ This will serve as both a list of League rules and an explanation of how a stand
 6. If an official streamer or broadcaster is assigned to a series, penalties will not be applied if they are late or the reason that a match is delayed. You must, however, wait for them unless instructed otherwise. Contact an Admin if your game is experiencing delays due to official broadcasters.
 
 7. Streamers, whether playing in the game or in an observer slot, should set a minimum delay of 2 minutes.
+
+8. All chatting is not permitted by spectators.
 
 
 ## Standins and Free Agents
@@ -189,5 +188,5 @@ This will serve as both a list of League rules and an explanation of how a stand
 
 8. A permissible standin is one whose recorded MMR is less than or equal to the MMR the team player was drafted at. If there is reason to believe a standin's MMR has increased substantially from when it was recorded (e.g. their badge has gone up significantly) the Admins may request an updated MMR screenshot and adjust their recorded MMR accordingly.
 
-9. Teams consist of 6 players in order to reduce reliance on standins. If five of your six players are present for a match, Captains are encouraged to play their five players in both games unless it would create a substantial competitive disadvantage. Admins reserve the right to deny any standin request deemed inappropriate.
-
+9. Teams consist of 6 players in order to reduce reliance on standins. If five of your six players are present for a match, Captains are encouraged to play their five players in both games unless it would create a substantial competitive disadvantage. Admins reserve the right to deny or allow any standin request if deemed appropriate.
+`  
