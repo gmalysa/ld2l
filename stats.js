@@ -13,7 +13,7 @@ var matches = require('./lib/matches.js');
 
 const DEFAULT_MMR = 25;
 const LAMBDA = 10;
-const ITERATIONS = 300;
+const ITERATIONS = 500;
 
 mysql.init();
 
@@ -112,6 +112,7 @@ var preprocess = new fl.Chain(
 
 		env.idx = 0;
 		env.iter = ITERATIONS;
+		env.J = _.size(env.matches);
 		after();
 	},
 	new fl.LoopChain(
@@ -159,24 +160,28 @@ var preprocess = new fl.Chain(
 				});
 			});
 
-			// Compute total change for each player and scale
-			_.each(env.players, function(p) {
-				if (p.derivatives.length > 4) {
-					var err = _.reduce(p.derivatives, function(memo, d) {
-						return memo + d;
-					}, 0);
+			if (env.J - J > 0) {
+				// Compute total change for each player and scale
+				_.each(env.players, function(p) {
+					if (p.derivatives.length > 4) {
+						var err = _.reduce(p.derivatives, function(memo, d) {
+							return memo + d;
+						}, 0);
 
-					if (err != 0) {
-						var delta = LAMBDA * err;
-						logger.info('Delta: '+delta, p.steamid);
-						p.mmr -= delta;
-						if (p.mmr < 0)
-							p.mmr = 0;
+						if (err != 0) {
+							var delta = LAMBDA * err;
+							logger.info('Delta: '+delta, p.steamid);
+							p.mmr -= delta;
+							if (p.mmr < 0)
+								p.mmr = 0;
+						}
 					}
-				}
-			});
+				});
+			}
 
 			logger.info(J, 'J');
+			logger.info(env.J - J, 'DeltaJ');
+			env.J = J;
 			after();
 		},
 		function(env, after) {
