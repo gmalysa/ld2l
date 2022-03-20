@@ -4,7 +4,7 @@ UGLIFYJS := uglifyjs
 SHOWDOWN := showdown
 ECHO := @echo -e
 
-JSFLAGS := -m -c -r "$$,_"
+JSFLAGS := -c -m reserved=['$$,_']
 LESSFLAGS := --plugin=less-plugin-clean-css
 MDFLAGS := --parseImgDimensions --simplifiedAutoLink --excludeTrailingPunctuationFromURLs
 MDFLAGS += --strikethrough --tables --tasklists --emoji
