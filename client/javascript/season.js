@@ -18,6 +18,7 @@ ld2l.$.onReady(function() {
 	var table = document.getElementById('draft-list');
 	ld2l.season.id = parseInt(table.dataset.season);
 	ld2l.season.admin = table.dataset.admin == 'true';
+	ld2l.season.use_single_mmr = table.dataset.useSingleMmr == 'true';
 });
 
 /**
@@ -48,6 +49,8 @@ ld2l.signupExpand = function(row) {
 
 	ratings = _.sortBy(ratings, 'score');
 
+	console.log("use_single_mmr is "+ld2l.season.use_single_mmr);
+
 	var data = {
 		admin : ld2l.season.admin,
 		season : ld2l.season.id,
@@ -61,6 +64,8 @@ ld2l.signupExpand = function(row) {
 		hide : (row.dataset.hidden == '0'),
 		core_mmr : row.dataset.coreMmr,
 		support_mmr : row.dataset.supportMmr,
+		unified_mmr : row.dataset.unifiedMmr,
+		use_single_mmr : ld2l.season.use_single_mmr,
 		mmr_screenshot : row.dataset.mmrScreenshot,
 		mmr_valid : (row.dataset.mmrValid == '1'),
 		positions : ratings,

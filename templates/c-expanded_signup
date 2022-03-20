@@ -7,9 +7,13 @@
   <li>Captain: {captain}</li>
   <li>Draftable: {?draftable}Y{:else}N{/draftable}</li>
   <li>Vouched: {?vouched}Y{:else}N{/vouched}</li>
-  {?core_mmr}
-    <li>MMR: {core_mmr}/{support_mmr}</li>
-  {/core_mmr}
+  {?use_single_mmr}
+    <li>MMR: {unified_mmr}</li>
+  {:else}
+    {?core_mmr}
+      <li>MMR: {core_mmr}/{support_mmr}</li>
+    {/core_mmr}
+  {/use_single_mmr}
   {?mmr_screenshot}
     <li>MMR Screenshot: <a href="{mmr_screenshot}">{mmr_screenshot}</a></li>
   {/mmr_screenshot}

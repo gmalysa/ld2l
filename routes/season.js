@@ -140,6 +140,7 @@ var season_hub = new fl.Chain(
 			{value : seasons.LINEARIZATION_2018S1, label : "2018 Season 1"},
 			{value : seasons.LINEARIZATION_2018S2, label : "2018 Season 2"},
 			{value : seasons.LINEARIZATION_MAX_MMR, label : "Max MMR"},
+			{value : seasons.LINEARIZATION_UNIFIED, label : "Unified MMR"},
 		];
 
 		statusLabels.forEach(function(v) {
@@ -199,7 +200,8 @@ var signups = new fl.Chain(
 			canSignUp : canSignUp && !signedUp,
 			signedUp : signedUp,
 			signups : signups,
-			scripts : scripts
+			scripts : scripts,
+			useSingleMMR : seasons.useSingleMMR(env.season),
 		});
 		after();
 	}
@@ -350,6 +352,7 @@ var show_signup_form = new fl.Chain(
 				medal : signup[0].medal,
 				core_mmr : signup[0].core_mmr,
 				support_mmr : signup[0].support_mmr,
+				unified_mmr : signup[0].unified_mmr,
 				mmr_screenshot : signup[0].mmr_screenshot,
 				mmr_valid : signup[0].mmr_valid,
 				pos_1 : signup[0].pos_1+'',
@@ -358,12 +361,14 @@ var show_signup_form = new fl.Chain(
 				pos_4 : signup[0].pos_4+'',
 				pos_5 : signup[0].pos_5+'',
 				editSignup : true,
-				fixedMedal : env.mySignup
+				fixedMedal : env.mySignup,
+				use_single_mmr : seasons.useSingleMMR(env.season),
 			});
 		}
 		else {
 			env.$output({
-				display_name : env.user.display_name
+				display_name : env.user.display_name,
+				use_single_mmr : seasons.useSingleMMR(env.season),
 			});
 		}
 
@@ -460,6 +465,7 @@ var handle_signup_form = new fl.Chain(
 			if (!signup[0].mmr_valid) {
 				update.core_mmr = parseInt(env.req.body.core_mmr) || 0;
 				update.support_mmr = parseInt(env.req.body.support_mmr) || 0;
+				update.unified_mmr = parseInt(env.req.body.unified_mmr) || 0;
 				update.mmr_screenshot = env.req.body.mmr_screenshot;
 			}
 
@@ -476,6 +482,7 @@ var handle_signup_form = new fl.Chain(
 				medal : env.medal,
 				core_mmr : parseInt(env.req.body.core_mmr) || 0,
 				support_mmr : parseInt(env.req.body.support_mmr) || 0,
+				unified_mmr : parseInt(env.req.body.unified_mmr) || 0,
 				mmr_screenshot : env.req.body.mmr_screenshot,
 				statement : env.req.body.statement,
 				captain : parseInt(env.req.body.captain),
@@ -504,8 +511,9 @@ var handle_signup_form = new fl.Chain(
 
 		// Only store these if they were available to edit
 		if (!env.signup || !env.signup.mmr_valid) {
-			data.core_mmr = parseInt(env.req.body.core_mmr);
-			data.support_mmr = parseInt(env.req.body.support_mmr);
+			data.core_mmr = parseInt(env.req.body.core_mmr) || 0;
+			data.support_mmr = parseInt(env.req.body.support_mmr) || 0;
+			data.unified_mmr = parseInt(env.req.body.unified_mmr) || 0;
 			data.mmr_screenshot = env.req.body.mmr_screenshot.substring(0, 128);
 		}
 

@@ -14,6 +14,7 @@
 <table class="ld2l-table"
        data-season="{season.id}"
 	   data-admin="{isAdmin}"
+	   data-use-single-mmr="{useSingleMMR}"
 	   id="draft-list">
   <thead>
   <tr>
@@ -37,6 +38,7 @@
 		data-standin="{standin}"
 		data-core-mmr="{core_mmr}"
 		data-support-mmr="{support_mmr}"
+		data-unified-mmr="{unified_mmr}"
 		data-mmr-screenshot="{mmr_screenshot}"
 		data-hidden="{hidden}"
 		data-mmr-valid="{mmr_valid}"
