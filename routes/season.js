@@ -953,6 +953,8 @@ module.exports.init_routes = function(server) {
 				chunk.write('2018 August-December');
 			else if (seasons.LINEARIZATION_MAX_MMR == linear)
 				chunk.write('Max of MMRs');
+			else if (seasons.LINEARIZATION_UNIFIED == linear)
+				chunk.write('Single MMR');
 			else
 				chunk.write('Unrecognized linearization: '+linear);
 
