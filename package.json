@@ -16,7 +16,7 @@
     "db-filters": "github:gmalysa/db-filters",
     "db-migrate": "^0.10.7",
     "db-migrate-mysql": "^1.1.10",
-    "dotaconstants": "^6.41.0",
+    "dotaconstants": "^7.10.0",
     "dustjs-helpers": "1.7.3",
     "dustjs-linkedin": "2.7.2",
     "express": "^4.17.3",
