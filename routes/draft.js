@@ -54,7 +54,7 @@ const assignMoney = new fl.Chain(
 			let team = env.teams[env.idx];
 			env.idx += 1;
 			env.filters.teams.update({
-				starting_money : teams.starting_money,
+				starting_money : team.starting_money,
 			}, {
 				id : team.id
 			}).exec(after, env.$throw);
@@ -91,7 +91,6 @@ class DraftBase {
 
 	start() {
 		this.logEvent('Draft started.');
-		this.startRound(1);
 		var env = new fl.Environment();
 		env.draftInfo = this;
 		getTeams.call(null, env, this.populateTeams.bind(this));
@@ -337,6 +336,10 @@ class AuctionDraft extends DraftBase {
 		super.start();
 	}
 
+	startRound(round) {
+		super.startRound(round);
+	}
+
 	cleanPlayer(v) {
 		let p = super.cleanPlayer(v);
 		p.cost = v.cost;
@@ -428,9 +431,11 @@ class AuctionDraft extends DraftBase {
 
 	/**
 	 * For auction, disable drafting/nominating during bidding
+	 * and also ensure that the first round is manually started before a nomination
+	 * can be accepted
 	 */
 	isDrafting(user) {
-		if (this.accepting_bids)
+		if (this.accepting_bids || this.round == 0)
 			return false;
 
 		return super.isDrafting(user);
@@ -438,6 +443,7 @@ class AuctionDraft extends DraftBase {
 
 	draftPlayer(user, drafted, team) {
 		team.money -= this.amount;
+		drafted.cost = this.amount;
 		this.resetBidding();
 		super.draftPlayer(user, drafted, team);
 

@@ -11,7 +11,7 @@
 {/canEditName}
 
 <p>Played in <a href="/seasons/{season.id}">{season.name}</a> with an average linear
-{~n}medal of {team.medal}.{?auction}Started with ${starting_money} and has ${money} unspent.{/auction}</p>
+{~n}medal of {team.medal}. {?auction}Started with ${team.starting_money} and has ${team.money} unspent.{/auction}</p>
 
 {?team.disbanded}
   <p><span style="color: red" class="fa fa-ban"></span> This team disbanded during the regular season.</p>
@@ -58,6 +58,7 @@
       {>medal medal=medal /}
       <img src="{avatar}" />
       {>profile_link /}
+	  {?auction} ${cost}{/auction}
     </div>
   </div>
 {:else}

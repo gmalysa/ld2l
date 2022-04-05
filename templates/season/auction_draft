@@ -6,9 +6,12 @@
 <div id="auction_arena" class="ld2l-g">
   <div style="width: 400px;" class="ld2l-block" id="draft-teams">
   </div>
-  <div style="width: 400px;" class="ld2l-block" id="bid_arena">
+  <div style="width: 400px;" class="ld2l-block">
+    <div id="bid_arena"></div>
+	<div id="bid_buttons" style="margin-bottom: 0.5em;"></div>
+	<div id="bid_message"></div>
   </div>
-  <div class="ld2l-draft-log" style="display: none">
+  <div class="ld2l-draft-log" style="display: none; width: 400px; height: 20em; overflow-y: auto;">
     <h3>Draft Log</h3>
       <ul id="draft-log">
       </ul>

@@ -73,7 +73,6 @@ var edit_season = new fl.Branch(
 			var seasonLinear = parseInt(env.req.body.linearization) || 0;
 			var seasonTicket = parseInt(env.req.body.ticket) || 0;
 			let auctionBase = parseInt(env.req.body.auction_base) || 0;
-			let auctionScale = parseInt(env.req.body.auction_scale) || 0;
 			let auctionResolution = parseInt(env.req.body.auction_resolution) || 0;
 
 			if (!env.req.body.name || !seasons.isValidStatus(seasonStatus)
@@ -90,7 +89,6 @@ var edit_season = new fl.Branch(
 				ticket : seasonTicket,
 				linearization : seasonLinear,
 				auction_base : auctionBase,
-				auction_scale : auctionScale,
 				auction_resolution : auctionResolution,
 			};
 

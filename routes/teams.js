@@ -38,6 +38,11 @@ var team_preamble = new fl.Chain(
  */
 var team_info = new fl.Chain(
 	function(env, after) {
+		after(env.team.seasonid);
+	},
+	seasons.getSeasonBasic,
+	function(env, after, season) {
+		env.season = season;
 		after(env.team);
 	},
 	matches.getTeamHistory,

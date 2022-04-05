@@ -1,5 +1,5 @@
 
-const BID_TIMEOUT = 15000;
+const BID_TIME = 15;
 
 var draft = {
 	socket : null,
@@ -63,6 +63,12 @@ ld2l.$.onReady(function() {
 		draft.nominee = data.nominee;
 		draft.amount = 0;
 		draft.bidder = data.by;
+		dust.render('bid_buttons', {
+			time : BID_TIME,
+			nominee : draft.nominee,
+		}, function(err, out) {
+			document.getElementById('bid_buttons').innerHTML = out;
+		});
 		updateBidding();
 	});
 
@@ -78,7 +84,7 @@ function bidTick() {
 	draft.timeLeft -= 1;
 	if (draft.timeLeft > 0) {
 		draft.bidTimer = setTimeout(bidTick, 1000);
-		document.getElementById('bid-time').innerHTML = draft.timeLeft;
+		renderTime();
 	}
 }
 
@@ -88,7 +94,7 @@ function updateBidding() {
 	}
 
 	draft.bidTimer = setTimeout(bidTick, 1000);
-	draft.timeLeft = 15;
+	draft.timeLeft = BID_TIME;
 	renderBidding();
 }
 
@@ -100,7 +106,14 @@ function renderBidding() {
 		time : draft.timeLeft,
 	}, function(err, out) {
 		document.getElementById('bid_arena').innerHTML = out;
+		renderTime();
 	});
+}
+
+function renderTime() {
+	let time = document.getElementById('bid-time');
+	if (time)
+		time.innerHTML = draft.timeLeft;
 }
 
 function updateTeams() {
@@ -187,4 +200,12 @@ function bidIncrement(amount) {
 
 function bidAmount() {
 	bid(parseInt(document.getElementById('amount').value) || 0);
+}
+
+function clearMessage() {
+	document.getElementById('bid-message').innerHTML = "";
+}
+
+function setMessage(msg) {
+	document.getElementById('bid-message').innerHTML = msg;
 }

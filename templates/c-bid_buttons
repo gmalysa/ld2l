@@ -1,0 +1,15 @@
+{?nominee}
+<form class="pure-form">
+  <div style="margin-bottom: 0.5em;">
+  <input type="button" onclick="bidIncrement(1);" value="+1" class="pure-button ld2l-button-primary" />{~n}
+  <input type="button" onclick="bidIncrement(5);" value="+5" class="pure-button ld2l-button-primary" />{~n}
+  <input type="button" onclick="bidIncrement(10);" value="+10" class="pure-button ld2l-button-primary" />{~n}
+  <input type="button" onclick="bidIncrement(25);" value="+25" class="pure-button ld2l-button-primary" />{~n}
+  </div>
+  <div style="margin-bottom: 0.5em;">
+  <input type="text" id="amount" />{~n}
+  <input type="button" onclick="bidAmount();" value="Bid" class="pure-button ld2l-button-primary" />
+  </div>
+</form>
+<div style="margin-bottom: 0.5em;">Time remaining: <span id="bid-time">{time}</span></div>
+{/nominee}
