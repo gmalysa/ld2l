@@ -68,10 +68,14 @@ var edit_season = new fl.Branch(
 	checkSeasonPrivs,
 	new fl.Chain(
 		function(env, after) {
-			var seasonStatus = parseInt(env.req.body.status);
-			var seasonType = parseInt(env.req.body.type);
-			var seasonLinear = parseInt(env.req.body.linearization);
-			var seasonTicket = parseInt(env.req.body.ticket);
+			var seasonStatus = parseInt(env.req.body.status) || 0;
+			var seasonType = parseInt(env.req.body.type) || 0;
+			var seasonLinear = parseInt(env.req.body.linearization) || 0;
+			var seasonTicket = parseInt(env.req.body.ticket) || 0;
+			let auctionBase = parseInt(env.req.body.auction_base) || 0;
+			let auctionScale = parseInt(env.req.body.auction_scale) || 0;
+			let auctionResolution = parseInt(env.req.body.auction_resolution) || 0;
+
 			if (!env.req.body.name || !seasons.isValidStatus(seasonStatus)
 				|| !seasons.isValidType(seasonType)
 				|| !seasons.isValidLinearization(seasonLinear)) {
@@ -85,6 +89,9 @@ var edit_season = new fl.Branch(
 				type : seasonType,
 				ticket : seasonTicket,
 				linearization : seasonLinear,
+				auction_base : auctionBase,
+				auction_scale : auctionScale,
+				auction_resolution : auctionResolution,
 			};
 
 			env.filters.seasons.update(env.newSeasonInfo, {id : env.season.id})
@@ -135,6 +142,7 @@ var season_hub = new fl.Chain(
 		var typeLabels = [
 			{value : seasons.TYPE_DRAFT, label : "EU/RD2L Draft"},
 			{value : seasons.TYPE_IHL, label : "Inhouse League"},
+			{value : seasons.TYPE_AUCTION, label : "Auction Draft"},
 		];
 		var linearLabels = [
 			{value : seasons.LINEARIZATION_2018S1, label : "2018 Season 1"},
@@ -251,14 +259,9 @@ var standins = new fl.Chain(
  */
 var draft = new fl.Chain(
 	function(env, after) {
-		after(env.season, {
-			draftable : 1,
-			standin : 0,
-			valid_standin : 0,
-			hidden : 0
-		});
+		after(env.season);
 	},
-	seasons.getSignups,
+	seasons.getDraftableSignups,
 	function(env, after, signups) {
 		signups = _.sortBy(signups, function(v) {
 			return -v.linear_medal;
@@ -268,7 +271,13 @@ var draft = new fl.Chain(
 	},
 	teams.getAllTeams,
 	function(env, after, teams) {
-		env.$template('season_draft');
+		if (env.season.type == seasons.TYPE_DRAFT)
+			env.$template('season_draft');
+		else if (env.season.type == seasons.TYPE_AUCTION)
+			env.$template('season_auction_draft');
+		else
+			return env.$throw(new Error('This season cannot have a draft'));
+
 		env.$output({
 			title : 'Draft',
 			scripts : ['sort', 'draft'],
@@ -939,6 +948,8 @@ module.exports.init_routes = function(server) {
 				chunk.write('EU/RD2L Draft');
 			else if (seasons.TYPE_IHL == type)
 				chunk.write('Inhouse League');
+			else if (seasons.TYPE_AUCTION == type)
+				chunk.write('Auction Draft');
 			else
 				chunk.write('Unrecognized type: '+type);
 

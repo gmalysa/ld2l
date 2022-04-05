@@ -36,6 +36,18 @@
 	{/linearizations}
   </select>
 </div>
+<div class="pure-control-group">
+  <label for="auction_base">Auction Base</label>
+  <input type="text" name="auction_base" value="{season.auction_base}" />
+</div>
+<div class="pure-control-group">
+  <label for="auction_scale">Auction Scale</label>
+  <input type="text" name="auction_scale" value="{season.auction_scale}" />
+</div>
+<div class="pure-control-group">
+  <label for="auction_base">Auction Resolution</label>
+  <input type="text" name="auction_resolution" value="{season.auction_resolution}" />
+</div>
 <div class="pure-controls">
   <input class="pure-button ld2l-button-primary" type="submit" value="Update" />
 </div>
@@ -49,6 +61,9 @@
     <li><b>Type:</b> {@season_type type=season.type /}</li>
 	<li><b>Ticket ID:</b> {season.ticket}</li>
 	<li><b>Medal System:</b> {@season_linearization linear=season.linearization /}</li>
+	<li><b>Auction Base:</b>{season.auction_base}</li>
+	<li><b>Auction Scale:</b>{season.auction_scale}</li>
+	<li><b>Auction Resolution:</b>{season.auction_resolution}</li>
   </ul>
 </p>
 {/isAdmin}

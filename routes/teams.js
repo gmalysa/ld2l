@@ -49,6 +49,7 @@ var team_info = new fl.Chain(
 		env.$template('teams_about');
 		env.$output({
 			team : env.team,
+			auction : env.season.type == seasons.TYPE_AUCTION,
 			season : env.team.season,
 			history : history,
 			canEditName : canEditName,
@@ -72,9 +73,35 @@ var team_index = new fl.Chain(
 	},
 	matches.addStandings,
 	function(env, after, teams) {
+		env.teams = teams;
+		after();
+	},
+	new fl.Branch(
+		function(env, after) {
+			// Money is saved to db when draft officially starts, but
+			// do a prediction/preview before then based on current settings
+			after(env.season.type == seasons.TYPE_AUCTION &&
+				env.teams[0] && env.teams[0].starting_money == 0);
+		},
+		new fl.Chain(
+			function(env, after) {
+				after(env.season);
+			},
+			seasons.getDraftableSignups,
+			function(env, after, signups) {
+				seasons.assignAuctionMoney(env.season, env.teams, signups);
+				after();
+			}
+		),
+		function(env, after) {
+			after();
+		}
+	),
+	function(env, after, teams) {
 		env.$template('teams_list');
 		env.$output({
-			teams : teams,
+			teams : env.teams,
+			auction : env.season.type == seasons.TYPE_AUCTION,
 			scripts : ['sort']
 		});
 		after();

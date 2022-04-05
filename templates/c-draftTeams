@@ -4,7 +4,10 @@
     <tr>
 	  <th>Name</th>
 	  <th>Captain</th>
-	  <th>Avg.</th>
+	  <th>Avg. MMR</th>
+	  {?isAuction}
+	  <th>Money</th>
+	  {/isAuction}
 	</tr>
   </thead>
   <tbody>
@@ -14,6 +17,9 @@
 	      {?drafted}
 		    ld2l-draft-team-drafted
 		  {/drafted}
+		  {?next}
+		    ld2l-draft-team-next
+		  {/next}
 		  "
 		  onclick="draftTeamInfo({id})"
 		  >
@@ -23,6 +29,9 @@
 		<span>{captain.display_name}</span>
 		</div></td>
 		<td>{medal}</td>
+		{?isAuction}
+		  <td>${money}</td>
+	    {/isAuction}
 	  </tr>
     {/teams}
   </tbody>

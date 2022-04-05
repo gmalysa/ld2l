@@ -1,4 +1,6 @@
 
+const BID_TIMEOUT = 15000;
+
 var draft = {
 	socket : null,
 	season : 0,
@@ -6,27 +8,34 @@ var draft = {
 	steamid : '',
 	teams : [],
 	infoTeamId : 0,
-	infoTeamRow : null
+	infoTeamRow : null,
+	nominee : null,
+	amount : 0,
+	bidder : null,
+	round : 0,
+	bidTimer : null,
+	timeLeft : 0,
 };
 
-$(window).load(function() {
-	var draftTable= $('table#draft-list')[0];
+ld2l.$.onReady(function() {
+	let draftTable = document.getElementById('draft-list');
 	draft.season = draftTable.dataset.season;
 	draft.steamid = draftTable.dataset.steamid;
+	draft.isAuction = draftTable.dataset.auction == "true";
 	draft.socket = io('/draft-'+draft.season);
 
-	draft.socket.on('log', function(data) {
-		console.log('Got a log event');
-		console.log(data);
-		draftLog(data);
-	});
+	console.log('new auction=' + draft.isAuction + ' draft for season ' + draft.season);
+
+	draft.socket.on('log', draftLog);
 
 	draft.socket.on('round', function(data) {
-		console.log(data);
+		draft.round = data.round;
+		renderBidding();
+	});
+
+	draft.socket.on('teams', function(data) {
 		draft.teams = data.teams;
-		dust.render('draftTeams', data, function(err, out) {
-			$('#draft-teams').html(out);
-		});
+		updateTeams();
 	});
 
 	draft.socket.on('drafted', function(data) {
@@ -36,31 +45,73 @@ $(window).load(function() {
 		$('tr[data-teamid="'+data.team+'"]').removeClass('ld2l-draft-team-next');
 	});
 
-	draft.socket.on('team', function(data) {
-		draft.teams.forEach(function(v) {
-			if (v.id == data.id) {
-				v.players = data.players,
-				v.medal = data.medal;
-			}
-			var row = $('tr[data-teamid="'+data.id+'"]');
-			var td = row.children()[2];
-			$(td).html(data.medal);
-		});
-	});
-
 	draft.socket.on('next', function(data) {
 		console.log('next: '+data.steamid);
-		$('tr[data-teamid="'+data.team+'"]').addClass('ld2l-draft-team-next');
 		if (data.steamid == draft.steamid) {
 			$('input[name="draftButton"]').each(function(k, v) {
-				var row =$(v).parent().parent()[0];
+				var row = $(v).parent().parent()[0];
 				if (row.dataset.team == "0") {
-					$(v).prop('disabled', false);
+					v.attributes.removeNamedItem('disabled');
 				}
 			});
 		}
 	});
+
+	draft.socket.on('nominate', function(data) {
+		if (data.nominee)
+			console.log(data.by.display_name + ' nominated ' + data.nominee.display_name);
+		draft.nominee = data.nominee;
+		draft.amount = 0;
+		draft.bidder = data.by;
+		updateBidding();
+	});
+
+	draft.socket.on('bid', function(data) {
+		draft.amount = data.amount;
+		draft.bidder = data.by;
+		updateBidding();
+	});
+
 });
+
+function bidTick() {
+	draft.timeLeft -= 1;
+	if (draft.timeLeft > 0) {
+		draft.bidTimer = setTimeout(bidTick, 1000);
+		document.getElementById('bid-time').innerHTML = draft.timeLeft;
+	}
+}
+
+function updateBidding() {
+	if (draft.bidTimer) {
+		clearTimeout(draft.bidTimer);
+	}
+
+	draft.bidTimer = setTimeout(bidTick, 1000);
+	draft.timeLeft = 15;
+	renderBidding();
+}
+
+function renderBidding() {
+	dust.render('bid_arena', {
+		bidder : draft.bidder,
+		nominee : draft.nominee,
+		amount : draft.amount,
+		time : draft.timeLeft,
+	}, function(err, out) {
+		document.getElementById('bid_arena').innerHTML = out;
+	});
+}
+
+function updateTeams() {
+	dust.render('draftTeams', {
+		teams : draft.teams,
+		isAuction : draft.isAuction,
+		round : draft.round,
+	}, function(err, out) {
+		document.getElementById('draft-teams').innerHTML = out;
+	});
+}
 
 /**
  * Show team info in the row under a team
@@ -85,7 +136,10 @@ function draftTeamInfo(id) {
 	});
 
 	draft.infoTeamId = id;
-	dust.render('expandedDraftTeam', draft.teams[teamIdx], function(err, out) {
+	dust.render('expandedDraftTeam', {
+		players : draft.teams[teamIdx].players,
+		isAuction : draft.isAuction,
+	}, function(err, out) {
 		$('tr[data-teamid="'+id+'"]').after(out);
 		draft.infoTeamRow = $('#expandedTeamInfo');
 	});
@@ -93,23 +147,44 @@ function draftTeamInfo(id) {
 
 function draftLog(messages) {
 	$('.ld2l-draft-log').css('display', '');
-	var logList = $('#draft-log');
+	let logList = document.getElementById('draft-log');
 	messages.forEach(function(v, k) {
-		logList.append('<li>'+v+'</li>');
+		logList.innerHTML = '<li>'+v+'</li>' + logList.innerHTML;
+	});
+}
+
+function disableButtons() {
+	let buttons = document.getElementsByName('draftButton');
+	buttons.forEach(function(b) {
+		b.attributes.setNamedItem(document.createAttribute('disabled'));
 	});
 }
 
 function draftPlayer(steamid) {
 	console.log('Drafting player '+steamid+' to your team');
-	$('input[name="draftButton"]').prop('disabled', true);
-	$.ajax({
-		url : '/draft/choose/'+draft.season,
-		data : {
-			steamid : steamid
-		},
-		method : 'POST',
-		dataType : 'json'
-	}).done(function(data, status, xhr) {
+	ld2l.$.ajax('/draft/choose/'+draft.season, {
+		steamid : steamid
+	}).then(disableButtons);
+}
 
+function nominate(steamid) {
+	console.log('Nominating player '+steamid);
+	ld2l.$.ajax('/draft/nominate/'+draft.season, {
+		steamid : steamid
+	}).then(disableButtons);
+}
+
+function bid(amount) {
+	console.log('bid ' + amount);
+	ld2l.$.ajax('/draft/bid/'+draft.season, {
+		amount : amount,
 	});
+}
+
+function bidIncrement(amount) {
+	bid(draft.amount + amount);
+}
+
+function bidAmount() {
+	bid(parseInt(document.getElementById('amount').value) || 0);
 }

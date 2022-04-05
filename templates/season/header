@@ -9,6 +9,18 @@
   {~n}<a href="/teams/{season.id}">Teams</a> |
   {~n}<a href="/schedule/{season.id}">Schedule</a> |
   {~n}<a href="/seasons/{season.id}/matches">Matches</a>
+  {?isAdmin}{~n}|{~n}<a href="/seasons/{season.id}">Edit</a>{/isAdmin}
+{/eq}
+
+{! auction is same as regular draft !}
+{@eq key=season.type value=2}
+  <a href="/seasons/{season.id}/signups">Signups</a> |
+  {~n}<a href="/seasons/{season.id}/standins">Standins</a> |
+  {~n}<a href="/seasons/{season.id}/draft">Draft</a> |
+  {~n}<a href="/teams/{season.id}">Teams</a> |
+  {~n}<a href="/schedule/{season.id}">Schedule</a> |
+  {~n}<a href="/seasons/{season.id}/matches">Matches</a>
+  {?isAdmin}{~n}|{~n}<a href="/seasons/{season.id}">Edit</a>{/isAdmin}
 {/eq}
 
 {! inhouse league type !}

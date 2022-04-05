@@ -12,7 +12,13 @@
 		<th>Captain</th>
 		<th>Record</th>
 		<th>Tie</th>
+		{?auction}
+        <th>Avg MMR</th>
+		<th>Total Money</th>
+		<th>Unspent</th>
+		{:else}
 		<th>Draft Value</th>
+		{/auction}
 	  </tr>
     </thead>
     <tbody>
@@ -32,6 +38,10 @@
 		  <td>{wins} - {losses}</td>
 		  <td>{tiebreaker}</td>
 		  <td>{medal}</td>
+		  {?auction}
+		  <td>${starting_money}</td>
+		  <td>${money}</td>
+		  {/auction}
          </tr>
       {/teams}
     </tbody>

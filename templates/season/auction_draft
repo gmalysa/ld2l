@@ -1,0 +1,83 @@
+{>header /}
+{>season_header title="Draft" /}
+
+<div class="ld2l-g">
+  <div class="ld2l-block">
+<div id="auction_arena" class="ld2l-g">
+  <div style="width: 400px;" class="ld2l-block" id="draft-teams">
+  </div>
+  <div style="width: 400px;" class="ld2l-block" id="bid_arena">
+  </div>
+  <div class="ld2l-draft-log" style="display: none">
+    <h3>Draft Log</h3>
+      <ul id="draft-log">
+      </ul>
+  </div>
+</div>
+    <h3>Current Players</h3>
+<table class="ld2l-table"
+       data-season="{season.id}"
+	   data-admin="{isAdmin}"
+	   data-steamid="{user.steamid}"
+	   data-auction="true"
+	   id="draft-list">
+  <thead>
+  <tr>
+    <th></th>
+	<th></th>
+	<th></th>
+	<th></th>
+	<th>Name</th>
+	<th></th>
+	<th>Statement</th>
+  </tr>
+  </thead>
+  <tbody>
+  {#signups}
+    <tr data-steamid="{steamid}"
+	    data-linear="{linear_medal}"
+	    data-team="{teamid}"
+		data-cost="{cost}"
+		{@gt key=teamid value="0"}
+		  class="drafted"
+		{/gt}
+		>
+      <td>{@counter/}</td>
+	  <td>
+	    <input name="draftButton"
+		       type="button"
+		       value="Nominate"
+			   style="width: 7em;"
+			   class="pure-button ld2l-button-primary"
+			   onclick="nominate('{steamid}');"
+			   disabled />
+	  </td>
+      <td>{>medal medal=medal /}</td>
+	  <td>{linear_medal}</td>
+      <td>{>profile_link /}</td>
+	  <td>
+	    <a href="https://www.dotabuff.com/players/{id32}">DB</a><br />
+        <a href="https://www.opendota.com/players/{id32}">OD</a>
+      </td>
+      <td>{statement}</td>
+    </tr>
+  {/signups}
+  </tbody>
+</table>
+  </div>
+</div>
+
+{?isAdmin}
+<div style="margin-top:1em; margin-bottom: 1em;">
+<a href="/draft/start/{season.id}">
+  <input class="pure-button ld2l-button-primary" type="button" value="Start Draft" />
+</a>
+{~n}
+<a href="/draft/next/{season.id}">
+  <input class="pure-button ld2l-button-primary" type="button" value="Next Round" />
+</a>
+</div>
+{/isAdmin}
+
+{>season_footer /}
+{>footer /}

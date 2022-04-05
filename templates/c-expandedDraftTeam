@@ -1,5 +1,9 @@
 <tr id="expandedTeamInfo">
+  {?isAuction}
+  <td colspan="4">
+  {:else}
   <td colspan="3">
+  {/isAuction}
 {#players}
   <div>
     {>profile_link /}
