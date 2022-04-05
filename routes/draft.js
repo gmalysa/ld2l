@@ -76,18 +76,15 @@ var draftInfos = {};
 var io = null;
 
 class DraftBase {
-	log = [];
-	teams = [];
-	season = 0;
-	round = 0;
-	room = undefined;
-
 	/**
 	 * @param[in] season season - Which season we're running the draft for
 	 * @todo consider io as an argument
 	 */
 	constructor(season) {
 		this.season = season;
+		this.log = [];
+		this.teams = [];
+		this.round = 0;
 		this.room = io.of('/draft-'+season.id);
 		this.room.on('connect', this.syncStatus.bind(this));
 	}
