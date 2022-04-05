@@ -58,7 +58,7 @@
       {>medal medal=medal /}
       <img src="{avatar}" />
       {>profile_link /}
-	  {?auction} ${cost}{/auction}
+	  {?auction} for ${cost}{/auction}
     </div>
   </div>
 {:else}

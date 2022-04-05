@@ -6,7 +6,7 @@
   {/isAuction}
 {#players}
   <div>
-    {>profile_link /}
+    {>profile_link /} {?isAuction}for ${cost}{/isAuction}
   </div>
 {:else}
   Nobody drafted yet.
