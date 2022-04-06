@@ -61,7 +61,7 @@ ld2l.$.onReady(function() {
 		if (data.nominee)
 			console.log(data.by.display_name + ' nominated ' + data.nominee.display_name);
 		draft.nominee = data.nominee;
-		draft.amount = 0;
+		draft.amount = data.amount || 0;
 		draft.bidder = data.by;
 		dust.render('bid_buttons', {
 			time : BID_TIME,

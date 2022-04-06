@@ -336,8 +336,18 @@ class AuctionDraft extends DraftBase {
 		super.start();
 	}
 
-	startRound(round) {
-		super.startRound(round);
+	syncStatus(socket) {
+		super.syncStatus(socket);
+
+		if (this.nominee) {
+			let bidder = this.cleanPlayer(this.bidder);
+
+			socket.emit('nominate', {
+				nominee : this.cleanPlayer(this.nominee),
+				by: bidder,
+				amount : this.amount,
+			});
+		}
 	}
 
 	cleanPlayer(v) {
@@ -354,16 +364,12 @@ class AuctionDraft extends DraftBase {
 	}
 
 	populateTeams(teams, signups) {
-		super.populateTeams(teams);
+		super.populateTeams(teams, signups);
 		seasons.assignAuctionMoney(this.season, teams, signups);
 
 		var env = new fl.Environment();
 		env.teams = teams;
 		assignMoney.call(null, env, null);
-	}
-
-	syncStatus(socket) {
-		super.syncStatus(socket);
 	}
 
 	/**
@@ -425,6 +431,7 @@ class AuctionDraft extends DraftBase {
 		this.room.emit('nominate', {
 			nominee : this.cleanPlayer(target),
 			by : this.cleanPlayer(user),
+			amount : 0,
 		});
 		this.timeout = setTimeout(this.bidTimeout.bind(this), BID_TIME_LIMIT);
 	}
