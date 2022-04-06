@@ -390,6 +390,9 @@ class AuctionDraft extends DraftBase {
 		if (!team)
 			return false;
 
+		if (this.bidder && this.bidder.steamid == user.steamid)
+			return false;
+
 		if (team.money < amount)
 			return false;
 		return amount > this.amount;
