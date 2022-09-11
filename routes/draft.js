@@ -309,8 +309,8 @@ class EUDraft extends DraftBase {
 	 * as done after they've made their pick as well
 	 */
 	draftPlayer(user, drafted, team) {
-		super.draftPlayer(user, drafted, team);
 		this.markDrafted(user);
+		super.draftPlayer(user, drafted, team);
 	}
 }
 
