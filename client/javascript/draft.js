@@ -30,7 +30,8 @@ ld2l.$.onReady(function() {
 
 	draft.socket.on('round', function(data) {
 		draft.round = data.round;
-		renderBidding();
+		if (draft.isAuction)
+			renderBidding();
 	});
 
 	draft.socket.on('teams', function(data) {
@@ -50,7 +51,7 @@ ld2l.$.onReady(function() {
 		if (data.steamid == draft.steamid) {
 			$('input[name="draftButton"]').each(function(k, v) {
 				var row = $(v).parent().parent()[0];
-				if (row.dataset.team == "0") {
+				if (row.dataset.team == "0" && v.attributes['disabled']) {
 					v.attributes.removeNamedItem('disabled');
 				}
 			});
