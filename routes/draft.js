@@ -99,9 +99,13 @@ class DraftBase {
 	/**
 	 * Callback used to populate teams during start
 	 */
-	populateTeams(teams, signups) {
-		this.teams = teams;
+	populateTeams(_teams, signups) {
+		this.teams = _teams;
 		this.signups = signups;
+		this.teams.forEach(function(t) {
+			teams.updateMedalAverage(t);
+		});
+		this.teams.sort(this.teamCompare);
 	}
 
 	/**
