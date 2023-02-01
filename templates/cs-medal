@@ -1,2 +1,3 @@
-<img src="/static/images/medals/{medal}.png"
+<img src="/static/images/medals/{#medal}{medal}{:else}0{/medal}.png"
      class="ld2l-medal" />
+
