@@ -210,9 +210,6 @@ ld2l.$.onReady(function() {
 	});
 
 	ld2l.inhouseQueue.socket.on('removePlayer', function(data) {
-
-
-
 		console.log('Remove a player');
 		console.log(data);
 		ld2l.inhouseQueue.removePlayer(data);
