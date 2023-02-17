@@ -13,6 +13,7 @@ ld2l.inhouseQueue = {
 	steamid : '',
 	players : [],
 	seasonId : 0,
+	notificationsEnabled: false,
 
 	setIdentity : function(id) {
 		this.steamid = id;
@@ -153,11 +154,40 @@ ld2l.inhouseQueue = {
 		this.socket.emit('pick', {
 			steamid : elem.dataset.picksteamid
 		});
-	}
+	},
 
+	enableNotifications : function () {
+		if ("Notification" in window) {
+			 if (Notification.permission !== 'denied') {
+				Notification.requestPermission(function (permission) {
+					if (permission === "granted") {
+						ld2l.inhouseQueue.notificationsEnabled = true;
+					}
+				});
+			}
+			 else if (Notification.permission === 'granted') {
+				ld2l.inhouseQueue.notificationsEnabled = true;
+			 }
+		}
+	},
+
+	sendNotification : function (title, body, icon) {
+		if (this.notificationsEnabled) {
+			if (ld2l.inhouseQueue.queue.length >= 10 ) {
+				new Notification(title, { body: 'Queue is full!', icon: 'https://ld2l.gg/static/images/ld2l-logo.png'});
+				new Audio(`https://ld2l.gg/static/Scan_clear.mp3`).play()
+			}
+			else {
+				new Notification(title, { body, icon });
+			}
+		}
+	}
 };
 
 ld2l.$.onReady(function() {
+
+	ld2l.inhouseQueue.enableNotifications()
+
 	var seasonId = document.getElementById('inhouseData').dataset.season;
 	ld2l.inhouseQueue.seasonId = seasonId;
 	ld2l.inhouseQueue.socket = io('/queue-'+seasonId, {transports : ['websocket']});
@@ -166,6 +196,17 @@ ld2l.$.onReady(function() {
 		console.log('Add a player');
 		console.log(data);
 		ld2l.inhouseQueue.addPlayer(data);
+
+		if (data.display_name) {
+			ld2l.inhouseQueue.sendNotification(
+				'LD2L inhouses',
+				`${data.display_name} joined the queue ${ld2l.inhouseQueue.queue.length} / 10`,
+				data.avatar);
+		}
+		else {
+			ld2l.inhouseQueue.sendNotification('LD2L inhouses', `players in the queue ${ld2l.inhouseQueue.queue.length} / 10`);
+		}
+
 	});
 
 	ld2l.inhouseQueue.socket.on('removePlayer', function(data) {
