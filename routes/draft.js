@@ -394,7 +394,12 @@ class AuctionDraft extends DraftBase {
 		if (!team)
 			return false;
 
+		// Cannot outbid yourself
 		if (this.bidder && this.bidder.steamid == user.steamid)
+			return false;
+
+		// 4 players + 1 captain = 5 on a team, cannot bid for more
+		if (team.players.length >= 4)
 			return false;
 
 		if (team.money < amount)
