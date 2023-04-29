@@ -346,6 +346,23 @@ class AuctionDraft extends DraftBase {
 		super.start();
 	}
 
+	/**
+	 * Need to eliminate captains who have a full roster already from the pick
+	 * list
+	 */
+	startRound(round) {
+		this.teams.sort(this.teamCompare);
+
+		// With 4 players + captain the team should not be allowed to nominate again
+		this.teams.forEach(function(v, k) {
+			v.drafted = v.players.length >= 4;
+		});
+
+		this.round = round;
+		this.logEvent('<b>Round '+round+'</b> started!');
+		this.sendDrafters(this.room);
+	}
+
 	syncStatus(socket) {
 		super.syncStatus(socket);
 
