@@ -335,6 +335,12 @@ class AuctionDraft extends DraftBase {
 		this.room.emit('nominate', {});
 	}
 
+	startBidTimeout() {
+		if (this.timeout)
+			clearTimeout(this.timeout);
+		this.timeout = setTimeout(this.bidTimeout.bind(this), BID_TIME_LIMIT);
+	}
+
 	start() {
 		this.resetBidding();
 		super.start();
@@ -421,10 +427,7 @@ class AuctionDraft extends DraftBase {
 			by : this.cleanPlayer(user),
 			amount : amount,
 		});
-
-		if (this.timeout)
-			clearTimeout(this.timeout);
-		this.timeout = setTimeout(this.bidTimeout.bind(this), BID_TIME_LIMIT);
+		this.startBidTimeout();
 	}
 
 	/**
@@ -445,7 +448,7 @@ class AuctionDraft extends DraftBase {
 			by : this.cleanPlayer(user),
 			amount : 0,
 		});
-		this.timeout = setTimeout(this.bidTimeout.bind(this), BID_TIME_LIMIT);
+		this.startBidTimeout();
 	}
 
 	/**
