@@ -247,6 +247,15 @@ class DraftBase {
 	}
 
 	/**
+	 * Figure out which captain will be drafting next
+	 */
+	getNextTeam() {
+		return this.teams.find(function(v) {
+			return !v.drafted;
+		});
+	}
+
+	/**
 	 * Send the next drafter to the given socket, to highlight whose turn it is
 	 * @param[in] socket Send drafter information here
 	 */
@@ -258,9 +267,7 @@ class DraftBase {
 				v.next = false;
 			});
 
-			let captain = this.teams.find(function(v) {
-				return !v.drafted;
-			});
+			let captain = this.getNextTeam();
 			if (captain) {
 				captain.next = true;
 				socket.emit('next', {steamid : captain.captain.steamid});
@@ -407,6 +414,16 @@ class AuctionDraft extends DraftBase {
 	}
 
 	/**
+	 * In auction draft the draft order is not guaranteed, so the captains should
+	 * be dropped if they have 4 players as well, even if they haven't nominated
+	 */
+	getNextTeam() {
+		return this.teams.find(function(v) {
+			return !v.drafted && v.players.length < 4;
+		});
+	}
+
+	/**
 	 * Determine if this user can bid the given amount
 	 * @param[in] user user
 	 * @param[in] int amount
@@ -475,6 +492,10 @@ class AuctionDraft extends DraftBase {
 	 */
 	isDrafting(user) {
 		if (this.accepting_bids || this.round == 0)
+			return false;
+
+		let team = this.findTeam(user);
+		if (!team || team.players.length >= 4)
 			return false;
 
 		return super.isDrafting(user);
