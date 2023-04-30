@@ -139,6 +139,7 @@ class DraftBase {
 			display_name : v.display_name,
 			medal : v.medal,
 			teamid : v.teamid,
+			avatar : v.avatar,
 		};
 	}
 

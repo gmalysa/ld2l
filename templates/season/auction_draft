@@ -4,7 +4,7 @@
 <div class="ld2l-g">
   <div class="ld2l-block">
 <div id="auction_arena" class="ld2l-g">
-  <div style="width: 400px;" class="ld2l-block" id="draft-teams">
+  <div style="width: 500px;" class="ld2l-block" id="draft-teams">
   </div>
   <div style="width: 400px;" class="ld2l-block">
     <div id="bid_arena"></div>

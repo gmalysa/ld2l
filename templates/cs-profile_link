@@ -2,6 +2,6 @@
   onmouseenter="ld2l.loadHovercard(this);"
   onmouseleave="ld2l.hideHovercard();"
   data-hovercard-type="profile" data-hovercard-id="{steamid}" data-title="{display_name}">
-
+  <img src="{avatar}" />
   <a href="/profile/{steamid}">{display_name}</a>
 </div>
