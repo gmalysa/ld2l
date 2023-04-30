@@ -1,6 +1,4 @@
 
-const BID_TIME = 15;
-
 var draft = {
 	socket : null,
 	season : 0,
@@ -70,18 +68,18 @@ ld2l.$.onReady(function() {
 		draft.amount = data.amount || 0;
 		draft.bidder = data.by;
 		dust.render('bid_buttons', {
-			time : BID_TIME,
+			time : data.bidTime,
 			nominee : draft.nominee,
 		}, function(err, out) {
 			document.getElementById('bid_buttons').innerHTML = out;
 		});
-		updateBidding();
+		updateBidding(data.bidTime);
 	});
 
 	draft.socket.on('bid', function(data) {
 		draft.amount = data.amount;
 		draft.bidder = data.by;
-		updateBidding();
+		updateBidding(data.bidTime);
 	});
 
 });
@@ -94,13 +92,13 @@ function bidTick() {
 	}
 }
 
-function updateBidding() {
+function updateBidding(bidTime) {
 	if (draft.bidTimer) {
 		clearTimeout(draft.bidTimer);
 	}
 
 	draft.bidTimer = setTimeout(bidTick, 1000);
-	draft.timeLeft = BID_TIME;
+	draft.timeLeft = bidTime;
 	renderBidding();
 }
 

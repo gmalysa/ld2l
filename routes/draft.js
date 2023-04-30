@@ -17,6 +17,7 @@ const logger = require('../logger.js');
 
 // Time in milliseconds before a bid sells
 const BID_TIME_LIMIT = 15000;
+const MIN_BID_TIME = 3000;
 
 const getTeams = new fl.Chain(
 	mysql.init_db,
@@ -334,6 +335,7 @@ class AuctionDraft extends DraftBase {
 	resetBidding() {
 		this.nominee = null;
 		this.bidder = null;
+		this.bids = 0;
 		this.amount = 0;
 		this.accepting_bids = false;
 
@@ -344,9 +346,14 @@ class AuctionDraft extends DraftBase {
 	}
 
 	startBidTimeout() {
+		let bidTime = BID_TIME_LIMIT - this.bids;
+		if (bidTime < MIN_BID_TIME)
+			bidTime = MIN_BID_TIME;
+
 		if (this.timeout)
 			clearTimeout(this.timeout);
-		this.timeout = setTimeout(this.bidTimeout.bind(this), BID_TIME_LIMIT);
+		this.timeout = setTimeout(this.bidTimeout.bind(this), bidTime);
+		return bidTime;
 	}
 
 	start() {
@@ -458,11 +465,12 @@ class AuctionDraft extends DraftBase {
 		this.bidder = user;
 		this.amount = amount;
 		this.logEvent(user.display_name + ' bid '+amount);
+		this.bids = this.bids + 1;
 		this.room.emit('bid', {
 			by : this.cleanPlayer(user),
 			amount : amount,
+			bidTime : this.startBidTimeout(),
 		});
-		this.startBidTimeout();
 	}
 
 	/**
@@ -472,6 +480,7 @@ class AuctionDraft extends DraftBase {
 	 */
 	nominate(user, target) {
 		this.amount = 0;
+		this.bids = 0;
 		this.bidder = user;
 		this.nominee = target;
 		this.accepting_bids = true;
@@ -481,8 +490,8 @@ class AuctionDraft extends DraftBase {
 			nominee : this.cleanPlayer(target),
 			by : this.cleanPlayer(user),
 			amount : 0,
+			bidTime : this.startBidTimeout(),
 		});
-		this.startBidTimeout();
 	}
 
 	/**
