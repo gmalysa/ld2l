@@ -98,7 +98,8 @@ function updateBidding(bidTime) {
 	}
 
 	draft.bidTimer = setTimeout(bidTick, 1000);
-	draft.timeLeft = bidTime;
+	// bid time is given by the server in milliseconds
+	draft.timeLeft = bidTime / 1000;
 	renderBidding();
 }
 

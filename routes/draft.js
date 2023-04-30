@@ -346,7 +346,8 @@ class AuctionDraft extends DraftBase {
 	}
 
 	startBidTimeout() {
-		let bidTime = BID_TIME_LIMIT - this.bids;
+		// bidTime units = ms
+		let bidTime = BID_TIME_LIMIT - this.bids*1000;
 		if (bidTime < MIN_BID_TIME)
 			bidTime = MIN_BID_TIME;
 
