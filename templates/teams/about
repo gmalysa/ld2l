@@ -13,6 +13,23 @@
 <p>Played in <a href="/seasons/{season.id}">{season.name}</a> with an average linear
 {~n}medal of {team.medal}. {?auction}Started with ${team.starting_money} and has ${team.money} unspent.{/auction}</p>
 
+{?auction}
+  {?canEditTeam}
+    <form method="post"
+	      id="auctionTeamCash"
+		  action="/teams/about/{team.id}/auction_cash"
+		  class="pure-form pure-form-aligned">
+    <fieldset>
+	  <div>
+	    Auction Draft Starting Money: <input type="text" name="cash" id="cash" value="{team.starting_money}" />
+		{~n}
+		<input type="submit" value="Set Money" class="pure-button ld2l-button-primary" />
+	  </div>
+	</fieldset>
+	</form>
+  {/canEditTeam}
+{/auction}
+
 {?team.disbanded}
   <p><span style="color: red" class="fa fa-ban"></span> This team disbanded during the regular season.</p>
   {?canEditTeam}

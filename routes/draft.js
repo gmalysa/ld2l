@@ -408,11 +408,19 @@ class AuctionDraft extends DraftBase {
 
 	populateTeams(teams, signups) {
 		super.populateTeams(teams, signups);
-		seasons.assignAuctionMoney(this.season, teams, signups);
-
-		var env = new fl.Environment();
-		env.teams = teams;
-		assignMoney.call(null, env, null);
+		if (this.season.auction_autocash > 0) {
+			// Calculate new money and save it, overwriting any previous money
+			seasons.assignAuctionMoney(this.season, teams, signups);
+			var env = new fl.Environment();
+			env.teams = teams;
+			assignMoney.call(null, env, null);
+		}
+		else {
+			// Update team savings based on preassigned starting money value
+			this.teams.forEach(function(v) {
+				v.money = v.starting_money;
+			});
+		}
 	}
 
 	/**

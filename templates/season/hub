@@ -44,6 +44,10 @@
   <label for="auction_base">Auction Resolution</label>
   <input type="text" name="auction_resolution" value="{season.auction_resolution}" />
 </div>
+<div class="pure-control-group">
+  <label for="auction_autocash">Auction Auto-Assign Cash</label>
+  <input type="checkbox" name="auction_autocash" {@eq key=season.str_auction_autocash value="1"}checked {/eq}/>
+</div>
 <div class="pure-controls">
   <input class="pure-button ld2l-button-primary" type="submit" value="Update" />
 </div>

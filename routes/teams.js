@@ -30,7 +30,15 @@ var team_preamble = new fl.Chain(
 			return;
 		}
 		after();
-	}
+	},
+	function(env, after) {
+		after(env.team.seasonid);
+	},
+	seasons.getSeasonBasic,
+	function(env, after, season) {
+		env.season = season;
+		after();
+	},
 );
 
 /**
@@ -94,7 +102,8 @@ var team_index = new fl.Chain(
 			},
 			seasons.getDraftableSignups,
 			function(env, after, signups) {
-				seasons.assignAuctionMoney(env.season, env.teams, signups);
+				if (!env.season.auction_autocash)
+					seasons.assignAuctionMoney(env.season, env.teams, signups);
 				after();
 			}
 		),
@@ -154,6 +163,32 @@ var undisband = new fl.Chain(
 		after();
 	}
 );
+
+/**
+ * Set the money for a team in auction draft
+ */
+var set_auction_cash = new fl.Chain(
+	function(env, after) {
+		let cash = parseInt(env.req.body.cash) || 0;
+		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
+		if (!isAdmin) {
+			env.$throw(new Error('You cannot change this team\'s auction money'));
+			return;
+		}
+
+		if (env.season.auction_autocash > 0) {
+			env.$throw(new Error('This season is set to autocash, your change would be lost when the draft is started! Please change it and reassign the money'));
+			return;
+		}
+
+		after(env.team, cash);
+	},
+	teams.setStartingMoney,
+	function(env, after) {
+		env.$redirect('/teams/about/'+env.teamId);
+		after();
+	}
+).use_local_env(true);
 
 /**
  * Change the captain for a team
@@ -294,6 +329,12 @@ module.exports.init_routes = function(server) {
 
 	server.add_route('/teams/about/:teamid/add', {
 		fn : add_player,
+		pre : ['default', 'require_user', 'team'],
+		post : ['default']
+	}, 'post');
+
+	server.add_route('/teams/about/:teamid/auction_cash', {
+		fn : set_auction_cash,
 		pre : ['default', 'require_user', 'team'],
 		post : ['default']
 	}, 'post');

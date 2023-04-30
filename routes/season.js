@@ -52,7 +52,10 @@ var season_preamble = new fl.Chain(
 	function(env, after, season) {
 		var isAdmin = privs.hasPriv(env.user.privs, privs.MODIFY_SEASON);
 
+		// dustjs @eq only does string comparisons, so we need to convert an int value
+		// to a string for comparison
 		env.season = season;
+		env.season.str_auction_autocash = "" + season.auction_autocash;
 		env.$output({
 			season : season,
 			isAdmin : isAdmin
@@ -74,6 +77,9 @@ var edit_season = new fl.Branch(
 			var seasonTicket = parseInt(env.req.body.ticket) || 0;
 			let auctionBase = parseInt(env.req.body.auction_base) || 0;
 			let auctionResolution = parseInt(env.req.body.auction_resolution) || 0;
+			let auctionAutocash = (env.req.body.auction_autocash === 'on') ? 1 : 0;
+
+			logger.var_dump(auctionAutocash);
 
 			if (!env.req.body.name || !seasons.isValidStatus(seasonStatus)
 				|| !seasons.isValidType(seasonType)
@@ -90,6 +96,7 @@ var edit_season = new fl.Branch(
 				linearization : seasonLinear,
 				auction_base : auctionBase,
 				auction_resolution : auctionResolution,
+				auction_autocash : auctionAutocash,
 			};
 
 			env.filters.seasons.update(env.newSeasonInfo, {id : env.season.id})
