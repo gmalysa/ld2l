@@ -31,6 +31,7 @@ var defaults = {
 		user : 'ld2l',
 		database : 'ld2l',
 		password : 'ld2l',
+		charset : "utf8_general_ci",
 	},
 
 	// Steam and Dota settings
