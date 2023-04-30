@@ -15,6 +15,7 @@ var draft = {
 	round : 0,
 	bidTimer : null,
 	timeLeft : 0,
+	hideDraftedPlayers : false,
 };
 
 ld2l.$.onReady(function() {
@@ -40,8 +41,12 @@ ld2l.$.onReady(function() {
 	});
 
 	draft.socket.on('drafted', function(data) {
-		$('tr[data-steamid="'+data.steamid+'"]')[0].dataset.team = data.team;
-		$('tr[data-steamid="'+data.steamid+'"]').addClass('drafted');
+		let rowset = $('tr[data-steamid="'+data.steamid+'"]');
+		rowset[0].dataset.team = data.team;
+		rowset[0].dataset.drafted = "1";
+		rowset.addClass('drafted');
+		if (draft.hideDraftedPlayers)
+			rowset.addClass('hide');
 		$('tr[data-teamid="'+data.team+'"]').addClass('ld2l-draft-team-drafted');
 		$('tr[data-teamid="'+data.team+'"]').removeClass('ld2l-draft-team-next');
 	});
@@ -124,6 +129,19 @@ function updateTeams() {
 		round : draft.round,
 	}, function(err, out) {
 		document.getElementById('draft-teams').innerHTML = out;
+	});
+}
+
+function toggleHideDraftedPlayers() {
+	let hide = document.getElementById('hidePlayers');
+	draft.hideDraftedPlayers = hide.checked;
+
+	let rows = document.getElementsByName('draft-signup');
+	rows.forEach(function(row) {
+		if (draft.hideDraftedPlayers && row.dataset.drafted == "1")
+			row.classList.add('hide');
+		else
+			row.classList.remove('hide');
 	});
 }
 

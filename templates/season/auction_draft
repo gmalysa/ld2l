@@ -18,6 +18,10 @@
   </div>
 </div>
     <h3>Current Players</h3>
+	  <p>
+<input type="checkbox" onchange="toggleHideDraftedPlayers();" id="hidePlayers" />
+{~s}<label for="hidePlayers">Hide drafted players</label>
+      </p>
 <table class="ld2l-table"
        data-season="{season.id}"
 	   data-admin="{isAdmin}"
@@ -43,7 +47,11 @@
 		data-cost="{cost}"
 		{@gt key=teamid value="0"}
 		  class="drafted"
+		  data-drafted="1"
+		{:else}
+		  data-drafted="0"
 		{/gt}
+		name="draft-signup"
 		>
       <td>{@counter/}</td>
 	  <td>
