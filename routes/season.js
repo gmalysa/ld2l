@@ -79,8 +79,6 @@ var edit_season = new fl.Branch(
 			let auctionResolution = parseInt(env.req.body.auction_resolution) || 0;
 			let auctionAutocash = (env.req.body.auction_autocash === 'on') ? 1 : 0;
 
-			logger.var_dump(auctionAutocash);
-
 			if (!env.req.body.name || !seasons.isValidStatus(seasonStatus)
 				|| !seasons.isValidType(seasonType)
 				|| !seasons.isValidLinearization(seasonLinear)) {
