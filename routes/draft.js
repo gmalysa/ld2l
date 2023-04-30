@@ -465,8 +465,7 @@ class AuctionDraft extends DraftBase {
 	}
 
 	/**
-	 * Nominate a given target for bidding, assumes that canBid has already been
-	 * called to verify the user and amount, and the target has been verified.
+	 * Nominate a given target for bidding, starting at 0
 	 * @param[in] user user - The person doing the nomination, must be captain
 	 * @param[in] user target - The person being nominated, must be draftable
 	 */
