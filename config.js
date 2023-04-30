@@ -27,7 +27,7 @@ var defaults = {
 
 	// MySQL settings
 	mysql : {
-		host : 'localhost',
+		host : '127.0.0.1',
 		user : 'ld2l',
 		database : 'ld2l',
 		password : 'ld2l',
