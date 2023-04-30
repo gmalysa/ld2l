@@ -6,12 +6,12 @@
 
 // Module information
 var mod_name = 'MySQL';
-var mod_version = '0.5.0';
+var mod_version = '0.6.0';
 
 // Node.js modules
 require('colors');
 var _ = require('underscore');
-var mysql = require('mysql');
+var mysql = require('mysql2');
 var db = require('db-filters');
 var db_migrate = require('db-migrate');
 
