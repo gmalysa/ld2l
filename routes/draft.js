@@ -199,14 +199,12 @@ class DraftBase {
 	 * @param[in] user user - The person who drafted to update
 	 */
 	markDrafted(user) {
-		var team = this.teams.find(function(v) {
-			return v.captain.steamid == user.steamid;
-		});
+		let team = this.findTeam(user);
 
 		if (!team)
 			logger.error("Drafter "+user.steamid+" was not a captain!\n");
-
-		team.drafted = true;
+		else
+			team.drafted = true;
 	}
 
 	/**
@@ -435,9 +433,10 @@ class AuctionDraft extends DraftBase {
 	 * be dropped if they have 4 players as well, even if they haven't nominated
 	 */
 	getNextTeam() {
-		return this.teams.find(function(v) {
+		let team = this.teams.find(function(v) {
 			return !v.drafted && v.players.length < 4;
 		});
+		return team;
 	}
 
 	/**
@@ -524,6 +523,9 @@ class AuctionDraft extends DraftBase {
 		drafted.cost = this.amount;
 		this.resetBidding();
 		super.draftPlayer(user, drafted, team);
+
+		if (team.players.length >= 4)
+			this.markDrafted(user);
 
 		let env = new fl.Environment();
 		env.user = user;
