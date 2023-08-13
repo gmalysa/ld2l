@@ -97,7 +97,7 @@ var team_index = new fl.Chain(
 			},
 			seasons.getDraftableSignups,
 			function(env, after, signups) {
-				if (!env.season.auction_autocash)
+				if (env.season.auction_autocash)
 					seasons.assignAuctionMoney(env.season, env.teams, signups);
 				after();
 			}
