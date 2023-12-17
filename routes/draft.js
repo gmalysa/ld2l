@@ -446,6 +446,9 @@ class AuctionDraft extends DraftBase {
 	 * @return true if they can bid that much
 	 */
 	canBid(user, amount) {
+		if (!this.accepting_bids)
+			return false;
+
 		var team = this.findTeam(user);
 		if (!team)
 			return false;
