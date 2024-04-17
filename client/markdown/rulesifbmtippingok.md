@@ -127,7 +127,7 @@ This will serve as both a list of League rules and an explanation of how a stand
 
 12. All-chat is permitted unless and until a Captain requests no all-chat.  No all-chat requests may be made in the lobby, at the start of the match, or at any time during the match. If a non-Captain requests no all-chat, his or her Captain should be asked to confirm. 
 
-13. Bad manners, including but not limited to excessive flaming, harassment, racism, sexism, or other discrimination, are not permitted in or out of game, and punishment will be decided on a case by case basis ranging from individual warnings to being removed (even mid season).
+13. Bad manners, including but not limited to excessive flaming, harassment, racism, sexism, or other discrimination, are not permitted in or out of game, and punishment will be decided on a case by case basis ranging from individual warnings to being removed (even mid season). Bad Mannered ("BM") tipping is not considered bad mannered for purposes of this rule.
 
 14. Fake, tactical, or taunting ggs are not permitted. If a Captain calls gg it is binding. If a player inadvertently calls gg the opposing Captain may request an Admin review after the game to determine if it impacted the outcome of the game.
 
