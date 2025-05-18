@@ -17,7 +17,7 @@ const logger = require('../logger.js');
 
 // Time in milliseconds before a bid sells
 const BID_TIME_LIMIT = 15000;
-const MIN_BID_TIME = 5000;
+const MIN_BID_TIME = 8000;
 
 const getTeams = new fl.Chain(
 	mysql.init_db,
