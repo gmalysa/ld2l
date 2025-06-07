@@ -11,7 +11,7 @@
     {#matchups}
 	  <tr class="clickable" onclick="ld2l.expandSeries('{key}');">
 	    <td>{>team_link team=home.team /}</td>
-		<td>{home.points} - {away.points}</td>
+		<td style="width: 40px;">{home.points} - {away.points}</td>
 	    <td>{>team_link team=away.team /}</td>
 	  </tr>
       <tr data-series="{key}" style="display: none;">
