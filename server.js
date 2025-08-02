@@ -163,7 +163,7 @@ ci.add_dust_helpers({
 	dota_hero_icon : function(chunk, context, bodies, params) {
 		var hero = dust.helpers.tap(params.hero, chunk, context);
 		if (undefined !== dotaconstants.heroes[hero]) {
-			var img = "http://cdn.dota2.com/" + dotaconstants.heroes[hero].img;
+			var img = "http://cdn.steamstatic.com/" + dotaconstants.heroes[hero].img;
 			var alt = dotaconstants.heroes[hero].localized_name;
 			chunk.write('<img title="'+alt+'" class="ld2l-dota-hero" src="'+img+'" />');
 		}
@@ -172,7 +172,7 @@ ci.add_dust_helpers({
 	dota_item_icon : function(chunk, context, bodies, params) {
 		var item = dust.helpers.tap(params.item, chunk, context);
 		if (undefined !== dotaconstants.items[dotaconstants.item_ids[item]]) {
-			var img = "http://cdn.dota2.com/" + dotaconstants.items[dotaconstants.item_ids[item]].img;
+			var img = "http://cdn.steamstatic.com/" + dotaconstants.items[dotaconstants.item_ids[item]].img;
 			var alt = dotaconstants.items[dotaconstants.item_ids[item]].dname;
 			chunk.write('<img title="'+alt+'" class="ld2l-dota-item" src="'+img+'" />');
 		}

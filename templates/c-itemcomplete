@@ -1,3 +1,3 @@
 <div class="ld2l-player">
-  <img src="http://cdn.dota2.com/{img}" /><span>{dname}</span>
+  <img src="http://cdn.steamstatic.com/{img}" /><span>{dname}</span>
 </div>

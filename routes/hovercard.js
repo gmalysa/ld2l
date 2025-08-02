@@ -49,7 +49,7 @@ function hoverHeroDetails(hero) {
 	if (dchero) {
 		return {
 			name : dchero.localized_name,
-			img : 'http://cdn.dota2.com/'+dchero.img,
+			img : 'http://cdn.steamstatic.com/'+dchero.img,
 			wins : hero.wins,
 			losses : hero.losses
 		}
