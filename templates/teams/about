@@ -10,8 +10,8 @@
   <h2>{team.name}</h2>
 {/canEditName}
 
-<p>Played in <a href="/seasons/{season.id}">{season.name}</a> with an average linear
-{~n}medal of {team.medal}. {?auction}Started with ${team.starting_money} and has ${team.money} unspent.{/auction}</p>
+<p>Played in <a href="/seasons/{season.id}">{season.name}</a> with an average
+{~n}mmr of {team.medal}. {?auction}Started with ${team.starting_money} and has ${team.money} unspent.{/auction}</p>
 
 {?auction}
   {?canEditTeam}
@@ -51,6 +51,7 @@
     <div class="ld2l-player inline">
       {>medal medal=medal /}
       {>profile_link /}
+	  {?auction}{:else} at {linear_medal} mmr{/auction}
     </div>
   </div>
 {/team.captain}
@@ -73,7 +74,8 @@
     <div class="ld2l-player inline">
       {>medal medal=medal /}
       {>profile_link /}
-	  {?auction} for ${cost}{/auction}
+	  {?auction} for ${cost}
+	  {:else} at {linear_medal} mmr{/auction}
     </div>
   </div>
 {:else}
