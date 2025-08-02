@@ -104,8 +104,9 @@ function item(env, after) {
 }
 
 /**
- * Search for standins for a particular season, which are all players who have set
- * standin to 1 and are not on a team
+ * Originally used to find standins only, it turns out it is way easier to just be
+ * able to search all signups for the season instead of manipulating a signup
+ * correctly to have it appear as a standin
  */
 var standins = new fl.Chain(
 	function(env, after) {
@@ -113,7 +114,7 @@ var standins = new fl.Chain(
 	},
 	seasons.getSeasonBasic,
 	function(env, after, season) {
-		after(season, {valid_standin : 1, teamid : 0});
+		after(season, {teamid : 0});
 	},
 	seasons.getSignups,
 	function(env, after, signups) {
