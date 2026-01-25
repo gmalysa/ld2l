@@ -34,100 +34,6 @@ let seal_signups = parse(fs.readFileSync(IMPORT_FILE_NAME), {
 logger.var_dump(seal_signups);
 
 /**
- * Given a list of 32 bit steam account IDs, try to resolve and create all of the
- * profiles via steam webapi
- * @param[in] array of steam id32 values
- *
- * @todo there's a bug with passing the output of one fl.p.map to another fl.p.map
- * maybe the underlying type is not correct for Object.keys()
- */
-let create_accounts = new fl.Chain(
-	function(env, after, steamids) {
-		env.steamids = steamids;
-		after(steamids);
-	},
-	fl.p.map(users.findUserId),
-	function(env, after, steamid64s) {
-		env.steamid64s = steamid64s;
-		env.idx = 0;
-		env.newUsers = [];
-		env.newProfiles = [];
-		after();
-	},
-	new fl.LoopChain(
-		function(env, after) {
-			after(env.idx < env.steamid64s.length);
-		},
-		function(env, after) {
-			after(env.steamid64s[env.idx]);
-		},
-		users.getUser,
-		function(env, after, user) {
-			if (user == null)
-				env.newUsers.push(env.steamid64s[env.idx]);
-			env.idx = env.idx + 1;
-			after();
-		}
-	),
-	new fl.LoopChain(
-		function(env, after) {
-			// Try to batch some number of IDs at a time
-			if (env.newUsers.length > 0) {
-				let idstring = env.newUsers.splice(0, PROFILE_RESOLVE_BATCH_SIZE).join(',');
-				env.idstring = idstring;
-				after(true);
-			}
-			else {
-				after(false);
-			}
-		},
-		function(env, after) {
-			request('http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/' +
-				'?key=' + config.steam_api_key +
-				'&steamids=' + encodeURIComponent(env.idstring),
-				env.$check(after));
-		},
-		function(env, after, response, body) {
-			let data = JSON.parse(body);
-			logger.var_dump(data);
-			let profiles = data.response.players.map(function(v) {
-				return {
-					id : v.steamid,
-					displayName : v.personaname,
-					_json : {
-						avatar : v.avatar,
-					},
-				};
-			});
-
-			Array.prototype.push.apply(env.newProfiles, profiles);
-			after();
-		}
-	),
-	function(env, after) {
-		env.idx = 0;
-		after();
-	},
-	new fl.LoopChain(
-		function(env, after) {
-			after(env.idx < env.newProfiles.length);
-		},
-		function(env, after) {
-			env.profile = env.newProfiles[env.idx];
-			logger.debug('Adding profile: ');
-			logger.var_dump(env.newProfiles[env.idx]);
-			after(env.newProfiles[env.idx].id);
-		},
-		users.addUser,
-		function(env, after, user) {
-			logger.var_dump(user);
-			env.idx = env.idx + 1;
-			after();
-		}
-	)
-).use_local_env(true);
-
-/**
  * Make teams based on the fields in the csv and then assign people to the
  * teams
  */
@@ -221,7 +127,7 @@ let create_signups = new fl.Chain(
 		env.signups = signups;
 		after(steamids);
 	},
-	create_accounts,
+	users.createUsers,
 	function(env, after) {
 		env.idx = 0;
 		after();
