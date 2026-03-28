@@ -77,7 +77,7 @@ ld2l.inhouseQueue = {
 	doReadyCheck : function(data) {
 		ld2l.$.showModal('readycheck', data);
 
-		var ping = new Audio('http://ld2l.gg/static/Scan_clear.mp3');
+		var ping = new Audio('https://ld2l.org/static/Scan_clear.mp3');
 		ping.volume = 0.3;
 		ping.play();
 	},
@@ -174,8 +174,8 @@ ld2l.inhouseQueue = {
 	sendNotification : function (title, body, icon) {
 		if (this.notificationsEnabled) {
 			if (ld2l.inhouseQueue.queue.length >= 10 ) {
-				new Notification(title, { body: 'Queue is full!', icon: 'https://ld2l.gg/static/images/ld2l-logo.png'});
-				new Audio(`https://ld2l.gg/static/Scan_clear.mp3`).play()
+				new Notification(title, { body: 'Queue is full!', icon: 'https://ld2l.org/static/images/ld2l-logo.png'});
+				new Audio(`https://ld2l.org/static/Scan_clear.mp3`).play()
 			}
 			else {
 				new Notification(title, { body, icon });
