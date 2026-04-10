@@ -4,7 +4,7 @@ This is a league for players below 4K MMR to play Dota in a competitive-style se
 The league is based in North America on the US East server. But we have consistently had players from EU, SA, as well as CIS whose ping permitted them to play comfortably on US East.
 
 ### Website
-The website is http://ld2l.gg. Congrats, you're already there. The website handles preseason inhouse queueing, drafting, matchups and results, as well as historical data on league players and teams.
+The website is [http://ld2l.org](https://ld2l.org/). Congrats, you're already there. The website handles preseason inhouse queueing, drafting, matchups and results, as well as historical data on league players and teams.
 
 ### Discord
 LD2L maintains a strong Discord community which you can join here: https://discord.gg/kwTmcub
