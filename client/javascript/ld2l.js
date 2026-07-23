@@ -132,7 +132,7 @@ ld2l.$.onReady(function() {
 		if (0 == ld2l._version.version) {
 			ld2l._version.version = v;
 		}
-		else {
+		else if (v != ld2l._version.version) {
 			ld2l.$.showModal('newversion', {});
 		}
 	});
