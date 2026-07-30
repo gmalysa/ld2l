@@ -6,8 +6,9 @@ ECHO := @echo -e
 
 JSFLAGS := -c -m reserved=['$$,_']
 LESSFLAGS := --plugin=less-plugin-clean-css
-MDFLAGS := --parseImgDimensions --simplifiedAutoLink --excludeTrailingPunctuationFromURLs
-MDFLAGS += --strikethrough --tables --tasklists --emoji
+
+MDFLAGS := -c parseImgDimensions -c simplifiedAutoLink -c excludeTrailingPunctuationFromURLs
+MDFLAGS += -c strikethrough -c tables -c tasklists -c emoji
 MDFLAGS += -e $(shell readlink -f ./lib/showdown-table.js)
 
 CLIENTDIR := $(shell pwd)/client
